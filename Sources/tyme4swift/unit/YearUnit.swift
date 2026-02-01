@@ -1,11 +1,17 @@
 import Foundation
 
 open class YearUnit {
-    private let year: Int
+    internal let year: Int
 
     public init(year: Int) {
         self.year = year
     }
 
     public func getYear() -> Int { year }
+
+    internal func indexOf(_ index: Int, _ size: Int) -> Int {
+        var i = index % size
+        if i < 0 { i += size }
+        return i
+    }
 }
