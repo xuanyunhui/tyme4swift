@@ -574,5 +574,365 @@ final class Tyme4SwiftTests: XCTestCase {
         let nextAries = pisces.next(1)
         XCTAssertEqual(nextAries.getName(), "白羊")
     }
+
+    // MARK: - Phase 5 Core Culture Systems Tests
+
+    func testSound() throws {
+        // Test all five sounds
+        let expectedNames = ["宫", "商", "角", "徵", "羽"]
+        let expectedWuXing = ["土", "金", "木", "火", "水"]
+        for i in 0..<5 {
+            let sound = Sound.fromIndex(i)
+            XCTAssertEqual(sound.getName(), expectedNames[i])
+            XCTAssertEqual(sound.getIndex(), i)
+            XCTAssertEqual(sound.getWuXing(), expectedWuXing[i])
+        }
+
+        // Test fromName
+        let gong = Sound.fromName("宫")
+        XCTAssertEqual(gong.getIndex(), 0)
+
+        // Test next
+        let shang = gong.next(1)
+        XCTAssertEqual(shang.getName(), "商")
+
+        // Test wrap around
+        let yu = Sound.fromIndex(4)
+        let nextGong = yu.next(1)
+        XCTAssertEqual(nextGong.getName(), "宫")
+
+        // Test getElement
+        let element = gong.getElement()
+        XCTAssertEqual(element.getName(), "土")
+    }
+
+    func testPhase() throws {
+        // Test all three phases
+        let expectedNames = ["上旬", "中旬", "下旬"]
+        for i in 0..<3 {
+            let phase = Phase.fromIndex(i)
+            XCTAssertEqual(phase.getName(), expectedNames[i])
+            XCTAssertEqual(phase.getIndex(), i)
+        }
+
+        // Test fromName
+        let shangXun = Phase.fromName("上旬")
+        XCTAssertEqual(shangXun.getIndex(), 0)
+
+        // Test next
+        let zhongXun = shangXun.next(1)
+        XCTAssertEqual(zhongXun.getName(), "中旬")
+
+        // Test wrap around
+        let xiaXun = Phase.fromIndex(2)
+        let nextShangXun = xiaXun.next(1)
+        XCTAssertEqual(nextShangXun.getName(), "上旬")
+    }
+
+    func testPhenology() throws {
+        // Test first few phenologies
+        let expectedNames = ["蚯蚓结", "麋角解", "水泉动"]
+        for i in 0..<3 {
+            let phenology = Phenology.fromIndex(i)
+            XCTAssertEqual(phenology.getName(), expectedNames[i])
+            XCTAssertEqual(phenology.getIndex(), i)
+        }
+
+        // Test fromName
+        let qiuYinJie = Phenology.fromName("蚯蚓结")
+        XCTAssertEqual(qiuYinJie.getIndex(), 0)
+
+        // Test next
+        let miJiaoJie = qiuYinJie.next(1)
+        XCTAssertEqual(miJiaoJie.getName(), "麋角解")
+
+        // Test wrap around (72 phenologies)
+        let liTingChu = Phenology.fromIndex(71)
+        let nextQiuYinJie = liTingChu.next(1)
+        XCTAssertEqual(nextQiuYinJie.getName(), "蚯蚓结")
+
+        // Test getThreePhenology
+        let threePhenology = qiuYinJie.getThreePhenology()
+        XCTAssertEqual(threePhenology.getName(), "初候")
+
+        // Test getSolarTermIndex
+        XCTAssertEqual(qiuYinJie.getSolarTermIndex(), 0)
+    }
+
+    func testThreePhenology() throws {
+        // Test all three phenology periods
+        let expectedNames = ["初候", "二候", "三候"]
+        for i in 0..<3 {
+            let threePhenology = ThreePhenology.fromIndex(i)
+            XCTAssertEqual(threePhenology.getName(), expectedNames[i])
+            XCTAssertEqual(threePhenology.getIndex(), i)
+        }
+
+        // Test fromName
+        let chuHou = ThreePhenology.fromName("初候")
+        XCTAssertEqual(chuHou.getIndex(), 0)
+
+        // Test next
+        let erHou = chuHou.next(1)
+        XCTAssertEqual(erHou.getName(), "二候")
+
+        // Test wrap around
+        let sanHou = ThreePhenology.fromIndex(2)
+        let nextChuHou = sanHou.next(1)
+        XCTAssertEqual(nextChuHou.getName(), "初候")
+    }
+
+    func testPhaseDay() throws {
+        // Test all five phase days
+        let expectedNames = ["一", "二", "三", "四", "五"]
+        for i in 0..<5 {
+            let phaseDay = PhaseDay.fromIndex(i)
+            XCTAssertEqual(phaseDay.getName(), expectedNames[i])
+            XCTAssertEqual(phaseDay.getIndex(), i)
+            XCTAssertEqual(phaseDay.getDayNumber(), i + 1)
+        }
+
+        // Test fromName
+        let yi = PhaseDay.fromName("一")
+        XCTAssertEqual(yi.getIndex(), 0)
+
+        // Test next
+        let er = yi.next(1)
+        XCTAssertEqual(er.getName(), "二")
+
+        // Test wrap around
+        let wu = PhaseDay.fromIndex(4)
+        let nextYi = wu.next(1)
+        XCTAssertEqual(nextYi.getName(), "一")
+    }
+
+    func testTenDay() throws {
+        // Test all ten days
+        let expectedNames = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
+        for i in 0..<10 {
+            let tenDay = TenDay.fromIndex(i)
+            XCTAssertEqual(tenDay.getName(), expectedNames[i])
+            XCTAssertEqual(tenDay.getIndex(), i)
+        }
+
+        // Test fromName
+        let jia = TenDay.fromName("甲")
+        XCTAssertEqual(jia.getIndex(), 0)
+
+        // Test next
+        let yi = jia.next(1)
+        XCTAssertEqual(yi.getName(), "乙")
+
+        // Test wrap around
+        let gui = TenDay.fromIndex(9)
+        let nextJia = gui.next(1)
+        XCTAssertEqual(nextJia.getName(), "甲")
+
+        // Test getHeavenStem
+        let heavenStem = jia.getHeavenStem()
+        XCTAssertEqual(heavenStem.getName(), "甲")
+    }
+
+    func testTerrain() throws {
+        // Test all twelve terrains
+        let expectedNames = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]
+        for i in 0..<12 {
+            let terrain = Terrain.fromIndex(i)
+            XCTAssertEqual(terrain.getName(), expectedNames[i])
+            XCTAssertEqual(terrain.getIndex(), i)
+        }
+
+        // Test fromName
+        let changSheng = Terrain.fromName("长生")
+        XCTAssertEqual(changSheng.getIndex(), 0)
+
+        // Test next
+        let muYu = changSheng.next(1)
+        XCTAssertEqual(muYu.getName(), "沐浴")
+
+        // Test wrap around
+        let yang = Terrain.fromIndex(11)
+        let nextChangSheng = yang.next(1)
+        XCTAssertEqual(nextChangSheng.getName(), "长生")
+
+        // Test isProsperous
+        XCTAssertTrue(changSheng.isProsperous())
+        XCTAssertFalse(muYu.isProsperous())
+
+        // Test isDeclining
+        let shuai = Terrain.fromIndex(5)
+        XCTAssertTrue(shuai.isDeclining())
+        XCTAssertFalse(changSheng.isDeclining())
+
+        // Test isNurturing
+        XCTAssertTrue(muYu.isNurturing())
+        XCTAssertFalse(changSheng.isNurturing())
+    }
+
+    func testNaYin() throws {
+        // Test first few NaYin
+        let expectedNames = ["海中金", "炉中火", "大林木", "路旁土", "剑锋金"]
+        let expectedWuXing = ["金", "火", "木", "土", "金"]
+        for i in 0..<5 {
+            let naYin = NaYin.fromIndex(i)
+            XCTAssertEqual(naYin.getName(), expectedNames[i])
+            XCTAssertEqual(naYin.getIndex(), i)
+            XCTAssertEqual(naYin.getWuXing(), expectedWuXing[i])
+        }
+
+        // Test fromName
+        let haiZhongJin = NaYin.fromName("海中金")
+        XCTAssertEqual(haiZhongJin.getIndex(), 0)
+
+        // Test next
+        let luZhongHuo = haiZhongJin.next(1)
+        XCTAssertEqual(luZhongHuo.getName(), "炉中火")
+
+        // Test wrap around (30 NaYin)
+        let daHaiShui = NaYin.fromIndex(29)
+        let nextHaiZhongJin = daHaiShui.next(1)
+        XCTAssertEqual(nextHaiZhongJin.getName(), "海中金")
+
+        // Test fromSixtyCycle
+        let naYin0 = NaYin.fromSixtyCycle(0)
+        XCTAssertEqual(naYin0.getName(), "海中金")
+        let naYin1 = NaYin.fromSixtyCycle(1)
+        XCTAssertEqual(naYin1.getName(), "海中金")
+        let naYin2 = NaYin.fromSixtyCycle(2)
+        XCTAssertEqual(naYin2.getName(), "炉中火")
+
+        // Test getElement
+        let element = haiZhongJin.getElement()
+        XCTAssertEqual(element.getName(), "金")
+    }
+
+    func testSixty() throws {
+        // Test first few Sixty
+        let expectedNames = ["甲子", "乙丑", "丙寅", "丁卯", "戊辰"]
+        for i in 0..<5 {
+            let sixty = Sixty.fromIndex(i)
+            XCTAssertEqual(sixty.getName(), expectedNames[i])
+            XCTAssertEqual(sixty.getIndex(), i)
+        }
+
+        // Test fromName
+        let jiaZi = Sixty.fromName("甲子")
+        XCTAssertEqual(jiaZi.getIndex(), 0)
+
+        // Test next
+        let yiChou = jiaZi.next(1)
+        XCTAssertEqual(yiChou.getName(), "乙丑")
+
+        // Test wrap around (60 Sixty)
+        let guiHai = Sixty.fromIndex(59)
+        let nextJiaZi = guiHai.next(1)
+        XCTAssertEqual(nextJiaZi.getName(), "甲子")
+
+        // Test getSixtyCycle
+        let sixtyCycle = jiaZi.getSixtyCycle()
+        XCTAssertEqual(sixtyCycle.getName(), "甲子")
+
+        // Test getNaYin
+        let naYin = jiaZi.getNaYin()
+        XCTAssertEqual(naYin.getName(), "海中金")
+
+        // Test getHeavenStem
+        let heavenStem = jiaZi.getHeavenStem()
+        XCTAssertEqual(heavenStem.getName(), "甲")
+
+        // Test getEarthBranch
+        let earthBranch = jiaZi.getEarthBranch()
+        XCTAssertEqual(earthBranch.getName(), "子")
+    }
+
+    func testTen() throws {
+        // Test all ten
+        let expectedNames = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"]
+        for i in 0..<10 {
+            let ten = Ten.fromIndex(i)
+            XCTAssertEqual(ten.getName(), expectedNames[i])
+            XCTAssertEqual(ten.getIndex(), i)
+            XCTAssertEqual(ten.getDayNumber(), i + 1)
+        }
+
+        // Test fromName
+        let yi = Ten.fromName("一")
+        XCTAssertEqual(yi.getIndex(), 0)
+
+        // Test next
+        let er = yi.next(1)
+        XCTAssertEqual(er.getName(), "二")
+
+        // Test wrap around
+        let shi = Ten.fromIndex(9)
+        let nextYi = shi.next(1)
+        XCTAssertEqual(nextYi.getName(), "一")
+    }
+
+    func testTwenty() throws {
+        // Test first few twenty
+        let expectedNames = ["初一", "初二", "初三", "初四", "初五"]
+        for i in 0..<5 {
+            let twenty = Twenty.fromIndex(i)
+            XCTAssertEqual(twenty.getName(), expectedNames[i])
+            XCTAssertEqual(twenty.getIndex(), i)
+            XCTAssertEqual(twenty.getDayNumber(), i + 1)
+        }
+
+        // Test fromName
+        let chuYi = Twenty.fromName("初一")
+        XCTAssertEqual(chuYi.getIndex(), 0)
+
+        // Test next
+        let chuEr = chuYi.next(1)
+        XCTAssertEqual(chuEr.getName(), "初二")
+
+        // Test wrap around (20 Twenty)
+        let erShi = Twenty.fromIndex(19)
+        let nextChuYi = erShi.next(1)
+        XCTAssertEqual(nextChuYi.getName(), "初一")
+    }
+
+    func testGodType() throws {
+        // Test all four god types
+        let expectedNames = ["年", "月", "日", "时"]
+        for i in 0..<4 {
+            let godType = GodType.fromIndex(i)
+            XCTAssertEqual(godType.getName(), expectedNames[i])
+            XCTAssertEqual(godType.getIndex(), i)
+        }
+
+        // Test fromName
+        let nian = GodType.fromName("年")
+        XCTAssertEqual(nian.getIndex(), 0)
+
+        // Test next
+        let yue = nian.next(1)
+        XCTAssertEqual(yue.getName(), "月")
+
+        // Test wrap around
+        let shi = GodType.fromIndex(3)
+        let nextNian = shi.next(1)
+        XCTAssertEqual(nextNian.getName(), "年")
+    }
+
+    func testGod() throws {
+        // Test God creation
+        let godType = GodType.fromIndex(2) // 日
+        let luck = Luck.fromIndex(0) // 吉
+        let god = God(type: godType, luck: luck, name: "天德")
+
+        XCTAssertEqual(god.getName(), "天德")
+        XCTAssertEqual(god.getGodType().getName(), "日")
+        XCTAssertEqual(god.getLuck().getName(), "吉")
+        XCTAssertTrue(god.isAuspicious())
+        XCTAssertFalse(god.isInauspicious())
+
+        // Test inauspicious god
+        let badLuck = Luck.fromIndex(1) // 凶
+        let badGod = God(type: godType, luck: badLuck, name: "天刑")
+        XCTAssertFalse(badGod.isAuspicious())
+        XCTAssertTrue(badGod.isInauspicious())
+    }
 }
 
