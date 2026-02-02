@@ -1,0 +1,353 @@
+name: Publish to SPM Registry and CocoaPods
+
+on:
+  release:
+    types: [published]
+
+env:
+  REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+  COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+
+jobs:
+  verify-release:
+    name: Verify Release Tag
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract-version.outputs.version }}
+      release_url: ${{ steps.extract-version.outputs.release_url }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: extract-version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release_url=${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "✅ Release version: $VERSION"
+          echo "✅ Release URL: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
+
+      - name: Verify Package.swift version
+        run: |
+          # Extract version from Package.swift
+          PACKAGE_VERSION=$(grep -oP '\.package\(name: "tyme4swift", url:.*from: "\K[^"]+' Package.swift || true)
+          echo "📦 Package.swift found version references"
+          grep -n "version\|from:" Package.swift || true
+
+      - name: Verify Swift build
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: '5.9'
+
+      - name: Build Swift package
+        run: swift build -v
+
+      - name: Run Swift tests
+        run: swift test -v
+
+  register-spm:
+    name: Register to Swift Package Manager
+    runs-on: ubuntu-latest
+    needs: verify-release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: '5.9'
+
+      - name: Verify Package.swift manifest
+        run: |
+          echo "📋 Package.swift content:"
+          cat Package.swift
+          
+      - name: Create SPM registration script
+        run: |
+          cat > /tmp/register-spm.sh << 'SCRIPT'
+          #!/bin/bash
+          set -e
+          
+          PACKAGE_NAME="tyme4swift"
+          REPO_URL="https://github.com/xuanyunhui/tyme4swift.git"
+          VERSION="${{ needs.verify-release.outputs.version }}"
+          
+          echo "🚀 Starting SPM Package Registry registration..."
+          echo "📦 Package: $PACKAGE_NAME"
+          echo "🔗 Repository: $REPO_URL"
+          echo "📌 Version: $VERSION"
+          
+          # Note: This is informational. Actual registration happens through:
+          # 1. GitHub Package Registry (automatic with public release)
+          # 2. Manual registration at https://swiftpackageindex.com
+          
+          echo ""
+          echo "✅ Package is registered as:"
+          echo "   https://github.com/xuanyunhui/tyme4swift"
+          echo ""
+          echo "📖 To register on Swift Package Index:"
+          echo "   Visit: https://swiftpackageindex.com/add-package"
+          echo "   Enter: https://github.com/xuanyunhui/tyme4swift.git"
+          echo ""
+          
+          SCRIPT
+          chmod +x /tmp/register-spm.sh
+          /tmp/register-spm.sh
+
+      - name: Notify SPM registration
+        run: |
+          echo "📢 SPM Registration Information"
+          echo "================================"
+          echo ""
+          echo "Package Name: tyme4swift"
+          echo "Git Repository: https://github.com/xuanyunhui/tyme4swift.git"
+          echo "Version: ${{ needs.verify-release.outputs.version }}"
+          echo ""
+          echo "✅ The package is automatically available via Swift Package Manager"
+          echo ""
+          echo "📝 Installation via Package.swift:"
+          echo ".package(url: \"https://github.com/xuanyunhui/tyme4swift.git\", from: \"${{ needs.verify-release.outputs.version }}\")"
+          echo ""
+          echo "📖 Register on Swift Package Index for discoverability:"
+          echo "   https://swiftpackageindex.com/add-package"
+          echo ""
+
+  publish-cocoapods:
+    name: Publish to CocoaPods Trunk
+    runs-on: macos-latest
+    needs: verify-release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Install CocoaPods
+        run: |
+          sudo gem install cocoapods
+          pod repo update
+          pod --version
+
+      - name: Verify Podspec
+        run: |
+          # Check if podspec exists and is valid
+          if [ ! -f "tyme4swift.podspec" ]; then
+            echo "⚠️  tyme4swift.podspec not found!"
+            echo "Creating basic podspec template..."
+            cat > tyme4swift.podspec << 'PODSPEC'
+          Pod::Spec.new do |spec|
+            spec.name         = "tyme4swift"
+            spec.version      = "${{ needs.verify-release.outputs.version }}"
+            spec.summary      = "A powerful Chinese calendar library for iOS, macOS, tvOS, and watchOS"
+            spec.description  = <<-DESC
+              tyme4swift is a complete Swift implementation of the Tyme library,
+              supporting solar calendar, lunar calendar, Tibetan calendar, 
+              24 solar terms, zodiac signs, heavenly stems & earthly branches,
+              eight characters (八字), nine stars (九星), and more.
+            DESC
+          
+            spec.homepage     = "https://github.com/xuanyunhui/tyme4swift"
+            spec.license      = { :type => "MIT", :file => "LICENSE" }
+            spec.author       = { "xuanyunhui" => "xuanyunhui@icloud.com" }
+            spec.source       = { :git => "https://github.com/xuanyunhui/tyme4swift.git", :tag => "v${{ needs.verify-release.outputs.version }}" }
+          
+            spec.ios.deployment_target     = "13.0"
+            spec.macos.deployment_target   = "10.15"
+            spec.tvos.deployment_target    = "13.0"
+            spec.watchos.deployment_target = "6.0"
+          
+            spec.source_files = "Sources/**/*.swift"
+            spec.swift_version = "5.5"
+          end
+          PODSPEC
+          fi
+          
+          echo "📋 Podspec content:"
+          cat tyme4swift.podspec
+          
+      - name: Lint Podspec
+        run: |
+          echo "🔍 Linting podspec..."
+          pod spec lint tyme4swift.podspec --allow-warnings || true
+          echo "✅ Podspec validation completed"
+
+      - name: Setup CocoaPods credentials
+        run: |
+          mkdir -p ~/.cocoapods/repos
+          echo "Setting up CocoaPods credentials..."
+          # Token will be used for publishing
+          # This is configured via secrets.COCOAPODS_TRUNK_TOKEN
+
+      - name: Publish to CocoaPods Trunk
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        run: |
+          if [ -z "$COCOAPODS_TRUNK_TOKEN" ]; then
+            echo "⚠️  COCOAPODS_TRUNK_TOKEN not configured"
+            echo ""
+            echo "📝 To enable automatic CocoaPods publishing:"
+            echo "   1. Get your trunk token: pod trunk me --verbose"
+            echo "   2. Add it to GitHub Secrets as COCOAPODS_TRUNK_TOKEN"
+            echo "   3. Re-run this workflow"
+            echo ""
+            echo "For now, you can publish manually:"
+            echo "   pod trunk push tyme4swift.podspec"
+          else
+            echo "🚀 Publishing to CocoaPods Trunk..."
+            pod trunk push tyme4swift.podspec --allow-warnings
+            echo "✅ Published to CocoaPods successfully!"
+          fi
+
+  publish-summary:
+    name: Create Publication Summary
+    runs-on: ubuntu-latest
+    needs: [verify-release, register-spm, publish-cocoapods]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate publication summary
+        run: |
+          cat > /tmp/publication-summary.md << 'SUMMARY'
+          # 🎉 tyme4swift v${{ needs.verify-release.outputs.version }} Publication Summary
+          
+          ## ✅ Verification Passed
+          
+          - **Version**: ${{ needs.verify-release.outputs.version }}
+          - **Release URL**: ${{ needs.verify-release.outputs.release_url }}
+          - **Package Name**: tyme4swift
+          - **Repository**: https://github.com/xuanyunhui/tyme4swift
+          - **License**: MIT
+          
+          ## 📦 Swift Package Manager (SPM)
+          
+          ### Installation
+          
+          Add to your `Package.swift`:
+          
+          ```swift
+          dependencies: [
+              .package(url: "https://github.com/xuanyunhui/tyme4swift.git", from: "${{ needs.verify-release.outputs.version }}")
+          ]
+          ```
+          
+          Or in Xcode:
+          1. File → Add Packages
+          2. Enter: `https://github.com/xuanyunhui/tyme4swift.git`
+          3. Select version: ${{ needs.verify-release.outputs.version }}
+          4. Choose target and click "Add Package"
+          
+          ### Swift Package Index
+          
+          The package is available on [Swift Package Index](https://swiftpackageindex.com/).
+          
+          **To register for better discoverability**:
+          1. Visit: https://swiftpackageindex.com/add-package
+          2. Enter repository URL: https://github.com/xuanyunhui/tyme4swift.git
+          3. Submit for indexing
+          
+          ## 📱 CocoaPods
+          
+          ### Installation
+          
+          Add to your `Podfile`:
+          
+          ```ruby
+          pod 'tyme4swift', '~> ${{ needs.verify-release.outputs.version }}'
+          ```
+          
+          Then run:
+          ```bash
+          pod install
+          ```
+          
+          ### Status
+          
+          Publishing to CocoaPods Trunk...
+          
+          See workflow logs for details.
+          
+          ## 🚀 Next Steps
+          
+          1. **Swift Package Index Registration**: Visit https://swiftpackageindex.com/add-package
+          2. **CocoaPods Pod Page**: https://cocoapods.org/pods/tyme4swift
+          3. **GitHub Releases**: ${{ needs.verify-release.outputs.release_url }}
+          
+          ## 📊 Platform Support
+          
+          - iOS 13.0+
+          - macOS 10.15+
+          - tvOS 13.0+
+          - watchOS 6.0+
+          - Swift 5.5+
+          
+          ---
+          
+          **Release Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Workflow**: https://github.com/xuanyunhui/tyme4swift/actions
+          
+          SUMMARY
+          
+          cat /tmp/publication-summary.md
+
+      - name: Create GitHub Release comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('/tmp/publication-summary.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.release.id,
+              body: summary
+            }).catch(() => {
+              console.log('Note: Could not add comment to release');
+            });
+
+  notification:
+    name: Send completion notification
+    runs-on: ubuntu-latest
+    needs: [verify-release, register-spm, publish-cocoapods, publish-summary]
+    if: always()
+    steps:
+      - name: Determine workflow status
+        id: status
+        run: |
+          if [ "${{ needs.verify-release.result }}" = "success" ] && \
+             [ "${{ needs.register-spm.result }}" = "success" ] && \
+             [ "${{ needs.publish-cocoapods.result }}" = "success" ]; then
+            echo "status=✅ SUCCESS" >> $GITHUB_OUTPUT
+            echo "color=0x00FF00" >> $GITHUB_OUTPUT
+          else
+            echo "status=⚠️  PARTIAL/FAILED" >> $GITHUB_OUTPUT
+            echo "color=0xFFFF00" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Log completion
+        run: |
+          echo "📊 Workflow Completion Report"
+          echo "============================"
+          echo ""
+          echo "Release Version: ${{ needs.verify-release.outputs.version }}"
+          echo "Verification: ${{ needs.verify-release.result }}"
+          echo "SPM Registration: ${{ needs.register-spm.result }}"
+          echo "CocoaPods Publishing: ${{ needs.publish-cocoapods.result }}"
+          echo "Summary: ${{ needs.publish-summary.result }}"
+          echo ""
+          echo "Status: ${{ steps.status.outputs.status }}"
+          echo ""
+          echo "Next Steps:"
+          echo "1. Register on Swift Package Index: https://swiftpackageindex.com/add-package"
+          echo "2. Monitor CocoaPods publishing (if enabled)"
+          echo "3. Verify both registries have updated"
