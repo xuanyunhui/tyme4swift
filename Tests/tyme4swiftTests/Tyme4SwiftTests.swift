@@ -199,5 +199,380 @@ final class Tyme4SwiftTests: XCTestCase {
         // Test description (CustomStringConvertible)
         XCTAssertEqual(String(describing: pengZu1), "甲不开仓财物耗散 子不问卜自惹祸殃")
     }
+
+    // MARK: - Phase 4 Star System Tests
+
+    func testLuck() throws {
+        // Test fromIndex
+        let ji = Luck.fromIndex(0)
+        XCTAssertEqual(ji.getName(), "吉")
+        XCTAssertEqual(ji.getIndex(), 0)
+        XCTAssertTrue(ji.isAuspicious())
+        XCTAssertFalse(ji.isInauspicious())
+
+        let xiong = Luck.fromIndex(1)
+        XCTAssertEqual(xiong.getName(), "凶")
+        XCTAssertEqual(xiong.getIndex(), 1)
+        XCTAssertFalse(xiong.isAuspicious())
+        XCTAssertTrue(xiong.isInauspicious())
+
+        // Test fromName
+        let ji2 = Luck.fromName("吉")
+        XCTAssertEqual(ji2.getIndex(), 0)
+
+        // Test next
+        let xiong2 = ji.next(1)
+        XCTAssertEqual(xiong2.getName(), "凶")
+        let ji3 = xiong2.next(1)
+        XCTAssertEqual(ji3.getName(), "吉")
+    }
+
+    func testSevenStar() throws {
+        // Test all seven stars
+        let expectedNames = ["日", "月", "火", "水", "木", "金", "土"]
+        for i in 0..<7 {
+            let star = SevenStar.fromIndex(i)
+            XCTAssertEqual(star.getName(), expectedNames[i])
+            XCTAssertEqual(star.getIndex(), i)
+        }
+
+        // Test fromName
+        let sun = SevenStar.fromName("日")
+        XCTAssertEqual(sun.getIndex(), 0)
+
+        // Test next
+        let moon = sun.next(1)
+        XCTAssertEqual(moon.getName(), "月")
+
+        // Test wrap around
+        let saturn = SevenStar.fromIndex(6)
+        let nextSun = saturn.next(1)
+        XCTAssertEqual(nextSun.getName(), "日")
+
+        // Test getWeek
+        let sunWeek = sun.getWeek()
+        XCTAssertEqual(sunWeek.getName(), "日")
+    }
+
+    func testSixStar() throws {
+        // Test all six stars
+        let expectedNames = ["先胜", "友引", "先负", "佛灭", "大安", "赤口"]
+        for i in 0..<6 {
+            let star = SixStar.fromIndex(i)
+            XCTAssertEqual(star.getName(), expectedNames[i])
+            XCTAssertEqual(star.getIndex(), i)
+        }
+
+        // Test fromName
+        let sensho = SixStar.fromName("先胜")
+        XCTAssertEqual(sensho.getIndex(), 0)
+
+        // Test next
+        let tomobiki = sensho.next(1)
+        XCTAssertEqual(tomobiki.getName(), "友引")
+
+        // Test wrap around
+        let shakko = SixStar.fromIndex(5)
+        let nextSensho = shakko.next(1)
+        XCTAssertEqual(nextSensho.getName(), "先胜")
+    }
+
+    func testTenStar() throws {
+        // Test all ten stars
+        let expectedNames = ["比肩", "劫财", "食神", "伤官", "偏财", "正财", "七杀", "正官", "偏印", "正印"]
+        for i in 0..<10 {
+            let star = TenStar.fromIndex(i)
+            XCTAssertEqual(star.getName(), expectedNames[i])
+            XCTAssertEqual(star.getIndex(), i)
+        }
+
+        // Test fromName
+        let bijian = TenStar.fromName("比肩")
+        XCTAssertEqual(bijian.getIndex(), 0)
+
+        // Test next
+        let jiecai = bijian.next(1)
+        XCTAssertEqual(jiecai.getName(), "劫财")
+
+        // Test wrap around
+        let zhengyin = TenStar.fromIndex(9)
+        let nextBijian = zhengyin.next(1)
+        XCTAssertEqual(nextBijian.getName(), "比肩")
+    }
+
+    func testEcliptic() throws {
+        // Test fromIndex
+        let huangdao = Ecliptic.fromIndex(0)
+        XCTAssertEqual(huangdao.getName(), "黄道")
+        XCTAssertEqual(huangdao.getIndex(), 0)
+        XCTAssertTrue(huangdao.isAuspicious())
+        XCTAssertFalse(huangdao.isInauspicious())
+
+        let heidao = Ecliptic.fromIndex(1)
+        XCTAssertEqual(heidao.getName(), "黑道")
+        XCTAssertEqual(heidao.getIndex(), 1)
+        XCTAssertFalse(heidao.isAuspicious())
+        XCTAssertTrue(heidao.isInauspicious())
+
+        // Test fromName
+        let huangdao2 = Ecliptic.fromName("黄道")
+        XCTAssertEqual(huangdao2.getIndex(), 0)
+
+        // Test getLuck
+        let luck1 = huangdao.getLuck()
+        XCTAssertEqual(luck1.getName(), "吉")
+        let luck2 = heidao.getLuck()
+        XCTAssertEqual(luck2.getName(), "凶")
+
+        // Test next
+        let heidao2 = huangdao.next(1)
+        XCTAssertEqual(heidao2.getName(), "黑道")
+    }
+
+    func testTwelveStar() throws {
+        // Test all twelve stars
+        let expectedNames = ["青龙", "明堂", "天刑", "朱雀", "金匮", "天德", "白虎", "玉堂", "天牢", "玄武", "司命", "勾陈"]
+        for i in 0..<12 {
+            let star = TwelveStar.fromIndex(i)
+            XCTAssertEqual(star.getName(), expectedNames[i])
+            XCTAssertEqual(star.getIndex(), i)
+        }
+
+        // Test fromName
+        let qinglong = TwelveStar.fromName("青龙")
+        XCTAssertEqual(qinglong.getIndex(), 0)
+
+        // Test next
+        let mingtang = qinglong.next(1)
+        XCTAssertEqual(mingtang.getName(), "明堂")
+
+        // Test wrap around
+        let gouchen = TwelveStar.fromIndex(11)
+        let nextQinglong = gouchen.next(1)
+        XCTAssertEqual(nextQinglong.getName(), "青龙")
+
+        // Test getEcliptic - 青龙 is 黄道
+        let ecliptic1 = qinglong.getEcliptic()
+        XCTAssertEqual(ecliptic1.getName(), "黄道")
+        XCTAssertTrue(qinglong.isAuspicious())
+
+        // Test getEcliptic - 天刑 is 黑道
+        let tianxing = TwelveStar.fromIndex(2)
+        let ecliptic2 = tianxing.getEcliptic()
+        XCTAssertEqual(ecliptic2.getName(), "黑道")
+        XCTAssertTrue(tianxing.isInauspicious())
+    }
+
+    func testZone() throws {
+        // Test all four zones
+        let expectedNames = ["东", "北", "西", "南"]
+        for i in 0..<4 {
+            let zone = Zone.fromIndex(i)
+            XCTAssertEqual(zone.getName(), expectedNames[i])
+            XCTAssertEqual(zone.getIndex(), i)
+        }
+
+        // Test fromName
+        let east = Zone.fromName("东")
+        XCTAssertEqual(east.getIndex(), 0)
+
+        // Test next
+        let north = east.next(1)
+        XCTAssertEqual(north.getName(), "北")
+
+        // Test wrap around
+        let south = Zone.fromIndex(3)
+        let nextEast = south.next(1)
+        XCTAssertEqual(nextEast.getName(), "东")
+
+        // Test getDirection
+        let direction = east.getDirection()
+        XCTAssertEqual(direction.getName(), "东")
+
+        // Test getBeast
+        let beast = east.getBeast()
+        XCTAssertEqual(beast.getName(), "青龙")
+    }
+
+    func testBeast() throws {
+        // Test all four beasts
+        let expectedNames = ["青龙", "玄武", "白虎", "朱雀"]
+        for i in 0..<4 {
+            let beast = Beast.fromIndex(i)
+            XCTAssertEqual(beast.getName(), expectedNames[i])
+            XCTAssertEqual(beast.getIndex(), i)
+        }
+
+        // Test fromName
+        let qinglong = Beast.fromName("青龙")
+        XCTAssertEqual(qinglong.getIndex(), 0)
+
+        // Test next
+        let xuanwu = qinglong.next(1)
+        XCTAssertEqual(xuanwu.getName(), "玄武")
+
+        // Test wrap around
+        let zhuque = Beast.fromIndex(3)
+        let nextQinglong = zhuque.next(1)
+        XCTAssertEqual(nextQinglong.getName(), "青龙")
+
+        // Test getZone
+        let zone = qinglong.getZone()
+        XCTAssertEqual(zone.getName(), "东")
+    }
+
+    func testLand() throws {
+        // Test all nine lands
+        let expectedNames = ["玄天", "朱天", "苍天", "阳天", "钧天", "幽天", "颢天", "变天", "炎天"]
+        for i in 0..<9 {
+            let land = Land.fromIndex(i)
+            XCTAssertEqual(land.getName(), expectedNames[i])
+            XCTAssertEqual(land.getIndex(), i)
+        }
+
+        // Test fromName
+        let xuantian = Land.fromName("玄天")
+        XCTAssertEqual(xuantian.getIndex(), 0)
+
+        // Test next
+        let zhutian = xuantian.next(1)
+        XCTAssertEqual(zhutian.getName(), "朱天")
+
+        // Test wrap around
+        let yantian = Land.fromIndex(8)
+        let nextXuantian = yantian.next(1)
+        XCTAssertEqual(nextXuantian.getName(), "玄天")
+
+        // Test getDirection
+        let direction = xuantian.getDirection()
+        XCTAssertEqual(direction.getName(), "北")
+    }
+
+    func testAnimal() throws {
+        // Test first few animals
+        let expectedNames = ["蛟", "龙", "貉", "兔", "狐", "虎", "豹"]
+        for i in 0..<7 {
+            let animal = Animal.fromIndex(i)
+            XCTAssertEqual(animal.getName(), expectedNames[i])
+            XCTAssertEqual(animal.getIndex(), i)
+        }
+
+        // Test fromName
+        let jiao = Animal.fromName("蛟")
+        XCTAssertEqual(jiao.getIndex(), 0)
+
+        // Test next
+        let long = jiao.next(1)
+        XCTAssertEqual(long.getName(), "龙")
+
+        // Test wrap around (28 animals)
+        let yin = Animal.fromIndex(27)
+        let nextJiao = yin.next(1)
+        XCTAssertEqual(nextJiao.getName(), "蛟")
+
+        // Test getTwentyEightStar
+        let star = jiao.getTwentyEightStar()
+        XCTAssertEqual(star.getName(), "角")
+    }
+
+    func testTwentyEightStar() throws {
+        // Test first few stars
+        let expectedNames = ["角", "亢", "氐", "房", "心", "尾", "箕"]
+        for i in 0..<7 {
+            let star = TwentyEightStar.fromIndex(i)
+            XCTAssertEqual(star.getName(), expectedNames[i])
+            XCTAssertEqual(star.getIndex(), i)
+        }
+
+        // Test fromName
+        let jiao = TwentyEightStar.fromName("角")
+        XCTAssertEqual(jiao.getIndex(), 0)
+
+        // Test next
+        let kang = jiao.next(1)
+        XCTAssertEqual(kang.getName(), "亢")
+
+        // Test wrap around (28 stars)
+        let zhen = TwentyEightStar.fromIndex(27)
+        let nextJiao = zhen.next(1)
+        XCTAssertEqual(nextJiao.getName(), "角")
+
+        // Test getZone - first 7 stars are in East (东)
+        let zone = jiao.getZone()
+        XCTAssertEqual(zone.getName(), "东")
+
+        // Test getZone - stars 7-13 are in North (北)
+        let dou = TwentyEightStar.fromIndex(7)
+        let northZone = dou.getZone()
+        XCTAssertEqual(northZone.getName(), "北")
+
+        // Test getAnimal
+        let animal = jiao.getAnimal()
+        XCTAssertEqual(animal.getName(), "蛟")
+
+        // Test getLand
+        let land = jiao.getLand()
+        XCTAssertEqual(land.getName(), "钧天")
+
+        // Test getLuck - 角 is 吉
+        let luck = jiao.getLuck()
+        XCTAssertEqual(luck.getName(), "吉")
+        XCTAssertTrue(jiao.isAuspicious())
+
+        // Test getLuck - 亢 is 凶
+        let luck2 = kang.getLuck()
+        XCTAssertEqual(luck2.getName(), "凶")
+        XCTAssertTrue(kang.isInauspicious())
+
+        // Test getSevenStar
+        let sevenStar = jiao.getSevenStar()
+        XCTAssertEqual(sevenStar.getName(), "木")
+    }
+
+    func testDuty() throws {
+        // Test all twelve duties
+        let expectedNames = ["建", "除", "满", "平", "定", "执", "破", "危", "成", "收", "开", "闭"]
+        for i in 0..<12 {
+            let duty = Duty.fromIndex(i)
+            XCTAssertEqual(duty.getName(), expectedNames[i])
+            XCTAssertEqual(duty.getIndex(), i)
+        }
+
+        // Test fromName
+        let jian = Duty.fromName("建")
+        XCTAssertEqual(jian.getIndex(), 0)
+
+        // Test next
+        let chu = jian.next(1)
+        XCTAssertEqual(chu.getName(), "除")
+
+        // Test wrap around
+        let bi = Duty.fromIndex(11)
+        let nextJian = bi.next(1)
+        XCTAssertEqual(nextJian.getName(), "建")
+    }
+
+    func testConstellation() throws {
+        // Test all twelve constellations
+        let expectedNames = ["白羊", "金牛", "双子", "巨蟹", "狮子", "处女", "天秤", "天蝎", "射手", "摩羯", "水瓶", "双鱼"]
+        for i in 0..<12 {
+            let constellation = Constellation.fromIndex(i)
+            XCTAssertEqual(constellation.getName(), expectedNames[i])
+            XCTAssertEqual(constellation.getIndex(), i)
+        }
+
+        // Test fromName
+        let aries = Constellation.fromName("白羊")
+        XCTAssertEqual(aries.getIndex(), 0)
+
+        // Test next
+        let taurus = aries.next(1)
+        XCTAssertEqual(taurus.getName(), "金牛")
+
+        // Test wrap around
+        let pisces = Constellation.fromIndex(11)
+        let nextAries = pisces.next(1)
+        XCTAssertEqual(nextAries.getName(), "白羊")
+    }
 }
 
