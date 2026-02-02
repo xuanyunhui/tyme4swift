@@ -934,5 +934,170 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertFalse(badGod.isAuspicious())
         XCTAssertTrue(badGod.isInauspicious())
     }
+
+    // MARK: - Phase 6 Enum Tests
+
+    func testYinYang() throws {
+        // Test Yang
+        let yang = YinYang.yang
+        XCTAssertEqual(yang.name, "阳")
+        XCTAssertEqual(yang.rawValue, 0)
+        XCTAssertTrue(yang.isYang)
+        XCTAssertFalse(yang.isYin)
+
+        // Test Yin
+        let yin = YinYang.yin
+        XCTAssertEqual(yin.name, "阴")
+        XCTAssertEqual(yin.rawValue, 1)
+        XCTAssertFalse(yin.isYang)
+        XCTAssertTrue(yin.isYin)
+
+        // Test fromIndex
+        XCTAssertEqual(YinYang.fromIndex(0), .yang)
+        XCTAssertEqual(YinYang.fromIndex(1), .yin)
+        XCTAssertEqual(YinYang.fromIndex(2), .yang)
+        XCTAssertEqual(YinYang.fromIndex(3), .yin)
+
+        // Test fromName
+        XCTAssertEqual(YinYang.fromName("阳"), .yang)
+        XCTAssertEqual(YinYang.fromName("阴"), .yin)
+
+        // Test opposite
+        XCTAssertEqual(yang.opposite(), .yin)
+        XCTAssertEqual(yin.opposite(), .yang)
+
+        // Test description
+        XCTAssertEqual(String(describing: yang), "阳")
+        XCTAssertEqual(String(describing: yin), "阴")
+    }
+
+    func testGender() throws {
+        // Test Male
+        let male = Gender.male
+        XCTAssertEqual(male.name, "男")
+        XCTAssertEqual(male.rawValue, 0)
+        XCTAssertTrue(male.isMale)
+        XCTAssertFalse(male.isFemale)
+
+        // Test Female
+        let female = Gender.female
+        XCTAssertEqual(female.name, "女")
+        XCTAssertEqual(female.rawValue, 1)
+        XCTAssertFalse(female.isMale)
+        XCTAssertTrue(female.isFemale)
+
+        // Test fromIndex
+        XCTAssertEqual(Gender.fromIndex(0), .male)
+        XCTAssertEqual(Gender.fromIndex(1), .female)
+        XCTAssertEqual(Gender.fromIndex(2), .male)
+
+        // Test fromName
+        XCTAssertEqual(Gender.fromName("男"), .male)
+        XCTAssertEqual(Gender.fromName("女"), .female)
+
+        // Test description
+        XCTAssertEqual(String(describing: male), "男")
+        XCTAssertEqual(String(describing: female), "女")
+    }
+
+    func testSide() throws {
+        // Test Inner
+        let inner = Side.inner
+        XCTAssertEqual(inner.name, "内")
+        XCTAssertEqual(inner.rawValue, 0)
+        XCTAssertTrue(inner.isInner)
+        XCTAssertFalse(inner.isOuter)
+
+        // Test Outer
+        let outer = Side.outer
+        XCTAssertEqual(outer.name, "外")
+        XCTAssertEqual(outer.rawValue, 1)
+        XCTAssertFalse(outer.isInner)
+        XCTAssertTrue(outer.isOuter)
+
+        // Test fromIndex
+        XCTAssertEqual(Side.fromIndex(0), .inner)
+        XCTAssertEqual(Side.fromIndex(1), .outer)
+        XCTAssertEqual(Side.fromIndex(2), .inner)
+
+        // Test fromName
+        XCTAssertEqual(Side.fromName("内"), .inner)
+        XCTAssertEqual(Side.fromName("外"), .outer)
+
+        // Test description
+        XCTAssertEqual(String(describing: inner), "内")
+        XCTAssertEqual(String(describing: outer), "外")
+    }
+
+    func testHideHeavenStemType() throws {
+        // Test Main
+        let main = HideHeavenStemType.main
+        XCTAssertEqual(main.name, "本气")
+        XCTAssertEqual(main.rawValue, 0)
+        XCTAssertTrue(main.isMain)
+        XCTAssertFalse(main.isMiddle)
+        XCTAssertFalse(main.isResidual)
+
+        // Test Middle
+        let middle = HideHeavenStemType.middle
+        XCTAssertEqual(middle.name, "中气")
+        XCTAssertEqual(middle.rawValue, 1)
+        XCTAssertFalse(middle.isMain)
+        XCTAssertTrue(middle.isMiddle)
+        XCTAssertFalse(middle.isResidual)
+
+        // Test Residual
+        let residual = HideHeavenStemType.residual
+        XCTAssertEqual(residual.name, "余气")
+        XCTAssertEqual(residual.rawValue, 2)
+        XCTAssertFalse(residual.isMain)
+        XCTAssertFalse(residual.isMiddle)
+        XCTAssertTrue(residual.isResidual)
+
+        // Test fromIndex
+        XCTAssertEqual(HideHeavenStemType.fromIndex(0), .main)
+        XCTAssertEqual(HideHeavenStemType.fromIndex(1), .middle)
+        XCTAssertEqual(HideHeavenStemType.fromIndex(2), .residual)
+        XCTAssertEqual(HideHeavenStemType.fromIndex(3), .main)
+
+        // Test fromName
+        XCTAssertEqual(HideHeavenStemType.fromName("本气"), .main)
+        XCTAssertEqual(HideHeavenStemType.fromName("中气"), .middle)
+        XCTAssertEqual(HideHeavenStemType.fromName("余气"), .residual)
+
+        // Test description
+        XCTAssertEqual(String(describing: main), "本气")
+    }
+
+    func testFestivalType() throws {
+        // Test Day
+        let day = FestivalType.day
+        XCTAssertEqual(day.name, "日期")
+        XCTAssertEqual(day.rawValue, 0)
+
+        // Test Term
+        let term = FestivalType.term
+        XCTAssertEqual(term.name, "节气")
+        XCTAssertEqual(term.rawValue, 1)
+
+        // Test Eve
+        let eve = FestivalType.eve
+        XCTAssertEqual(eve.name, "除夕")
+        XCTAssertEqual(eve.rawValue, 2)
+
+        // Test fromIndex
+        XCTAssertEqual(FestivalType.fromIndex(0), .day)
+        XCTAssertEqual(FestivalType.fromIndex(1), .term)
+        XCTAssertEqual(FestivalType.fromIndex(2), .eve)
+        XCTAssertEqual(FestivalType.fromIndex(3), .day)
+
+        // Test fromName
+        XCTAssertEqual(FestivalType.fromName("日期"), .day)
+        XCTAssertEqual(FestivalType.fromName("节气"), .term)
+        XCTAssertEqual(FestivalType.fromName("除夕"), .eve)
+
+        // Test description
+        XCTAssertEqual(String(describing: day), "日期")
+    }
 }
 
