@@ -49,4 +49,33 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual(term.getName(), "冬至")
         XCTAssertEqual(term.getYear(), 2024)
     }
+    
+    func testZodiac() throws {
+        // Test fromIndex
+        let rat = Zodiac.fromIndex(0)
+        XCTAssertEqual(rat.getName(), "鼠")
+        XCTAssertEqual(rat.getIndex(), 0)
+        
+        // Test fromName
+        let ox = Zodiac.fromName("牛")
+        XCTAssertEqual(ox.getName(), "牛")
+        XCTAssertEqual(ox.getIndex(), 1)
+        
+        // Test next
+        let tiger = rat.next(2)
+        XCTAssertEqual(tiger.getName(), "虎")
+        XCTAssertEqual(tiger.getIndex(), 2)
+        
+        // Test wrap around
+        let pig = Zodiac.fromIndex(11)
+        XCTAssertEqual(pig.getName(), "猪")
+        let nextRat = pig.next(1)
+        XCTAssertEqual(nextRat.getName(), "鼠")
+        XCTAssertEqual(nextRat.getIndex(), 0)
+        
+        // Test getEarthBranch
+        let ratBranch = rat.getEarthBranch()
+        XCTAssertEqual(ratBranch.getName(), "子")
+    }
 }
+
