@@ -1484,5 +1484,103 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual(yinNobleGod.getName(), "东北")
         XCTAssertNotNil(yinNobleGod.getDirection())
     }
+
+    // MARK: - Phase 10 EightChar Provider Tests
+
+    func testDefaultEightCharProvider() throws {
+        let provider = DefaultEightCharProvider()
+
+        // Test year pillar
+        let yearSixtyCycle = provider.getYearSixtyCycle(year: 2024, month: 2, day: 10)
+        XCTAssertNotNil(yearSixtyCycle)
+        XCTAssertNotNil(yearSixtyCycle.getHeavenStem())
+        XCTAssertNotNil(yearSixtyCycle.getEarthBranch())
+
+        // Test month pillar
+        let monthSixtyCycle = provider.getMonthSixtyCycle(year: 2024, month: 2, day: 10)
+        XCTAssertNotNil(monthSixtyCycle)
+
+        // Test day pillar
+        let daySixtyCycle = provider.getDaySixtyCycle(year: 2024, month: 2, day: 10)
+        XCTAssertNotNil(daySixtyCycle)
+
+        // Test hour pillar
+        let hourSixtyCycle = provider.getHourSixtyCycle(year: 2024, month: 2, day: 10, hour: 12)
+        XCTAssertNotNil(hourSixtyCycle)
+    }
+
+    func testLunarEightCharProvider() throws {
+        let provider = LunarEightCharProvider()
+
+        // Test year pillar
+        let yearSixtyCycle = provider.getYearSixtyCycle(year: 2024, month: 2, day: 10)
+        XCTAssertNotNil(yearSixtyCycle)
+
+        // Test month pillar
+        let monthSixtyCycle = provider.getMonthSixtyCycle(year: 2024, month: 2, day: 10)
+        XCTAssertNotNil(monthSixtyCycle)
+
+        // Test day pillar
+        let daySixtyCycle = provider.getDaySixtyCycle(year: 2024, month: 2, day: 10)
+        XCTAssertNotNil(daySixtyCycle)
+
+        // Test hour pillar
+        let hourSixtyCycle = provider.getHourSixtyCycle(year: 2024, month: 2, day: 10, hour: 12)
+        XCTAssertNotNil(hourSixtyCycle)
+    }
+
+    func testChildLimitProvider() throws {
+        let provider = DefaultChildLimitProvider()
+
+        // Test male child limit
+        let maleLimit = provider.getChildLimit(gender: .male, year: 2024, month: 2, day: 10, hour: 12)
+        XCTAssertGreaterThanOrEqual(maleLimit.years, 0)
+        XCTAssertGreaterThanOrEqual(maleLimit.months, 0)
+        XCTAssertGreaterThanOrEqual(maleLimit.getTotalDays(), 0)
+
+        // Test female child limit
+        let femaleLimit = provider.getChildLimit(gender: .female, year: 2024, month: 2, day: 10, hour: 12)
+        XCTAssertGreaterThanOrEqual(femaleLimit.years, 0)
+    }
+
+    func testDecadeFortuneProvider() throws {
+        let provider = DefaultDecadeFortuneProvider()
+
+        // Test male decade fortunes
+        let maleFortunes = provider.getDecadeFortunes(gender: .male, year: 2024, month: 2, day: 10, hour: 12, count: 8)
+        XCTAssertEqual(maleFortunes.count, 8)
+        for fortune in maleFortunes {
+            XCTAssertNotNil(fortune.sixtyCycle)
+            XCTAssertNotNil(fortune.getName())
+            XCTAssertNotNil(fortune.getHeavenStem())
+            XCTAssertNotNil(fortune.getEarthBranch())
+        }
+
+        // Test female decade fortunes
+        let femaleFortunes = provider.getDecadeFortunes(gender: .female, year: 2024, month: 2, day: 10, hour: 12, count: 8)
+        XCTAssertEqual(femaleFortunes.count, 8)
+    }
+
+    func testChildLimitInfo() throws {
+        let info = ChildLimitInfo(years: 5, months: 6, days: 10, startYear: 2029, startMonth: 8, startDay: 20)
+        XCTAssertEqual(info.years, 5)
+        XCTAssertEqual(info.months, 6)
+        XCTAssertEqual(info.days, 10)
+        XCTAssertEqual(info.startYear, 2029)
+        XCTAssertEqual(info.startMonth, 8)
+        XCTAssertEqual(info.startDay, 20)
+        XCTAssertGreaterThan(info.getTotalDays(), 0)
+    }
+
+    func testDecadeFortuneInfo() throws {
+        let sixtyCycle = SixtyCycle.fromIndex(0)
+        let info = DecadeFortuneInfo(index: 0, sixtyCycle: sixtyCycle, startAge: 5, endAge: 14)
+        XCTAssertEqual(info.index, 0)
+        XCTAssertEqual(info.startAge, 5)
+        XCTAssertEqual(info.endAge, 14)
+        XCTAssertEqual(info.getName(), "甲子")
+        XCTAssertEqual(info.getHeavenStem().getName(), "甲")
+        XCTAssertEqual(info.getEarthBranch().getName(), "子")
+    }
 }
 
