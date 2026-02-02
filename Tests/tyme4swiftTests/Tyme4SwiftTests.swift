@@ -1381,5 +1381,108 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertNotNil(bodyPalace.getHeavenStem())
         XCTAssertNotNil(bodyPalace.getEarthBranch())
     }
+
+    // MARK: - Phase 9 God System Tests
+
+    func testYearGod() throws {
+        // Test all year gods
+        let expectedNames = ["太岁", "太阳", "丧门", "太阴", "官符", "死符", "岁破", "龙德", "白虎", "福德", "吊客", "病符"]
+        for i in 0..<12 {
+            let yearGod = YearGod.fromIndex(i)
+            XCTAssertEqual(yearGod.getName(), expectedNames[i])
+            XCTAssertEqual(yearGod.getIndex(), i)
+        }
+
+        // Test fromEarthBranch
+        let earthBranch = EarthBranch.fromIndex(0)
+        let gods = YearGod.fromEarthBranch(earthBranch)
+        XCTAssertEqual(gods.count, 12)
+    }
+
+    func testMonthGod() throws {
+        // Test first few month gods
+        let expectedNames = ["月德", "月空", "月煞", "月刑", "月害"]
+        for i in 0..<5 {
+            let monthGod = MonthGod.fromIndex(i)
+            XCTAssertEqual(monthGod.getName(), expectedNames[i])
+            XCTAssertEqual(monthGod.getIndex(), i)
+        }
+    }
+
+    func testDayGod() throws {
+        // Test auspicious day god
+        let auspicious = DayGod.auspicious("天德")
+        XCTAssertEqual(auspicious.getName(), "天德")
+        XCTAssertTrue(auspicious.getIsAuspicious())
+        XCTAssertFalse(auspicious.getIsInauspicious())
+        XCTAssertEqual(auspicious.getLuck().getName(), "吉")
+
+        // Test inauspicious day god
+        let inauspicious = DayGod.inauspicious("月破")
+        XCTAssertEqual(inauspicious.getName(), "月破")
+        XCTAssertFalse(inauspicious.getIsAuspicious())
+        XCTAssertTrue(inauspicious.getIsInauspicious())
+        XCTAssertEqual(inauspicious.getLuck().getName(), "凶")
+    }
+
+    func testHourGod() throws {
+        // Test first few hour gods
+        let expectedNames = ["日禄", "喜神", "财神", "阳贵", "阴贵"]
+        for i in 0..<5 {
+            let hourGod = HourGod.fromIndex(i)
+            XCTAssertEqual(hourGod.getName(), expectedNames[i])
+            XCTAssertEqual(hourGod.getIndex(), i)
+        }
+    }
+
+    func testJoyGod() throws {
+        // Test joy god directions
+        let heavenStem = HeavenStem.fromIndex(0) // 甲
+        let joyGod = JoyGod.fromHeavenStem(heavenStem)
+        XCTAssertEqual(joyGod.getName(), "东北")
+        XCTAssertNotNil(joyGod.getDirection())
+
+        // Test from SixtyCycle
+        let sixtyCycle = SixtyCycle.fromIndex(0) // 甲子
+        let joyGod2 = JoyGod.fromDaySixtyCycle(sixtyCycle)
+        XCTAssertEqual(joyGod2.getName(), "东北")
+    }
+
+    func testWealthGod() throws {
+        // Test wealth god directions
+        let heavenStem = HeavenStem.fromIndex(0) // 甲
+        let wealthGod = WealthGod.fromHeavenStem(heavenStem)
+        XCTAssertEqual(wealthGod.getName(), "东南")
+        XCTAssertNotNil(wealthGod.getDirection())
+
+        // Test from SixtyCycle
+        let sixtyCycle = SixtyCycle.fromIndex(0) // 甲子
+        let wealthGod2 = WealthGod.fromDaySixtyCycle(sixtyCycle)
+        XCTAssertEqual(wealthGod2.getName(), "东南")
+    }
+
+    func testFortuneGod() throws {
+        // Test fortune god directions
+        let heavenStem = HeavenStem.fromIndex(0) // 甲
+        let fortuneGod = FortuneGod.fromHeavenStem(heavenStem)
+        XCTAssertEqual(fortuneGod.getName(), "东南")
+        XCTAssertNotNil(fortuneGod.getDirection())
+    }
+
+    func testYangNobleGod() throws {
+        // Test yang noble god directions
+        let heavenStem = HeavenStem.fromIndex(0) // 甲
+        let yangNobleGod = YangNobleGod.fromHeavenStem(heavenStem)
+        XCTAssertEqual(yangNobleGod.getName(), "西南")
+        XCTAssertNotNil(yangNobleGod.getDirection())
+    }
+
+    func testYinNobleGod() throws {
+        // Test yin noble god directions
+        let heavenStem = HeavenStem.fromIndex(0) // 甲
+        let yinNobleGod = YinNobleGod.fromHeavenStem(heavenStem)
+        XCTAssertEqual(yinNobleGod.getName(), "东北")
+        XCTAssertNotNil(yinNobleGod.getDirection())
+    }
 }
 
