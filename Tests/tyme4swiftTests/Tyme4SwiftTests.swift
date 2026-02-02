@@ -1220,5 +1220,166 @@ final class Tyme4SwiftTests: XCTestCase {
         let nextHour = hour.next(1)
         XCTAssertNotNil(nextHour)
     }
+
+    // MARK: - Phase 8 Culture Subsystem Tests
+
+    func testDog() throws {
+        // Test all three dog periods
+        let expectedNames = ["初伏", "中伏", "末伏"]
+        for i in 0..<3 {
+            let dog = Dog.fromIndex(i)
+            XCTAssertEqual(dog.getName(), expectedNames[i])
+            XCTAssertEqual(dog.getIndex(), i)
+        }
+
+        // Test fromName
+        let chuFu = Dog.fromName("初伏")
+        XCTAssertEqual(chuFu.getIndex(), 0)
+
+        // Test next
+        let zhongFu = chuFu.next(1)
+        XCTAssertEqual(zhongFu.getName(), "中伏")
+
+        // Test wrap around
+        let moFu = Dog.fromIndex(2)
+        let nextChuFu = moFu.next(1)
+        XCTAssertEqual(nextChuFu.getName(), "初伏")
+    }
+
+    func testDogDay() throws {
+        let dog = Dog.fromIndex(0)
+        let dogDay = DogDay.fromDog(dog, 0)
+        XCTAssertEqual(dogDay.getDog().getName(), "初伏")
+        XCTAssertEqual(dogDay.getDayIndex(), 0)
+        XCTAssertEqual(dogDay.getName(), "初伏第1天")
+
+        let dogDay2 = DogDay.fromDog(dog, 4)
+        XCTAssertEqual(dogDay2.getName(), "初伏第5天")
+    }
+
+    func testNine() throws {
+        // Test all nine periods
+        let expectedNames = ["一九", "二九", "三九", "四九", "五九", "六九", "七九", "八九", "九九"]
+        for i in 0..<9 {
+            let nine = Nine.fromIndex(i)
+            XCTAssertEqual(nine.getName(), expectedNames[i])
+            XCTAssertEqual(nine.getIndex(), i)
+        }
+
+        // Test fromName
+        let yiJiu = Nine.fromName("一九")
+        XCTAssertEqual(yiJiu.getIndex(), 0)
+
+        // Test next
+        let erJiu = yiJiu.next(1)
+        XCTAssertEqual(erJiu.getName(), "二九")
+
+        // Test wrap around
+        let jiuJiu = Nine.fromIndex(8)
+        let nextYiJiu = jiuJiu.next(1)
+        XCTAssertEqual(nextYiJiu.getName(), "一九")
+    }
+
+    func testNineColdDay() throws {
+        let nine = Nine.fromIndex(0)
+        let nineDay = NineColdDay.fromNine(nine, 0)
+        XCTAssertEqual(nineDay.getNine().getName(), "一九")
+        XCTAssertEqual(nineDay.getDayIndex(), 0)
+        XCTAssertEqual(nineDay.getName(), "一九第1天")
+
+        let nineDay2 = NineColdDay.fromNine(nine, 8)
+        XCTAssertEqual(nineDay2.getName(), "一九第9天")
+    }
+
+    func testPlumRain() throws {
+        // Test both plum rain periods
+        let ruMei = PlumRain.fromIndex(0)
+        XCTAssertEqual(ruMei.getName(), "入梅")
+        XCTAssertTrue(ruMei.isEntering())
+        XCTAssertFalse(ruMei.isExiting())
+
+        let chuMei = PlumRain.fromIndex(1)
+        XCTAssertEqual(chuMei.getName(), "出梅")
+        XCTAssertFalse(chuMei.isEntering())
+        XCTAssertTrue(chuMei.isExiting())
+
+        // Test next
+        let next = ruMei.next(1)
+        XCTAssertEqual(next.getName(), "出梅")
+    }
+
+    func testPlumRainDay() throws {
+        let plumRain = PlumRain.fromIndex(0)
+        let plumRainDay = PlumRainDay.fromPlumRain(plumRain, 0)
+        XCTAssertEqual(plumRainDay.getPlumRain().getName(), "入梅")
+        XCTAssertEqual(plumRainDay.getDayIndex(), 0)
+        XCTAssertEqual(plumRainDay.getName(), "入梅第1天")
+    }
+
+    func testFetus() throws {
+        // Test Fetus from SixtyCycle
+        let sixtyCycle = SixtyCycle.fromIndex(0)
+        let fetus = Fetus.fromSixtyCycle(sixtyCycle)
+        XCTAssertNotNil(fetus.getPosition())
+        XCTAssertNotNil(fetus.getDirection())
+        XCTAssertNotNil(fetus.getName())
+
+        // Test fromIndex
+        let fetus2 = Fetus.fromIndex(30)
+        XCTAssertEqual(fetus2.getSixtyCycleIndex(), 30)
+    }
+
+    func testFetusOrigin() throws {
+        // Test FetusOrigin from month pillar
+        let monthPillar = SixtyCycle.fromIndex(0) // 甲子
+        let fetusOrigin = FetusOrigin.fromMonthPillar(monthPillar)
+        XCTAssertNotNil(fetusOrigin.getSixtyCycle())
+        XCTAssertNotNil(fetusOrigin.getHeavenStem())
+        XCTAssertNotNil(fetusOrigin.getEarthBranch())
+    }
+
+    func testTaboo() throws {
+        // Test auspicious taboo
+        let auspicious = Taboo.auspicious("祭祀")
+        XCTAssertEqual(auspicious.getName(), "祭祀")
+        XCTAssertTrue(auspicious.isAuspicious())
+        XCTAssertFalse(auspicious.isInauspicious())
+
+        // Test inauspicious taboo
+        let inauspicious = Taboo.inauspicious("动土")
+        XCTAssertEqual(inauspicious.getName(), "动土")
+        XCTAssertFalse(inauspicious.isAuspicious())
+        XCTAssertTrue(inauspicious.isInauspicious())
+    }
+
+    func testDayTaboo() throws {
+        let dayTaboo = DayTaboo(auspicious: ["祭祀", "祈福"], inauspicious: ["动土", "破土"])
+        XCTAssertEqual(dayTaboo.getAuspicious().count, 2)
+        XCTAssertEqual(dayTaboo.getInauspicious().count, 2)
+        XCTAssertTrue(dayTaboo.isAuspicious("祭祀"))
+        XCTAssertTrue(dayTaboo.isInauspicious("动土"))
+        XCTAssertFalse(dayTaboo.isAuspicious("动土"))
+
+        let taboos = dayTaboo.getTaboos()
+        XCTAssertEqual(taboos.count, 4)
+    }
+
+    func testLifePalace() throws {
+        let yearBranch = EarthBranch.fromIndex(0) // 子
+        let monthBranch = EarthBranch.fromIndex(2) // 寅
+        let lifePalace = LifePalace.fromYearMonth(yearBranch, monthBranch)
+        XCTAssertNotNil(lifePalace.getSixtyCycle())
+        XCTAssertNotNil(lifePalace.getHeavenStem())
+        XCTAssertNotNil(lifePalace.getEarthBranch())
+    }
+
+    func testBodyPalace() throws {
+        let yearBranch = EarthBranch.fromIndex(0) // 子
+        let hourBranch = EarthBranch.fromIndex(6) // 午
+        let bodyPalace = BodyPalace.fromYearHour(yearBranch, hourBranch)
+        XCTAssertNotNil(bodyPalace.getSixtyCycle())
+        XCTAssertNotNil(bodyPalace.getHeavenStem())
+        XCTAssertNotNil(bodyPalace.getEarthBranch())
+    }
 }
 
