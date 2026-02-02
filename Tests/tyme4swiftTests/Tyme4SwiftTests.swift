@@ -1099,5 +1099,126 @@ final class Tyme4SwiftTests: XCTestCase {
         // Test description
         XCTAssertEqual(String(describing: day), "日期")
     }
+
+    // MARK: - Phase 7 SixtyCycle Extension Tests
+
+    func testHideHeavenStem() throws {
+        // Test 子 branch hidden stems (癸)
+        let zi = EarthBranch.fromIndex(0)
+        let ziHideStems = zi.getHideHeavenStems()
+        XCTAssertEqual(ziHideStems.count, 1)
+        XCTAssertEqual(ziHideStems[0].getName(), "癸")
+        XCTAssertTrue(ziHideStems[0].isMain())
+
+        // Test 丑 branch hidden stems (己癸辛)
+        let chou = EarthBranch.fromIndex(1)
+        let chouHideStems = chou.getHideHeavenStems()
+        XCTAssertEqual(chouHideStems.count, 3)
+        XCTAssertEqual(chouHideStems[0].getName(), "己")
+        XCTAssertEqual(chouHideStems[1].getName(), "癸")
+        XCTAssertEqual(chouHideStems[2].getName(), "辛")
+
+        // Test 寅 branch hidden stems (甲丙戊)
+        let yin = EarthBranch.fromIndex(2)
+        let yinHideStems = yin.getHideHeavenStems()
+        XCTAssertEqual(yinHideStems.count, 3)
+        XCTAssertEqual(yinHideStems[0].getName(), "甲")
+        XCTAssertTrue(yinHideStems[0].isMain())
+        XCTAssertEqual(yinHideStems[1].getName(), "丙")
+        XCTAssertTrue(yinHideStems[1].isMiddle())
+        XCTAssertEqual(yinHideStems[2].getName(), "戊")
+        XCTAssertTrue(yinHideStems[2].isResidual())
+
+        // Test getMainHideHeavenStem
+        let mainStem = zi.getMainHideHeavenStem()
+        XCTAssertNotNil(mainStem)
+        XCTAssertEqual(mainStem?.getName(), "癸")
+    }
+
+    func testSixtyCycleYear() throws {
+        // Test year 2024 (甲辰年)
+        let year2024 = SixtyCycleYear.fromYear(2024)
+        XCTAssertEqual(year2024.getYear(), 2024)
+        XCTAssertEqual(year2024.getName(), "甲辰")
+        XCTAssertEqual(year2024.getHeavenStem().getName(), "甲")
+        XCTAssertEqual(year2024.getEarthBranch().getName(), "辰")
+        XCTAssertEqual(year2024.getZodiac().getName(), "龙")
+
+        // Test year 2023 (癸卯年)
+        let year2023 = SixtyCycleYear.fromYear(2023)
+        XCTAssertEqual(year2023.getName(), "癸卯")
+        XCTAssertEqual(year2023.getZodiac().getName(), "兔")
+
+        // Test next
+        let year2025 = year2024.next(1)
+        XCTAssertEqual(year2025.getYear(), 2025)
+        XCTAssertEqual(year2025.getName(), "乙巳")
+
+        // Test NaYin
+        let naYin = year2024.getNaYin()
+        XCTAssertNotNil(naYin)
+    }
+
+    func testSixtyCycleMonth() throws {
+        // Test 2024年1月
+        let month = SixtyCycleMonth.fromYm(2024, 1)
+        XCTAssertEqual(month.getYear(), 2024)
+        XCTAssertEqual(month.getMonth(), 1)
+        XCTAssertNotNil(month.getHeavenStem())
+        XCTAssertNotNil(month.getEarthBranch())
+        XCTAssertNotNil(month.getSixtyCycle())
+        XCTAssertNotNil(month.getNaYin())
+
+        // Test next
+        let nextMonth = month.next(1)
+        XCTAssertEqual(nextMonth.getMonth(), 2)
+
+        // Test wrap around
+        let decMonth = SixtyCycleMonth.fromYm(2024, 12)
+        let janMonth = decMonth.next(1)
+        XCTAssertEqual(janMonth.getYear(), 2025)
+        XCTAssertEqual(janMonth.getMonth(), 1)
+    }
+
+    func testSixtyCycleDay() throws {
+        // Test a specific date
+        let day = SixtyCycleDay.fromYmd(2024, 2, 10)
+        XCTAssertNotNil(day.getSixtyCycle())
+        XCTAssertNotNil(day.getHeavenStem())
+        XCTAssertNotNil(day.getEarthBranch())
+        XCTAssertNotNil(day.getNaYin())
+        XCTAssertNotNil(day.getDuty())
+        XCTAssertNotNil(day.getTwentyEightStar())
+
+        // Test next
+        let nextDay = day.next(1)
+        XCTAssertNotNil(nextDay)
+
+        // Test fromSolarDay
+        let solarDay = SolarDay.fromYmd(2024, 2, 10)
+        let day2 = SixtyCycleDay.fromSolarDay(solarDay)
+        XCTAssertEqual(day.getName(), day2.getName())
+    }
+
+    func testSixtyCycleHour() throws {
+        // Test a specific time
+        let hour = SixtyCycleHour.fromYmdHms(2024, 2, 10, 12, 0, 0)
+        XCTAssertNotNil(hour.getSixtyCycle())
+        XCTAssertNotNil(hour.getHeavenStem())
+        XCTAssertNotNil(hour.getEarthBranch())
+        XCTAssertNotNil(hour.getNaYin())
+
+        // Test getIndexInDay
+        let hourIndex = hour.getIndexInDay()
+        XCTAssertEqual(hourIndex, 6) // 12:00 is 午时 (index 6)
+
+        // Test 子时 (23:00-01:00)
+        let ziHour = SixtyCycleHour.fromYmdHms(2024, 2, 10, 0, 0, 0)
+        XCTAssertEqual(ziHour.getIndexInDay(), 0)
+
+        // Test next
+        let nextHour = hour.next(1)
+        XCTAssertNotNil(nextHour)
+    }
 }
 
