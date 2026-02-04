@@ -4,23 +4,23 @@
 import PackageDescription
 
 let package = Package(
-    name: "tyme4swift",
+    name: "tyme",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "tyme4swift",
-            targets: ["tyme4swift"]
+            name: "tyme",
+            targets: ["tyme"]
         ),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "tyme4swift"
+            name: "tyme"
         ),
         .testTarget(
-            name: "tyme4swiftTests",
-            dependencies: ["tyme4swift"]
+            name: "tymeTests",
+            dependencies: ["tyme"]
         ),
     ]
 )

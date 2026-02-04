@@ -1,5 +1,5 @@
 import XCTest
-@testable import tyme4swift
+@testable import tyme
 
 final class Tyme4SwiftTests: XCTestCase {
     func testJulianDay() throws {
