@@ -1,0 +1,20 @@
+import Foundation
+
+/// Lunar流派2童限计算（按分钟数计算）
+public final class LunarSect2ChildLimitProvider: ChildLimitProvider {
+    public init() {}
+
+    public func getInfo(birthTime: SolarTime, term: SolarTerm) -> ChildLimitInfo {
+        // 出生时刻和节令时刻相差的分钟数
+        var minutes = abs(term.getJulianDay().getSolarTime().subtract(birthTime)) / 60
+        let year = minutes / 4320
+        minutes %= 4320
+        let month = minutes / 360
+        minutes %= 360
+        let day = minutes / 12
+        minutes %= 12
+        let hour = minutes * 2
+
+        return next(birthTime, year, month, day, hour, 0, 0)
+    }
+}

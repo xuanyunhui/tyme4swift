@@ -53,6 +53,26 @@ public final class SolarDay: DayUnit, Tyme {
         return SolarWeek(year: getYear(), month: getMonth(), index: index, start: start)
     }
 
+    public func getTermDay() -> SolarTermDay {
+        var y = getYear()
+        var i = getMonth() * 2
+        if i == 24 {
+            y += 1
+            i = 0
+        }
+        var term = SolarTerm.fromIndex(y, i + 1)
+        var termDay = term.getSolarDay()
+        while isBefore(termDay) {
+            term = term.next(-1)
+            termDay = term.getSolarDay()
+        }
+        return SolarTermDay(term, subtract(termDay))
+    }
+
+    public func getTerm() -> SolarTerm {
+        getTermDay().getSolarTerm()
+    }
+
     public func getSixtyCycleDay() -> SixtyCycleDay {
         SixtyCycleDay(solarDay: self)
     }
