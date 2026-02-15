@@ -50,4 +50,8 @@ public final class LunarDay: DayUnit, Tyme {
     public func getSolarDay() -> SolarDay {
         getLunarMonth().getFirstJulianDay().next(getDay() - 1).getSolarDay()
     }
+
+    public func getFetusDay() -> FetusDay {
+        FetusDay.fromLunarDay(self)
+    }
 }

@@ -1643,6 +1643,44 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual(solarDays.count, 0)
     }
 
+    // MARK: - Fetus Day/Month Tests
+
+    func testFetusDay() throws {
+        XCTAssertEqual("碓磨厕 外东南", SolarDay.fromYmd(2021, 11, 13).getLunarDay().getFetusDay().getName())
+        XCTAssertEqual("占门碓 外东南", SolarDay.fromYmd(2021, 11, 12).getLunarDay().getFetusDay().getName())
+        XCTAssertEqual("厨灶厕 外西南", SolarDay.fromYmd(2011, 11, 12).getLunarDay().getFetusDay().getName())
+    }
+
+    func testFetusDayFromSixtyCycleDay() throws {
+        let scd = SixtyCycleDay.fromYmd(2021, 11, 13)
+        let fd = FetusDay.fromSixtyCycleDay(scd)
+        XCTAssertEqual("碓磨厕 外东南", fd.getName())
+    }
+
+    func testFetusMonth() throws {
+        let m1 = LunarMonth.fromYm(2021, 11)
+        XCTAssertEqual("占灶炉", m1.getFetus()!.getName())
+        let m2 = LunarMonth.fromYm(2021, 1)
+        XCTAssertEqual("占房床", m2.getFetus()!.getName())
+    }
+
+    func testFetusHeavenStem() throws {
+        XCTAssertEqual("门", FetusHeavenStem(index: 0).getName())
+        XCTAssertEqual("碓磨", FetusHeavenStem(index: 1).getName())
+        XCTAssertEqual("厨灶", FetusHeavenStem(index: 2).getName())
+        XCTAssertEqual("仓库", FetusHeavenStem(index: 3).getName())
+        XCTAssertEqual("房床", FetusHeavenStem(index: 4).getName())
+    }
+
+    func testFetusEarthBranch() throws {
+        XCTAssertEqual("碓", FetusEarthBranch(index: 0).getName())
+        XCTAssertEqual("厕", FetusEarthBranch(index: 1).getName())
+        XCTAssertEqual("炉", FetusEarthBranch(index: 2).getName())
+        XCTAssertEqual("门", FetusEarthBranch(index: 3).getName())
+        XCTAssertEqual("栖", FetusEarthBranch(index: 4).getName())
+        XCTAssertEqual("床", FetusEarthBranch(index: 5).getName())
+    }
+
     // MARK: - KitchenGodSteed Tests
 
     func testKitchenGodSteed() throws {
