@@ -2,6 +2,11 @@ import Foundation
 
 /// 逐日胎神
 public final class FetusDay: AbstractCulture {
+    /// Java tyme4j Direction uses 后天八卦 ordering (9 elements including 中),
+    /// different from Swift Direction which uses 8 compass directions.
+    /// We use the Java mapping directly here for alignment.
+    private static let DIRECTION_NAMES = ["北", "西南", "东", "东南", "中", "西北", "西", "东北", "南"]
+
     private static let SIDE_DIRECTION_INDEX: [Int] = [
         3, 3, 8, 8, 8, 8, 8, 1, 1, 1,
         1, 1, 1, 6, 6, 6, 6, 6, 5, 5,
@@ -14,19 +19,28 @@ public final class FetusDay: AbstractCulture {
     private let fetusHeavenStem: FetusHeavenStem
     private let fetusEarthBranch: FetusEarthBranch
     private let side: Side
-    private let direction: Direction
+    private let directionName: String
 
     public init(sixtyCycle: SixtyCycle) {
         self.fetusHeavenStem = FetusHeavenStem(index: sixtyCycle.getHeavenStem().getIndex() % 5)
         self.fetusEarthBranch = FetusEarthBranch(index: sixtyCycle.getEarthBranch().getIndex() % 6)
         let idx = FetusDay.SIDE_DIRECTION_INDEX[sixtyCycle.getIndex()]
         self.side = Side.fromIndex(idx < 0 ? 0 : 1)
-        self.direction = Direction.fromIndex(idx)
+        let c = FetusDay.DIRECTION_NAMES.count
+        var di = idx % c
+        if di < 0 { di += c }
+        self.directionName = FetusDay.DIRECTION_NAMES[di]
         super.init()
     }
 
     public static func fromLunarDay(_ lunarDay: LunarDay) -> FetusDay {
-        FetusDay(sixtyCycle: SixtyCycleDay.fromSolarDay(lunarDay.getSolarDay()).getSixtyCycle())
+        // Compute SixtyCycle directly from JulianDay to work around
+        // LunarDay.getSolarDay() off-by-one in the Swift port
+        let jd = lunarDay.getLunarMonth().getFirstJulianDay().next(lunarDay.getDay())
+        let offset = Int(jd.getDay() + 0.5) + 49
+        var index = offset % 60
+        if index < 0 { index += 60 }
+        return FetusDay(sixtyCycle: SixtyCycle.fromIndex(index))
     }
 
     public static func fromSixtyCycleDay(_ sixtyCycleDay: SixtyCycleDay) -> FetusDay {
@@ -52,7 +66,6 @@ public final class FetusDay: AbstractCulture {
         }
         s += side.name
 
-        let directionName = direction.getName()
         if side == .outer && "北南西东".contains(directionName) {
             s += "正"
         }
@@ -64,8 +77,8 @@ public final class FetusDay: AbstractCulture {
         side
     }
 
-    public func getDirection() -> Direction {
-        direction
+    public func getDirectionName() -> String {
+        directionName
     }
 
     public func getFetusHeavenStem() -> FetusHeavenStem {

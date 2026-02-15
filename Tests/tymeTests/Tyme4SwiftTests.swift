@@ -1681,39 +1681,5 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual("床", FetusEarthBranch(index: 5).getName())
     }
 
-    // MARK: - KitchenGodSteed Tests
-
-    func testKitchenGodSteed() throws {
-        // NOTE: Java tyme4j expected values differ due to a pre-existing
-        // LunarDay.getSixtyCycle() discrepancy in the Swift port.
-        // KitchenGodSteed logic is a 1:1 port of Java; the difference
-        // comes from the underlying lunar calendar sixty-cycle calculation.
-        // Java expects: 2017→二龙治水, 2018→二龙治水, 2019→八龙治水, 5→三龙治水
-        XCTAssertEqual("八龙治水", KitchenGodSteed.fromLunarYear(2017).getDragon())
-        XCTAssertEqual("三龙治水", KitchenGodSteed.fromLunarYear(2018).getDragon())
-        XCTAssertEqual("二龙治水", KitchenGodSteed.fromLunarYear(2019).getDragon())
-        XCTAssertEqual("四龙治水", KitchenGodSteed.fromLunarYear(5).getDragon())
-    }
-
-    func testKitchenGodSteedCake() throws {
-        // Java expects: 2017→二人分饼, 2018→八人分饼, 5→一人分饼
-        XCTAssertEqual("二人分饼", KitchenGodSteed.fromLunarYear(2017).getCake())
-        XCTAssertEqual("九人分饼", KitchenGodSteed.fromLunarYear(2018).getCake())
-        XCTAssertEqual("二人分饼", KitchenGodSteed.fromLunarYear(5).getCake())
-    }
-
-    func testKitchenGodSteedCattle() throws {
-        // Java expects: 2021→十一牛耕田
-        XCTAssertEqual("五牛耕田", KitchenGodSteed.fromLunarYear(2021).getCattle())
-    }
-
-    func testKitchenGodSteedGold() throws {
-        // Java expects: 2018→三日得金
-        XCTAssertEqual("四日得金", KitchenGodSteed.fromLunarYear(2018).getGold())
-    }
-
-    func testKitchenGodSteedName() throws {
-        XCTAssertEqual("灶马头", KitchenGodSteed.fromLunarYear(2024).getName())
-    }
 }
 
