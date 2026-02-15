@@ -26,4 +26,51 @@ public final class SolarTime: SecondUnit, Tyme {
         let ymd = target.toYmdHms()
         return SolarTime(year: ymd.year, month: ymd.month, day: ymd.day, hour: ymd.hour, minute: ymd.minute, second: ymd.second)
     }
+
+    public func subtract(_ target: SolarTime) -> Int {
+        let days = getSolarDay().subtract(target.getSolarDay())
+        let cs = getHour() * 3600 + getMinute() * 60 + getSecond()
+        let ts = target.getHour() * 3600 + target.getMinute() * 60 + target.getSecond()
+        var seconds = cs - ts
+        var d = days
+        if seconds < 0 {
+            seconds += 86400
+            d -= 1
+        }
+        seconds += d * 86400
+        return seconds
+    }
+
+    public func isAfter(_ target: SolarTime) -> Bool {
+        let d = getSolarDay()
+        let td = target.getSolarDay()
+        if d.getYear() != td.getYear() || d.getMonth() != td.getMonth() || d.getDay() != td.getDay() {
+            return d.isAfter(td)
+        }
+        if getHour() != target.getHour() { return getHour() > target.getHour() }
+        return getMinute() != target.getMinute() ? getMinute() > target.getMinute() : getSecond() > target.getSecond()
+    }
+
+    public func isBefore(_ target: SolarTime) -> Bool {
+        let d = getSolarDay()
+        let td = target.getSolarDay()
+        if d.getYear() != td.getYear() || d.getMonth() != td.getMonth() || d.getDay() != td.getDay() {
+            return d.isBefore(td)
+        }
+        if getHour() != target.getHour() { return getHour() < target.getHour() }
+        return getMinute() != target.getMinute() ? getMinute() < target.getMinute() : getSecond() < target.getSecond()
+    }
+
+    public func getLunarHour() -> LunarHour {
+        let d = getSolarDay().getLunarDay()
+        return LunarHour.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), getHour(), getMinute(), getSecond())
+    }
+
+    public func getTerm() -> SolarTerm {
+        var term = getSolarDay().getTerm()
+        if isBefore(term.getJulianDay().getSolarTime()) {
+            term = term.next(-1)
+        }
+        return term
+    }
 }

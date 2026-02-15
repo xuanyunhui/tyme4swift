@@ -1,36 +1,45 @@
 import Foundation
 
-/// 胎元 (ChildLimit) - Fetal Limit
-/// 根据八字计算的胎元信息
+/// 童限（从出生到起运的时间段）
 public final class ChildLimit {
-    public let stem: HeavenStem
-    public let branch: EarthBranch
-    
-    /// 初始化胎元
-    /// - Parameters:
-    ///   - monthStem: 月干
-    ///   - monthBranch: 月支
-    public init(monthStem: HeavenStem, monthBranch: EarthBranch) {
-        // 胎元 = 月干顺推3个月，月支顺推3个月
-        self.stem = monthStem.next(3)
-        self.branch = monthBranch.next(3)
+    /// 童限计算接口
+    public nonisolated(unsafe) static var provider: ChildLimitProvider = DefaultChildLimitProvider()
+
+    private let gender: Gender
+    private let forward: Bool
+    private let info: ChildLimitInfo
+
+    public init(birthTime: SolarTime, gender: Gender) {
+        self.gender = gender
+        // 阳男阴女顺推，阴男阳女逆推
+        let eightCharProvider = DefaultEightCharProvider()
+        let yearSixtyCycle = eightCharProvider.getYearSixtyCycle(year: birthTime.getYear(), month: birthTime.getMonth(), day: birthTime.getDay())
+        let yang = yearSixtyCycle.getHeavenStem().getIndex() % 2 == 0
+        let man = gender.isMale
+        self.forward = (yang && man) || (!yang && !man)
+
+        var term = birthTime.getTerm()
+        if !term.isJie() {
+            term = term.next(-1)
+        }
+        if forward {
+            term = term.next(2)
+        }
+        self.info = ChildLimit.provider.getInfo(birthTime: birthTime, term: term)
     }
-    
-    public func getStemName() -> String {
-        stem.getName()
+
+    public static func fromSolarTime(_ birthTime: SolarTime, _ gender: Gender) -> ChildLimit {
+        ChildLimit(birthTime: birthTime, gender: gender)
     }
-    
-    public func getBranchName() -> String {
-        branch.getName()
-    }
-    
-    public func getChildLimitString() -> String {
-        return "\(getStemName())\(getBranchName())"
-    }
-    
-    /// Get age at which child limit takes effect
-    public func getAge() -> Int {
-        // 胎元到出生 = 10 个月
-        return 0
-    }
+
+    public func getGender() -> Gender { gender }
+    public func isForward() -> Bool { forward }
+    public func getYearCount() -> Int { info.yearCount }
+    public func getMonthCount() -> Int { info.monthCount }
+    public func getDayCount() -> Int { info.dayCount }
+    public func getHourCount() -> Int { info.hourCount }
+    public func getMinuteCount() -> Int { info.minuteCount }
+    public func getStartTime() -> SolarTime { info.startTime }
+    public func getEndTime() -> SolarTime { info.endTime }
+    public func getInfo() -> ChildLimitInfo { info }
 }
