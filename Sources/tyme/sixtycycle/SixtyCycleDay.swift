@@ -110,4 +110,50 @@ public final class SixtyCycleDay: AbstractCulture {
     public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) -> SixtyCycleDay {
         return SixtyCycleDay(year: year, month: month, day: day)
     }
+
+    /// 三柱（年柱、月柱、日柱）
+    public func getThreePillars() -> ThreePillars {
+        let term = findPrevailingTerm()
+        let termIndex = term.getIndex()
+        let termYear = term.getYear()
+
+        // 月柱距寅月的偏移
+        let offset: Int
+        if termIndex < 3 {
+            offset = termIndex == 0 ? -2 : -1
+        } else {
+            offset = (termIndex - 3) / 2
+        }
+
+        // 干支年（立春换年）
+        let cycleYear = offset < 0 ? termYear - 1 : termYear
+        let yearSixtyCycle = SixtyCycle.fromIndex(cycleYear - 4)
+
+        // 月干支（五虎遁）
+        let yearHeavenStemIndex = yearSixtyCycle.getHeavenStem().getIndex()
+        let firstMonthHeavenStemIndex = (yearHeavenStemIndex + 1) * 2
+        let normalizedOffset = offset < 0 ? offset + 12 : offset
+        let monthHeavenStemIndex = (firstMonthHeavenStemIndex + normalizedOffset) % 10
+        let monthEarthBranchIndex = (2 + normalizedOffset) % 12
+        let monthName = HeavenStem.NAMES[monthHeavenStemIndex] + EarthBranch.NAMES[monthEarthBranchIndex]
+        let monthSixtyCycle = SixtyCycle.fromName(monthName)
+
+        return ThreePillars(year: yearSixtyCycle, month: monthSixtyCycle, day: sixtyCycle)
+    }
+
+    private func findPrevailingTerm() -> SolarTerm {
+        var y = solarDay.getYear()
+        var i = solarDay.getMonth() * 2
+        if i == 24 {
+            y += 1
+            i = 0
+        }
+        var term = SolarTerm.fromIndex(y, i + 1)
+        var termDay = term.getSolarDay()
+        while solarDay.isBefore(termDay) {
+            term = term.next(-1)
+            termDay = term.getSolarDay()
+        }
+        return term
+    }
 }
