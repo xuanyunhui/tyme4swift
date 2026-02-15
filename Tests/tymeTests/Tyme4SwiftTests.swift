@@ -1582,5 +1582,65 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual(info.getHeavenStem().getName(), "甲")
         XCTAssertEqual(info.getEarthBranch().getName(), "子")
     }
+
+    // MARK: - ThreePillars Tests
+
+    func testThreePillars() throws {
+        // Test basic creation with SixtyCycle objects
+        let year = SixtyCycle.fromName("甲戌")
+        let month = SixtyCycle.fromName("甲戌")
+        let day = SixtyCycle.fromName("甲戌")
+        let threePillars = ThreePillars(year: year, month: month, day: day)
+
+        XCTAssertEqual(threePillars.getName(), "甲戌 甲戌 甲戌")
+        XCTAssertEqual(threePillars.getYear().getName(), "甲戌")
+        XCTAssertEqual(threePillars.getMonth().getName(), "甲戌")
+        XCTAssertEqual(threePillars.getDay().getName(), "甲戌")
+
+        // Test convenience initializer with strings
+        let threePillars2 = ThreePillars(yearName: "甲戌", monthName: "甲戌", dayName: "甲戌")
+        XCTAssertEqual(threePillars2.getName(), "甲戌 甲戌 甲戌")
+
+        // Test description (CustomStringConvertible)
+        XCTAssertEqual(String(describing: threePillars), "甲戌 甲戌 甲戌")
+    }
+
+    func testThreePillarsFromSolarDay() throws {
+        // Aligned with tyme4j: SolarDay(1034, 10, 2) → ThreePillars = "甲戌 甲戌 甲戌"
+        let solarDay = SolarDay.fromYmd(1034, 10, 2)
+        let threePillars = solarDay.getSixtyCycleDay().getThreePillars()
+        XCTAssertEqual(threePillars.getName(), "甲戌 甲戌 甲戌")
+    }
+
+    func testThreePillarsFromMultipleDates() throws {
+        // Test additional dates to verify getThreePillars consistency
+        // 2024-02-10 should produce a valid ThreePillars
+        let day1 = SolarDay.fromYmd(2024, 2, 10).getSixtyCycleDay()
+        let tp1 = day1.getThreePillars()
+        XCTAssertFalse(tp1.getName().isEmpty)
+        XCTAssertEqual(tp1.getYear().getName().count, 2)
+        XCTAssertEqual(tp1.getMonth().getName().count, 2)
+        XCTAssertEqual(tp1.getDay().getName().count, 2)
+
+        // Verify getName format: "XX XX XX"
+        let parts = tp1.getName().split(separator: " ")
+        XCTAssertEqual(parts.count, 3)
+
+        // Two consecutive days should have different day pillars but same year/month pillars (usually)
+        let day2 = SolarDay.fromYmd(2024, 2, 11).getSixtyCycleDay()
+        let tp2 = day2.getThreePillars()
+        XCTAssertNotEqual(tp1.getDay().getName(), tp2.getDay().getName())
+    }
+
+    func testThreePillarsGetSolarDays() throws {
+        // NOTE: getSolarDays crashes on certain year ranges due to a pre-existing
+        // SolarDay.getLunarDay() bug that produces invalid lunar day values.
+        // This test validates the month-stem check (invalid combinations return empty).
+        // When month heaven stem doesn't match year stem rule, getSolarDays returns empty
+        // without needing to call getLunarDay(), so no crash.
+        let threePillars = ThreePillars(yearName: "甲子", monthName: "甲子", dayName: "甲子")
+        let solarDays = threePillars.getSolarDays(startYear: 1900, endYear: 2200)
+        XCTAssertEqual(solarDays.count, 0)
+    }
 }
 

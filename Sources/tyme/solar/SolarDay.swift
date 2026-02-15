@@ -53,6 +53,10 @@ public final class SolarDay: DayUnit, Tyme {
         return SolarWeek(year: getYear(), month: getMonth(), index: index, start: start)
     }
 
+    public func getSixtyCycleDay() -> SixtyCycleDay {
+        SixtyCycleDay(solarDay: self)
+    }
+
     public func getLunarDay() -> LunarDay {
         var m = LunarMonth.fromYm(getYear(), getMonth())
         var days = subtract(m.getFirstJulianDay().getSolarDay())
