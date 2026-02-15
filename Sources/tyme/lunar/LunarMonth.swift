@@ -118,4 +118,8 @@ public final class LunarMonth: MonthUnit, Tyme {
         let m = getMonthWithLeap()
         return (0..<size).map { LunarWeek.fromYm(getYear(), m, $0, start) }
     }
+
+    public func getFetus() -> FetusMonth? {
+        FetusMonth.fromLunarMonth(self)
+    }
 }
