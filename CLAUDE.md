@@ -47,6 +47,7 @@ Culture (protocol) → getName()
 | `tibetan/` | Tibetan calendar: RabByung, TibetanYear/Month/Day |
 | `culture/` | Cultural types: Element, Direction, Zodiac, Sound, NaYin, Terrain, Phenology, festivals, gods, taboos, etc. |
 | `star/` | Star systems: NineStar, SevenStar, SixStar, TenStar, TwentyEightStar, Ecliptic |
+| `pengzu/` | Pengzu taboos (彭祖百忌): PengZu, PengZuHeavenStem, PengZuEarthBranch |
 | `enums/` | Swift enums: YinYang, Gender, Side, FestivalType, HideHeavenStemType |
 | `jd/` | JulianDay astronomical calculations |
 | `unit/` | Time units: DayUnit, MonthUnit, YearUnit, WeekUnit, SecondUnit |
@@ -56,7 +57,7 @@ Culture (protocol) → getName()
 
 - **Factory methods over failable initializers**: Classes use `fromYmd()`, `fromIndex()`, `fromName()` static factories. Some return optionals, some `fatalError` on invalid input.
 - **Provider protocol pattern**: EightChar calculations are pluggable via `EightCharProvider`, `ChildLimitProvider`, `DecadeFortuneProvider` protocols with default implementations.
-- **`open class` throughout**: Most classes are `open` to allow subclassing (mirroring Java's non-final classes).
+- **`public final` for concrete classes, `open` for base classes**: Base classes (AbstractCulture, AbstractTyme, LoopTyme, AbstractCultureDay) and unit classes are `open` for subclassing; concrete implementations (HeavenStem, SolarDay, Element, etc.) are `public final`.
 - **Reference implementation alignment**: Algorithm logic should match [tyme4j](https://github.com/6tail/tyme4j). When in doubt, consult the Java source.
 
 ### Tests
