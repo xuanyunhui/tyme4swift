@@ -289,7 +289,9 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 ## 贡献
 
-欢迎提交 Issue 和 Pull Request!
+欢迎提交 Issue 和 Pull Request！
+
+详细的贡献指南请参阅 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 联系
 
