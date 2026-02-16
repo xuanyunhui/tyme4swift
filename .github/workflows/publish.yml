@@ -40,7 +40,7 @@ jobs:
       - name: Verify Swift build
         uses: swift-actions/setup-swift@v1
         with:
-          swift-version: '5.9'
+          swift-version: '6.2'
 
       - name: Build Swift package
         run: swift build -v
@@ -59,7 +59,7 @@ jobs:
       - name: Setup Swift
         uses: swift-actions/setup-swift@v1
         with:
-          swift-version: '5.9'
+          swift-version: '6.2'
 
       - name: Verify Package.swift manifest
         run: |
