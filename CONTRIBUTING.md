@@ -16,8 +16,6 @@ brew install swiftlint
 swiftlint lint --path Sources
 ```
 
-**注意**：项目使用 SwiftLint 默认规则。CI 会自动运行 SwiftLint 检查，未通过的 PR 将无法合并。
-
 ### 运行测试
 
 提交前请确保所有测试通过：
