@@ -1761,5 +1761,52 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual("床", FetusEarthBranch(index: 5).getName())
     }
 
+    // MARK: - MinorRen Tests
+
+    func testMinorRen() throws {
+        // Test all six names
+        XCTAssertEqual("大安", MinorRen.fromIndex(0).getName())
+        XCTAssertEqual("留连", MinorRen.fromIndex(1).getName())
+        XCTAssertEqual("速喜", MinorRen.fromIndex(2).getName())
+        XCTAssertEqual("赤口", MinorRen.fromIndex(3).getName())
+        XCTAssertEqual("小吉", MinorRen.fromIndex(4).getName())
+        XCTAssertEqual("空亡", MinorRen.fromIndex(5).getName())
+    }
+
+    func testMinorRenFromName() throws {
+        XCTAssertEqual(0, MinorRen.fromName("大安").getIndex())
+        XCTAssertEqual(3, MinorRen.fromName("赤口").getIndex())
+    }
+
+    func testMinorRenLuck() throws {
+        // Even index = 吉, Odd index = 凶
+        XCTAssertEqual("吉", MinorRen.fromIndex(0).getLuck().getName()) // 大安
+        XCTAssertEqual("凶", MinorRen.fromIndex(1).getLuck().getName()) // 留连
+        XCTAssertEqual("吉", MinorRen.fromIndex(2).getLuck().getName()) // 速喜
+        XCTAssertEqual("凶", MinorRen.fromIndex(3).getLuck().getName()) // 赤口
+        XCTAssertEqual("吉", MinorRen.fromIndex(4).getLuck().getName()) // 小吉
+        XCTAssertEqual("凶", MinorRen.fromIndex(5).getLuck().getName()) // 空亡
+    }
+
+    func testMinorRenElement() throws {
+        // Mapping: [0,4,1,3,0,2] → [金,木,水,火,土] index
+        // 大安→木(0→金), 留连→水(4→水), 速喜→火(1→木)...
+        // Wait, Element.NAMES = ["金","木","水","火","土"]
+        // [0,4,1,3,0,2] → [金,土,木,火,金,水]
+        XCTAssertEqual("金", MinorRen.fromIndex(0).getElement().getName()) // 大安
+        XCTAssertEqual("土", MinorRen.fromIndex(1).getElement().getName()) // 留连
+        XCTAssertEqual("木", MinorRen.fromIndex(2).getElement().getName()) // 速喜
+        XCTAssertEqual("火", MinorRen.fromIndex(3).getElement().getName()) // 赤口
+        XCTAssertEqual("金", MinorRen.fromIndex(4).getElement().getName()) // 小吉
+        XCTAssertEqual("水", MinorRen.fromIndex(5).getElement().getName()) // 空亡
+    }
+
+    func testMinorRenNext() throws {
+        let daAn = MinorRen.fromIndex(0)
+        XCTAssertEqual("留连", daAn.next(1).getName())
+        XCTAssertEqual("空亡", daAn.next(5).getName())
+        XCTAssertEqual("大安", daAn.next(6).getName()) // cycle wraps
+        XCTAssertEqual("空亡", daAn.next(-1).getName()) // negative
+    }
 }
 
