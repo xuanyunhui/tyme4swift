@@ -1807,12 +1807,76 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual("空亡", daAn.next(-1).getName()) // negative
     }
 
-    // Issue #14: SolarDay.getLunarDay() overflow crash
+    // MARK: - Issue #14 Acceptance Tests
+
     func testGetLunarDayNoOverflow() throws {
-        // ThreePillars.getSolarDays internally calls getLunarDay() on many dates
         let tp = ThreePillars(yearName: "甲戌", monthName: "甲戌", dayName: "甲戌")
         let days = tp.getSolarDays(startYear: 1, endYear: 2200)
         XCTAssertFalse(days.isEmpty, "Should find matching solar days without crashing")
+    }
+
+    func testGetLunarDayNoOverflowCount() throws {
+        let tp = ThreePillars(yearName: "甲戌", monthName: "甲戌", dayName: "甲戌")
+        let days = tp.getSolarDays(startYear: 1, endYear: 2200)
+        XCTAssertEqual(days.count, 19, "Should find exactly 19 matching solar days")
+    }
+
+    func testGetLunarDayBoundaryDates() throws {
+        let d1 = SolarDay.fromYmd(1, 2, 12)
+        XCTAssertTrue(d1.getLunarDay().getDay() >= 1 && d1.getLunarDay().getDay() <= 30)
+
+        let d2 = SolarDay.fromYmd(100, 1, 1)
+        XCTAssertTrue(d2.getLunarDay().getDay() >= 1 && d2.getLunarDay().getDay() <= 30)
+
+        // 2024-02-10 is lunar new year
+        XCTAssertEqual("初一", SolarDay.fromYmd(2024, 2, 10).getLunarDay().getName())
+    }
+
+    func testGetLunarDayLeapMonth() throws {
+        let d = SolarDay.fromYmd(2023, 4, 20)
+        XCTAssertTrue(d.getLunarDay().getDay() >= 1 && d.getLunarDay().getDay() <= 30)
+    }
+
+    // MARK: - Issue #19 Acceptance Tests
+
+    func testElementNamesOrder() throws {
+        XCTAssertEqual("木", Element.fromIndex(0).getName())
+        XCTAssertEqual("火", Element.fromIndex(1).getName())
+        XCTAssertEqual("土", Element.fromIndex(2).getName())
+        XCTAssertEqual("金", Element.fromIndex(3).getName())
+        XCTAssertEqual("水", Element.fromIndex(4).getName())
+    }
+
+    func testElementFromName() throws {
+        XCTAssertEqual("木", Element.fromName("木").getName())
+        XCTAssertEqual("金", Element.fromName("金").getName())
+        XCTAssertEqual("水", Element.fromName("水").getName())
+    }
+
+    func testElementCycle() throws {
+        let wood = Element.fromName("木")
+        XCTAssertEqual("火", wood.next(1).getName())
+        XCTAssertEqual("土", wood.next(2).getName())
+        XCTAssertEqual("金", wood.next(3).getName())
+        XCTAssertEqual("水", wood.next(4).getName())
+        XCTAssertEqual("木", wood.next(5).getName())
+    }
+
+    func testElementYinYang() throws {
+        // 木=阳, 火=阴, 土=阳, 金=阴, 水=阳
+        XCTAssertEqual("阳", Element.fromIndex(0).getYinYang()) // 木
+        XCTAssertEqual("阴", Element.fromIndex(1).getYinYang()) // 火
+        XCTAssertEqual("阳", Element.fromIndex(2).getYinYang()) // 土
+        XCTAssertEqual("阴", Element.fromIndex(3).getYinYang()) // 金
+        XCTAssertEqual("阳", Element.fromIndex(4).getYinYang()) // 水
+    }
+
+    func testNineStarElementUnaffected() throws {
+        XCTAssertEqual("水", NineStar.fromIndex(0).getElement().getName())
+    }
+
+    func testSoundElementUnaffected() throws {
+        XCTAssertFalse(Sound.fromIndex(0).getElement().getName().isEmpty)
     }
 }
 
