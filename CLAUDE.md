@@ -6,11 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 swift build          # Build the package
-swift test           # Run all tests (94 XCTest + 1 Swift Testing)
+swift test           # Run all tests (105 XCTest cases)
 swift test --filter Tyme4SwiftTests/testSolarDay   # Run a single test
 ```
 
 No linter or formatter is configured. No external dependencies.
+
+## CI/CD
+
+- **PR CI** (`.github/workflows/ci.yml`): Runs `swift build` + `swift test` with code coverage on push to main and pull requests (Swift 6.2, Ubuntu)
+- **Publish** (`.github/workflows/publish.yml`): Release publishing workflow (Swift 6.2)
 
 ## Architecture
 
@@ -77,3 +82,17 @@ All tyme4j features have been ported. Tracking issue [#10](https://github.com/xu
 - [#14](https://github.com/xuanyunhui/tyme4swift/issues/14) SolarDay.getLunarDay() overflow - fixed via full ShouXingUtil port (commit 88021fa)
 - [#19](https://github.com/xuanyunhui/tyme4swift/issues/19) Element.NAMES order alignment with tyme4j (commit 6384c2b)
 - 10 acceptance tests added for regression protection (PR #23, commit 28d9cbf)
+
+## Improvement Roadmap
+
+Tracked via GitHub Issues. Phase 1 (complete), Phase 2 (#30-#33), Phase 3 (#34).
+
+**Phase 1 (complete):** CI infrastructure — PR #35 (ci.yml + coverage), PR #36 (publish.yml fix + CONTRIBUTING.md fix)
+
+**Phase 2 (planned):**
+- [#30](https://github.com/xuanyunhui/tyme4swift/issues/30) God/Taboo lookup for SixtyCycleDay (P0)
+- [#31](https://github.com/xuanyunhui/tyme4swift/issues/31) Missing classes: HideHeavenStemDay, RabByungElement, PhenologyDay
+- [#32](https://github.com/xuanyunhui/tyme4swift/issues/32) Replace fatalError with TymeError throws
+- [#33](https://github.com/xuanyunhui/tyme4swift/issues/33) Split test file + Equatable/Hashable
+
+**Phase 3 (long-term):** [#34](https://github.com/xuanyunhui/tyme4swift/issues/34) Swift ecosystem integration (computed properties, Codable, DocC, Swift Testing, multi-platform CI)
