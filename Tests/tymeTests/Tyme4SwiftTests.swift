@@ -1789,16 +1789,14 @@ final class Tyme4SwiftTests: XCTestCase {
     }
 
     func testMinorRenElement() throws {
-        // Mapping: [0,4,1,3,0,2] → [金,木,水,火,土] index
-        // 大安→木(0→金), 留连→水(4→水), 速喜→火(1→木)...
-        // Wait, Element.NAMES = ["金","木","水","火","土"]
-        // [0,4,1,3,0,2] → [金,土,木,火,金,水]
-        XCTAssertEqual("金", MinorRen.fromIndex(0).getElement().getName()) // 大安
-        XCTAssertEqual("土", MinorRen.fromIndex(1).getElement().getName()) // 留连
-        XCTAssertEqual("木", MinorRen.fromIndex(2).getElement().getName()) // 速喜
-        XCTAssertEqual("火", MinorRen.fromIndex(3).getElement().getName()) // 赤口
-        XCTAssertEqual("金", MinorRen.fromIndex(4).getElement().getName()) // 小吉
-        XCTAssertEqual("水", MinorRen.fromIndex(5).getElement().getName()) // 空亡
+        // Mapping: [0,4,1,3,0,2] → Element.NAMES["木","火","土","金","水"] index
+        // [0,4,1,3,0,2] → [木,水,火,金,木,土]
+        XCTAssertEqual("木", MinorRen.fromIndex(0).getElement().getName()) // 大安
+        XCTAssertEqual("水", MinorRen.fromIndex(1).getElement().getName()) // 留连
+        XCTAssertEqual("火", MinorRen.fromIndex(2).getElement().getName()) // 速喜
+        XCTAssertEqual("金", MinorRen.fromIndex(3).getElement().getName()) // 赤口
+        XCTAssertEqual("木", MinorRen.fromIndex(4).getElement().getName()) // 小吉
+        XCTAssertEqual("土", MinorRen.fromIndex(5).getElement().getName()) // 空亡
     }
 
     func testMinorRenNext() throws {

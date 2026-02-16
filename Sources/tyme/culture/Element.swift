@@ -1,7 +1,7 @@
 import Foundation
 
 public final class Element: LoopTyme {
-    public static let NAMES = ["金","木","水","火","土"]
+    public static let NAMES = ["木","火","土","金","水"]
     
     // YinYang mapping (阴阳)
     private static let YIN_YANG = ["阳","阴","阳","阴","阳"]
