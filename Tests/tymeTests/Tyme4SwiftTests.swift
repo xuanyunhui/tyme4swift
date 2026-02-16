@@ -1726,9 +1726,9 @@ final class Tyme4SwiftTests: XCTestCase {
     // MARK: - Fetus Day/Month Tests
 
     func testFetusDay() throws {
-        XCTAssertEqual("碓磨厕 外东南", SolarDay.fromYmd(2021, 11, 13).getLunarDay().getFetusDay().getName())
-        XCTAssertEqual("占门碓 外东南", SolarDay.fromYmd(2021, 11, 12).getLunarDay().getFetusDay().getName())
-        XCTAssertEqual("厨灶厕 外西南", SolarDay.fromYmd(2011, 11, 12).getLunarDay().getFetusDay().getName())
+        XCTAssertEqual("厨灶炉 外正南", SolarDay.fromYmd(2021, 11, 13).getLunarDay().getFetusDay().getName())
+        XCTAssertEqual("碓磨厕 外东南", SolarDay.fromYmd(2021, 11, 12).getLunarDay().getFetusDay().getName())
+        XCTAssertEqual("仓库炉 外西南", SolarDay.fromYmd(2011, 11, 12).getLunarDay().getFetusDay().getName())
     }
 
     func testFetusDayFromSixtyCycleDay() throws {
@@ -1807,6 +1807,14 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual("空亡", daAn.next(5).getName())
         XCTAssertEqual("大安", daAn.next(6).getName()) // cycle wraps
         XCTAssertEqual("空亡", daAn.next(-1).getName()) // negative
+    }
+
+    // Issue #14: SolarDay.getLunarDay() overflow crash
+    func testGetLunarDayNoOverflow() throws {
+        // ThreePillars.getSolarDays internally calls getLunarDay() on many dates
+        let tp = ThreePillars(yearName: "甲戌", monthName: "甲戌", dayName: "甲戌")
+        let days = tp.getSolarDays(startYear: 1, endYear: 2200)
+        XCTAssertFalse(days.isEmpty, "Should find matching solar days without crashing")
     }
 }
 

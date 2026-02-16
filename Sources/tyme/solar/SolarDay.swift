@@ -84,6 +84,10 @@ public final class SolarDay: DayUnit, Tyme {
             m = m.next(-1)
             days += m.getDayCount()
         }
+        while days >= m.getDayCount() {
+            days -= m.getDayCount()
+            m = m.next(1)
+        }
         return LunarDay.fromYmd(m.getYear(), m.getMonthWithLeap(), days + 1)
     }
 }
