@@ -28,25 +28,17 @@ jobs:
 
       - name: Generate coverage report
         run: |
-          # Get test binary path
-          TEST_BINARY=$(swift test --show-codecov-path)
-
-          # Generate coverage report
-          llvm-cov report \
-            $TEST_BINARY \
-            -instr-profile=$(dirname $TEST_BINARY)/default.profdata \
-            -use-color \
-            -ignore-filename-regex='\.build|Tests'
-
-          echo ""
-          echo "📊 Coverage report generated"
-
-          # Generate detailed line-by-line coverage
-          llvm-cov show \
-            $TEST_BINARY \
-            -instr-profile=$(dirname $TEST_BINARY)/default.profdata \
-            -use-color \
-            -ignore-filename-regex='\.build|Tests' \
-            > coverage.txt
-
-          echo "✅ Detailed coverage saved to coverage.txt"
+          CODECOV_JSON=$(swift test --show-codecov-path)
+          if [ -f "$CODECOV_JSON" ]; then
+            echo "📊 Code coverage report: $CODECOV_JSON"
+            # 提取覆盖率百分比
+            COVERAGE=$(cat "$CODECOV_JSON" | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+pct = data['data'][0]['totals']['lines']['percent']
+print(f'{pct:.1f}%')
+")
+            echo "📈 Line coverage: $COVERAGE"
+          else
+            echo "⚠️  Coverage report not found"
+          fi
