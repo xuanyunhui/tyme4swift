@@ -3,6 +3,8 @@ import Foundation
 public final class LunarDay: DayUnit, Tyme {
     public static let NAMES = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
 
+    private let leap: Bool
+
     public static func validate(year: Int, month: Int, day: Int) {
         if day < 1 { fatalError("illegal lunar day \(day)") }
         let m = LunarMonth.fromYm(year, month)
@@ -11,8 +13,11 @@ public final class LunarDay: DayUnit, Tyme {
 
     public override init(year: Int, month: Int, day: Int) {
         LunarDay.validate(year: year, month: month, day: day)
-        super.init(year: year, month: month, day: day)
+        self.leap = month < 0
+        super.init(year: year, month: abs(month), day: day)
     }
+
+    public override func getMonth() -> Int { leap ? -super.getMonth() : super.getMonth() }
 
     public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) -> LunarDay {
         LunarDay(year: year, month: month, day: day)
