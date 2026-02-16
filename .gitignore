@@ -6,3 +6,27 @@ DerivedData/
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
+
+# Temporary worktree cleanup artifacts
+HEAD
+config
+hooks
+objects
+refs
+
+# User environment files (should be in home directory)
+.bash_profile
+.bashrc
+.gitconfig
+.gitmodules
+.profile
+.ripgreprc
+.zprofile
+.zshrc
+.mcp.json
+
+# IDE and tool directories
+.serena/
+.claude/
+.idea
+.vscode
