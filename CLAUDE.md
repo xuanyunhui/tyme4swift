@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 swift build          # Build the package
-swift test           # Run all tests (74 XCTest + 1 Swift Testing)
+swift test           # Run all tests (94 XCTest + 1 Swift Testing)
 swift test --filter Tyme4SwiftTests/testSolarDay   # Run a single test
 ```
 
@@ -46,6 +46,8 @@ Culture (protocol) → getName()
 | `eightchar/` | Bazi system: EightChar, Fortune, DecadeFortune, ChildLimit, provider protocols |
 | `tibetan/` | Tibetan calendar: RabByung, TibetanYear/Month/Day |
 | `culture/` | Cultural types: Element, Direction, Zodiac, Sound, NaYin, Terrain, Phenology, festivals, gods, taboos, etc. |
+| `culture/ren/` | MinorRen (小六壬) divination system |
+| `culture/fetus/` | Fetus system: Fetus, FetusOrigin, FetusDay, FetusMonth, FetusHeavenStem, FetusEarthBranch |
 | `star/` | Star systems: NineStar, SevenStar, SixStar, TenStar, TwentyEightStar, Ecliptic |
 | `pengzu/` | Pengzu taboos (彭祖百忌): PengZu, PengZuHeavenStem, PengZuEarthBranch |
 | `enums/` | Swift enums: YinYang, Gender, Side, FestivalType, HideHeavenStemType |
@@ -63,7 +65,9 @@ Culture (protocol) → getName()
 ### Tests
 
 Single test file at `Tests/tymeTests/Tyme4SwiftTests.swift` containing all XCTest cases. Tests are organized by `testXxx()` methods covering each subsystem.
+When rebasing branches, this single test file is the most common source of merge conflicts — new tests are appended at the end.
 
 ## Alignment Status
 
-Tracking issue: [#10](https://github.com/xuanyunhui/tyme4swift/issues/10). Missing vs tyme4j: ThreePillars, KitchenGodSteed, Ren, FetusDay/FetusHour, and ChildLimit provider variants (LunarSect1/Sect2/China95).
+All tyme4j features have been ported. Tracking issue [#10](https://github.com/xuanyunhui/tyme4swift/issues/10) is closed. Known bug: [#14](https://github.com/xuanyunhui/tyme4swift/issues/14) SolarDay.getLunarDay() overflow on some historical dates.
+Known issue: [#19](https://github.com/xuanyunhui/tyme4swift/issues/19) Element.NAMES order differs from tyme4j (Swift: `["金","木","水","火","土"]` vs Java: `["木","火","土","金","水"]`), affecting index-based Element lookups.
