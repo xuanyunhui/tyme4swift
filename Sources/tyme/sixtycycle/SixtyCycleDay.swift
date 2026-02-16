@@ -141,6 +141,30 @@ public final class SixtyCycleDay: AbstractCulture {
         return ThreePillars(year: yearSixtyCycle, month: monthSixtyCycle, day: sixtyCycle)
     }
 
+    /// 神煞列表（吉神宜趋，凶神宜忌）
+    /// Gets the list of gods/deities for this day
+    /// - Returns: List of God instances
+    public func getGods() -> [God] {
+        let monthSixtyCycle = getThreePillars().getMonth()
+        return GodLookup.getDayGods(month: monthSixtyCycle, day: sixtyCycle)
+    }
+
+    /// 宜（推荐的活动）
+    /// Gets the list of auspicious activities for this day
+    /// - Returns: List of Taboo instances marked as auspicious
+    public func getRecommends() -> [Taboo] {
+        let monthSixtyCycle = getThreePillars().getMonth()
+        return TabooLookup.getDayRecommends(month: monthSixtyCycle, day: sixtyCycle)
+    }
+
+    /// 忌（应避免的活动）
+    /// Gets the list of inauspicious activities for this day
+    /// - Returns: List of Taboo instances marked as inauspicious
+    public func getAvoids() -> [Taboo] {
+        let monthSixtyCycle = getThreePillars().getMonth()
+        return TabooLookup.getDayAvoids(month: monthSixtyCycle, day: sixtyCycle)
+    }
+
     private func findPrevailingTerm() -> SolarTerm {
         var y = solarDay.getYear()
         var i = solarDay.getMonth() * 2

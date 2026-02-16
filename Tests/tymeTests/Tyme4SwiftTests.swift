@@ -1878,5 +1878,49 @@ final class Tyme4SwiftTests: XCTestCase {
     func testSoundElementUnaffected() throws {
         XCTAssertFalse(Sound.fromIndex(0).getElement().getName().isEmpty)
     }
+
+    /// Test God lookup functionality
+    func testGodLookup() throws {
+        // Test God lookup for a known date (2024-01-01)
+        let day = SixtyCycleDay(year: 2024, month: 1, day: 1)
+        let gods = day.getGods()
+
+        // Verify gods list is not empty
+        XCTAssertFalse(gods.isEmpty, "Gods list should not be empty")
+
+        // Verify returned God objects have correct properties
+        for god in gods {
+            XCTAssertFalse(god.getName().isEmpty, "God name should not be empty")
+            // Verify each god has a valid luck status (auspicious or inauspicious)
+            let isValid = god.isAuspicious() || god.isInauspicious()
+            XCTAssertTrue(isValid, "God should be either auspicious or inauspicious")
+        }
+    }
+
+    /// Test day recommends (auspicious activities)
+    func testDayRecommends() throws {
+        let day = SixtyCycleDay(year: 2024, month: 1, day: 1)
+        let recommends = day.getRecommends()
+
+        // Verify all returned Taboo objects are marked as auspicious
+        for taboo in recommends {
+            XCTAssertTrue(taboo.isAuspicious(), "All recommends should be auspicious")
+            XCTAssertFalse(taboo.isInauspicious(), "Recommends should not be inauspicious")
+            XCTAssertFalse(taboo.getName().isEmpty, "Taboo name should not be empty")
+        }
+    }
+
+    /// Test day avoids (inauspicious activities)
+    func testDayAvoids() throws {
+        let day = SixtyCycleDay(year: 2024, month: 1, day: 1)
+        let avoids = day.getAvoids()
+
+        // Verify all returned Taboo objects are marked as inauspicious
+        for taboo in avoids {
+            XCTAssertTrue(taboo.isInauspicious(), "All avoids should be inauspicious")
+            XCTAssertFalse(taboo.isAuspicious(), "Avoids should not be auspicious")
+            XCTAssertFalse(taboo.getName().isEmpty, "Taboo name should not be empty")
+        }
+    }
 }
 
