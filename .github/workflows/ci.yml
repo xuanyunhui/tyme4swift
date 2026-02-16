@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: '6.2'
+
+      - name: Build
+        run: swift build
+
+      - name: Run tests with coverage
+        run: swift test --enable-code-coverage
+
+      - name: Generate coverage report
+        run: |
+          # Get test binary path
+          TEST_BINARY=$(swift test --show-codecov-path)
+
+          # Generate coverage report
+          llvm-cov report \
+            $TEST_BINARY \
+            -instr-profile=$(dirname $TEST_BINARY)/default.profdata \
+            -use-color \
+            -ignore-filename-regex='\.build|Tests'
+
+          echo ""
+          echo "📊 Coverage report generated"
+
+          # Generate detailed line-by-line coverage
+          llvm-cov show \
+            $TEST_BINARY \
+            -instr-profile=$(dirname $TEST_BINARY)/default.profdata \
+            -use-color \
+            -ignore-filename-regex='\.build|Tests' \
+            > coverage.txt
+
+          echo "✅ Detailed coverage saved to coverage.txt"
