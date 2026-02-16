@@ -64,10 +64,16 @@ Culture (protocol) → getName()
 
 ### Tests
 
-Single test file at `Tests/tymeTests/Tyme4SwiftTests.swift` containing all XCTest cases. Tests are organized by `testXxx()` methods covering each subsystem.
+Single test file at `Tests/tymeTests/Tyme4SwiftTests.swift` containing all 105 XCTest cases. Tests are organized by `testXxx()` methods covering each subsystem.
 When rebasing branches, this single test file is the most common source of merge conflicts — new tests are appended at the end.
+
+**Acceptance tests:** Issue #14 (SolarDay overflow) and #19 (Element.NAMES order) have dedicated regression tests added via PR #23.
 
 ## Alignment Status
 
-All tyme4j features have been ported. Tracking issue [#10](https://github.com/xuanyunhui/tyme4swift/issues/10) is closed. Known bug: [#14](https://github.com/xuanyunhui/tyme4swift/issues/14) SolarDay.getLunarDay() overflow on some historical dates.
-Known issue: [#19](https://github.com/xuanyunhui/tyme4swift/issues/19) Element.NAMES order differs from tyme4j (Swift: `["金","木","水","火","土"]` vs Java: `["木","火","土","金","水"]`), affecting index-based Element lookups.
+All tyme4j features have been ported. Tracking issue [#10](https://github.com/xuanyunhui/tyme4swift/issues/10) is closed.
+
+**Fixed issues:**
+- [#14](https://github.com/xuanyunhui/tyme4swift/issues/14) SolarDay.getLunarDay() overflow - fixed via full ShouXingUtil port (commit 88021fa)
+- [#19](https://github.com/xuanyunhui/tyme4swift/issues/19) Element.NAMES order alignment with tyme4j (commit 6384c2b)
+- 10 acceptance tests added for regression protection (PR #23, commit 28d9cbf)
