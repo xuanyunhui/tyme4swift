@@ -49,7 +49,7 @@ public final class NineStar: LoopTyme {
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        try super.init(names: names, index: index)
+        super.init(names: names, index: index)
     }
 
     /// Get NineStar from index
@@ -122,7 +122,7 @@ public final class NineStar: LoopTyme {
     /// Get Element instance
     /// - Returns: Element instance
     public func getElement() -> Element {
-        return try! Element.fromName(NineStar.NAMES[index])
+        return try! Element.fromName(NineStar.WU_XING[index])
     }
 
     /// Get direction

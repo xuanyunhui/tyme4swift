@@ -36,7 +36,7 @@ public final class PengZuHeavenStem: LoopTyme {
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        try super.init(names: names, index: index)
+        super.init(names: names, index: index)
     }
 
     /// Create from name
@@ -57,6 +57,6 @@ public final class PengZuHeavenStem: LoopTyme {
     /// - Parameter n: Number of steps to advance
     /// - Returns: Next PengZuHeavenStem instance
     public override func next(_ n: Int) -> PengZuHeavenStem {
-        return try! PengZuHeavenStem(nextIndex(n))
+        return PengZuHeavenStem(nextIndex(n))
     }
 }

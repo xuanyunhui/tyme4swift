@@ -35,7 +35,7 @@ public final class EarthBranch: LoopTyme {
     }
 
     public required init(names: [String], index: Int) {
-        try super.init(names: names, index: index)
+        super.init(names: names, index: index)
     }
 
     public static func fromIndex(_ index: Int) -> EarthBranch {

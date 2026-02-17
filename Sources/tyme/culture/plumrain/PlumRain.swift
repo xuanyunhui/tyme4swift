@@ -20,7 +20,7 @@ public final class PlumRain: LoopTyme {
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        try super.init(names: names, index: index)
+        super.init(names: names, index: index)
     }
 
     /// Get PlumRain from index

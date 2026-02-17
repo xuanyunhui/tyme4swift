@@ -37,7 +37,7 @@ public final class NaYin: LoopTyme {
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        try super.init(names: names, index: index)
+        super.init(names: names, index: index)
     }
 
     /// Get NaYin from index
@@ -77,6 +77,6 @@ public final class NaYin: LoopTyme {
     /// Get Element instance
     /// - Returns: Element instance
     public func getElement() -> Element {
-        return try! Element.fromName(NaYin.NAMES[index])
+        return try! Element.fromName(NaYin.WU_XING[index])
     }
 }

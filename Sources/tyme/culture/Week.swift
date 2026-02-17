@@ -4,7 +4,7 @@ public final class Week: LoopTyme {
     public static let NAMES = ["日","一","二","三","四","五","六"]
 
     public required init(names: [String], index: Int) {
-        try super.init(names: names, index: index)
+        super.init(names: names, index: index)
     }
 
     public convenience init(index: Int) {
