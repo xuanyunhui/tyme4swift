@@ -13,10 +13,10 @@ public final class TibetanDay: AbstractCulture {
         "廿六", "廿七", "廿八", "廿九", "三十"
     ]
 
-    private let year: Int
-    private let month: Int
-    private let day: Int
-    private let isLeapMonth: Bool
+    public let year: Int
+    public let month: Int
+    public let day: Int
+    public let isLeapMonth: Bool
 
     /// Initialize with year, month, and day
     /// - Parameters:
@@ -31,52 +31,16 @@ public final class TibetanDay: AbstractCulture {
         super.init()
     }
 
-    /// Get year
-    /// - Returns: Year value
-    public func getYear() -> Int {
-        return year
-    }
+    public var monthWithLeap: Int { isLeapMonth ? -month : month }
 
-    /// Get month
-    /// - Returns: Month value (1-12)
-    public func getMonth() -> Int {
-        return month
-    }
+    public var tibetanMonth: TibetanMonth { TibetanMonth.fromYm(year, monthWithLeap) }
 
-    /// Get day
-    /// - Returns: Day value (1-30)
-    public func getDay() -> Int {
-        return day
-    }
-
-    /// Check if in leap month
-    /// - Returns: true if in leap month
-    public func isInLeapMonth() -> Bool {
-        return isLeapMonth
-    }
-
-    /// Get month with leap indicator
-    /// - Returns: Month value (negative for leap)
-    public func getMonthWithLeap() -> Int {
-        return isLeapMonth ? -month : month
-    }
+    public var tibetanYear: TibetanYear { TibetanYear.fromYear(year) }
 
     /// Get name
     /// - Returns: Day name
     public override func getName() -> String {
         return TibetanDay.NAMES[day - 1]
-    }
-
-    /// Get Tibetan month
-    /// - Returns: TibetanMonth instance
-    public func getTibetanMonth() -> TibetanMonth {
-        return try! TibetanMonth.fromYm(year, getMonthWithLeap())
-    }
-
-    /// Get Tibetan year
-    /// - Returns: TibetanYear instance
-    public func getTibetanYear() -> TibetanYear {
-        return TibetanYear.fromYear(year)
     }
 
     /// Get next Tibetan day
@@ -109,12 +73,28 @@ public final class TibetanDay: AbstractCulture {
     }
 
     /// Create from year, month, and day
-    /// - Parameters:
-    ///   - year: The year
-    ///   - month: The month (1-12, negative for leap)
-    ///   - day: The day (1-30)
-    /// - Returns: TibetanDay instance
     public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) -> TibetanDay {
         return TibetanDay(year: year, month: month, day: day)
     }
+
+    @available(*, deprecated, renamed: "year")
+    public func getYear() -> Int { year }
+
+    @available(*, deprecated, renamed: "month")
+    public func getMonth() -> Int { month }
+
+    @available(*, deprecated, renamed: "day")
+    public func getDay() -> Int { day }
+
+    @available(*, deprecated, renamed: "isLeapMonth")
+    public func isInLeapMonth() -> Bool { isLeapMonth }
+
+    @available(*, deprecated, renamed: "monthWithLeap")
+    public func getMonthWithLeap() -> Int { monthWithLeap }
+
+    @available(*, deprecated, renamed: "tibetanMonth")
+    public func getTibetanMonth() -> TibetanMonth { tibetanMonth }
+
+    @available(*, deprecated, renamed: "tibetanYear")
+    public func getTibetanYear() -> TibetanYear { tibetanYear }
 }

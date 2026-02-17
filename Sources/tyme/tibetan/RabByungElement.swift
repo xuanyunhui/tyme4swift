@@ -7,7 +7,7 @@ public final class RabByungElement: AbstractCulture {
     public static let NAMES = ["木", "火", "土", "铁", "水"]
 
     /// Internal element (uses standard Element)
-    private let element: Element
+    public let element: Element
 
     /// Initialize with index
     /// - Parameter index: Element index (0-4)
@@ -26,62 +26,51 @@ public final class RabByungElement: AbstractCulture {
     }
 
     /// Create from index
-    /// - Parameter index: Element index
-    /// - Returns: RabByungElement instance
-    public static func fromIndex(_ index: Int) throws -> RabByungElement {
-        return try RabByungElement(index: index)
-    }
+    public static func fromIndex(_ index: Int) throws -> RabByungElement { try RabByungElement(index: index) }
 
     /// Create from name
-    /// - Parameter name: Element name
-    /// - Returns: RabByungElement instance
-    public static func fromName(_ name: String) throws -> RabByungElement {
-        return try RabByungElement(name: name)
-    }
+    public static func fromName(_ name: String) throws -> RabByungElement { try RabByungElement(name: name) }
 
     /// Get element name (金→铁)
-    /// - Returns: Element name with 铁 instead of 金
     public override func getName() -> String {
         return element.getName().replacingOccurrences(of: "金", with: "铁")
     }
 
-    /// Get element index
-    /// - Returns: Element index (0-4)
-    public func getIndex() -> Int {
-        return element.getIndex()
-    }
+    /// The element index
+    public var index: Int { element.index }
 
     /// Get next element in cycle
-    /// - Parameter n: Steps to advance (can be negative)
-    /// - Returns: Next RabByungElement
     public func next(_ n: Int) -> RabByungElement {
         let nextElement = element.next(n)
-        return try! RabByungElement(index: nextElement.getIndex())
+        return try! RabByungElement(index: nextElement.index)
     }
 
     // MARK: - Five Elements Relationships (五行生克)
 
-    /// Get element that this generates (我生者)
-    /// - Returns: Element I reinforce
-    public func getReinforce() -> RabByungElement {
-        return next(1)
-    }
+    /// The element that this generates (我生者)
+    public var reinforce: RabByungElement { next(1) }
 
-    /// Get element that this restrains (我克者)
-    /// - Returns: Element I restrain
-    public func getRestrain() -> RabByungElement {
-        return next(2)
-    }
+    /// The element that this restrains (我克者)
+    public var restrain: RabByungElement { next(2) }
 
-    /// Get element that generates this (生我者)
-    /// - Returns: Element that reinforces me
-    public func getReinforced() -> RabByungElement {
-        return next(-1)
-    }
+    /// The element that generates this (生我者)
+    public var reinforced: RabByungElement { next(-1) }
 
-    /// Get element that restrains this (克我者)
-    /// - Returns: Element that restrains me
-    public func getRestrained() -> RabByungElement {
-        return next(-2)
-    }
+    /// The element that restrains this (克我者)
+    public var restrained: RabByungElement { next(-2) }
+
+    @available(*, deprecated, renamed: "index")
+    public func getIndex() -> Int { index }
+
+    @available(*, deprecated, renamed: "reinforce")
+    public func getReinforce() -> RabByungElement { reinforce }
+
+    @available(*, deprecated, renamed: "restrain")
+    public func getRestrain() -> RabByungElement { restrain }
+
+    @available(*, deprecated, renamed: "reinforced")
+    public func getReinforced() -> RabByungElement { reinforced }
+
+    @available(*, deprecated, renamed: "restrained")
+    public func getRestrained() -> RabByungElement { restrained }
 }

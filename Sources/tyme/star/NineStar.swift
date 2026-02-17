@@ -95,85 +95,58 @@ public final class NineStar: LoopTyme {
 
     // MARK: - Properties
 
-    /// Get full name with celestial name
-    /// - Returns: Full star name (e.g., "一白贪狼")
-    public func getFullName() -> String {
-        return NineStar.FULL_NAMES[index]
-    }
-
-    /// Get celestial name
-    /// - Returns: Celestial name (e.g., "贪狼")
-    public func getCelestialName() -> String {
-        return NineStar.CELESTIAL_NAMES[index]
-    }
-
-    /// Get YinYang
-    /// - Returns: YinYang (阳 or 阴)
-    public func getYinYang() -> String {
-        return NineStar.YIN_YANG[index]
-    }
-
-    /// Get WuXing (五行)
-    /// - Returns: Element (金, 木, 水, 火, 土)
-    public func getWuXing() -> String {
-        return NineStar.WU_XING[index]
-    }
-
-    /// Get Element instance
-    /// - Returns: Element instance
-    public func getElement() -> Element {
-        return try! Element.fromName(NineStar.WU_XING[index])
-    }
-
-    /// Get direction
-    /// - Returns: Direction name
-    public func getDirection() -> String {
-        return NineStar.DIRECTIONS[index]
-    }
-
-    /// Get Direction instance
-    /// - Returns: Direction instance (nil for center)
-    public func getDirectionInstance() -> Direction? {
+    public var fullName: String { NineStar.FULL_NAMES[index] }
+    public var celestialName: String { NineStar.CELESTIAL_NAMES[index] }
+    public var yinYang: String { NineStar.YIN_YANG[index] }
+    public var wuXing: String { NineStar.WU_XING[index] }
+    public var element: Element { try! Element.fromName(NineStar.WU_XING[index]) }
+    public var direction: String { NineStar.DIRECTIONS[index] }
+    public var directionInstance: Direction? {
         let dir = NineStar.DIRECTIONS[index]
-        if dir == "中" {
-            return nil
-        }
+        if dir == "中" { return nil }
         return try! Direction.fromName(dir)
     }
-
-    /// Get Bagua (八卦)
-    /// - Returns: Bagua name
-    public func getBagua() -> String {
-        return NineStar.BAGUA[index]
-    }
-
-    /// Get color
-    /// - Returns: Color name
-    public func getColor() -> String {
-        return NineStar.COLORS[index]
-    }
-
-    /// Get luck (吉凶)
-    /// - Returns: Luck (吉, 凶, or 中)
-    public func getLuck() -> String {
-        return NineStar.LUCK[index]
-    }
+    public var bagua: String { NineStar.BAGUA[index] }
+    public var color: String { NineStar.COLORS[index] }
+    public var luck: String { NineStar.LUCK[index] }
+    public var number: Int { index + 1 }
 
     /// Check if this is an auspicious star
-    /// - Returns: true if auspicious
-    public func isAuspicious() -> Bool {
-        return NineStar.LUCK[index] == "吉"
-    }
+    public func isAuspicious() -> Bool { NineStar.LUCK[index] == "吉" }
 
     /// Check if this is an inauspicious star
-    /// - Returns: true if inauspicious
-    public func isInauspicious() -> Bool {
-        return NineStar.LUCK[index] == "凶"
-    }
+    public func isInauspicious() -> Bool { NineStar.LUCK[index] == "凶" }
 
-    /// Get number (数字)
-    /// - Returns: Star number (1-9)
-    public func getNumber() -> Int {
-        return index + 1
-    }
+    @available(*, deprecated, renamed: "fullName")
+    public func getFullName() -> String { fullName }
+
+    @available(*, deprecated, renamed: "celestialName")
+    public func getCelestialName() -> String { celestialName }
+
+    @available(*, deprecated, renamed: "yinYang")
+    public func getYinYang() -> String { yinYang }
+
+    @available(*, deprecated, renamed: "wuXing")
+    public func getWuXing() -> String { wuXing }
+
+    @available(*, deprecated, renamed: "element")
+    public func getElement() -> Element { element }
+
+    @available(*, deprecated, renamed: "direction")
+    public func getDirection() -> String { direction }
+
+    @available(*, deprecated, renamed: "directionInstance")
+    public func getDirectionInstance() -> Direction? { directionInstance }
+
+    @available(*, deprecated, renamed: "bagua")
+    public func getBagua() -> String { bagua }
+
+    @available(*, deprecated, renamed: "color")
+    public func getColor() -> String { color }
+
+    @available(*, deprecated, renamed: "luck")
+    public func getLuck() -> String { luck }
+
+    @available(*, deprecated, renamed: "number")
+    public func getNumber() -> Int { number }
 }
