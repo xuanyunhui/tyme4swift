@@ -41,10 +41,7 @@ Pod::Spec.new do |spec|
   
   # Documentation
   spec.documentation_url = "https://github.com/xuanyunhui/tyme4swift"
-  
-  # Project URL
-  spec.project_url = "https://github.com/xuanyunhui/tyme4swift"
-  
+
   # Social media
   spec.social_media_url = "https://github.com/xuanyunhui/tyme4swift"
 end
