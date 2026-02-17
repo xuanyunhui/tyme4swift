@@ -5,28 +5,28 @@ public final class LunarMonth: MonthUnit, Tyme {
 
     private let leap: Bool
 
-    public static func validate(year: Int, month: Int) {
+    public static func validate(year: Int, month: Int) throws {
         if month == 0 || month > 12 || month < -12 {
-            fatalError("illegal lunar month: \(month)")
+            throw TymeError.invalidMonth(month)
         }
-        if month < 0 && -month != LunarYear.fromYear(year).getLeapMonth() {
-            fatalError("illegal leap month \( -month ) in lunar year \(year)")
+        if month < 0 && -month != (try! try! LunarYear.fromYear(year)).getLeapMonth() {
+            throw TymeError.invalidMonth(month)
         }
     }
 
-    public override init(year: Int, month: Int) {
-        LunarMonth.validate(year: year, month: month)
+    public override init(year: Int, month: Int) throws {
+        try LunarMonth.validate(year: year, month: month)
         self.leap = month < 0
-        super.init(year: year, month: abs(month))
+        try super.init(year: year, month: abs(month))
     }
 
-    public static func fromYm(_ year: Int, _ month: Int) -> LunarMonth {
-        LunarMonth(year: year, month: month)
+    public static func fromYm(_ year: Int, _ month: Int) throws -> LunarMonth {
+        try LunarMonth(year: year, month: month)
     }
 
-    public func getLunarYear() -> LunarYear { LunarYear.fromYear(getYear()) }
+    public func getLunarYear() -> LunarYear { try! LunarYear.fromYear(getYear()) }
 
-    public func getMonthWithLeap() -> Int { leap ? -getMonth() : getMonth() }
+    public func getMonthWithLeap() -> Int { leap ? -getMonth() : try! getMonth() }
 
     private func getNewMoon() -> Double {
         let dongZhiJd = SolarTerm.fromIndex(getYear(), 0).getCursoryJulianDay()
@@ -36,7 +36,7 @@ public final class LunarMonth: MonthUnit, Tyme {
         var offset = 2
         if getYear() > 8 && getYear() < 24 {
             offset = 1
-        } else if LunarYear.fromYear(getYear() - 1).getLeapMonth() > 10 && getYear() != 239 && getYear() != 240 {
+        } else if getYear() > -1, let prevYear = try? LunarYear.fromYear(getYear() - 1), prevYear.getLeapMonth() > 10 && getYear() != 239 && getYear() != 240 {
             offset = 3
         }
         return w + 29.5306 * Double(offset + getIndexInYear())
@@ -48,11 +48,11 @@ public final class LunarMonth: MonthUnit, Tyme {
     }
 
     public func getIndexInYear() -> Int {
-        var index = getMonth() - 1
+        var index = try! getMonth() - 1
         if leap {
             index += 1
         } else {
-            let leapMonth = LunarYear.fromYear(getYear()).getLeapMonth()
+            let leapMonth = try! LunarYear.fromYear(getYear()).getLeapMonth()
             if leapMonth > 0 && getMonth() > leapMonth { index += 1 }
         }
         return index
@@ -78,7 +78,7 @@ public final class LunarMonth: MonthUnit, Tyme {
     }
 
     public func next(_ n: Int) -> LunarMonth {
-        if n == 0 { return LunarMonth(year: getYear(), month: getMonthWithLeap()) }
+        if n == 0 { return try! LunarMonth(year: getYear(), month: getMonthWithLeap()) }
         var m = getIndexInYear() + 1 + n
         var y = getLunarYear()
         if n > 0 {
@@ -100,23 +100,23 @@ public final class LunarMonth: MonthUnit, Tyme {
             if m == leapMonth + 1 { isLeap = true }
             if m > leapMonth { m -= 1 }
         }
-        return LunarMonth(year: y.getYear(), month: isLeap ? -m : m)
+        return try! LunarMonth(year: y.getYear(), month: isLeap ? -m : m)
     }
 
     public func getDays() -> [LunarDay] {
         let size = getDayCount()
         let m = getMonthWithLeap()
-        return (1...size).map { LunarDay.fromYmd(getYear(), m, $0) }
+        return (1...size).map { try! LunarDay.fromYmd(getYear(), m, $0) }
     }
 
     public func getFirstDay() -> LunarDay {
-        LunarDay.fromYmd(getYear(), getMonthWithLeap(), 1)
+        try! LunarDay.fromYmd(getYear(), getMonthWithLeap(), 1)
     }
 
     public func getWeeks(_ start: Int) -> [LunarWeek] {
         let size = getWeekCount(start)
         let m = getMonthWithLeap()
-        return (0..<size).map { LunarWeek.fromYm(getYear(), m, $0, start) }
+        return (0..<size).map { try! LunarWeek.fromYm(getYear(), m, $0, start) }
     }
 
     public func getFetus() -> FetusMonth? {

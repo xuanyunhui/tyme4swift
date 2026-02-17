@@ -30,20 +30,20 @@ public final class EarthBranch: LoopTyme {
         self.init(names: EarthBranch.NAMES, index: index)
     }
 
-    public convenience init(name: String) {
-        self.init(names: EarthBranch.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: EarthBranch.NAMES, name: name)
     }
 
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     public static func fromIndex(_ index: Int) -> EarthBranch {
         EarthBranch(index: index)
     }
 
-    public static func fromName(_ name: String) -> EarthBranch {
-        EarthBranch(name: name)
+    public static func fromName(_ name: String) throws -> EarthBranch {
+        try EarthBranch(name: name)
     }
 
     public func stepsTo(_ targetIndex: Int) -> Int {

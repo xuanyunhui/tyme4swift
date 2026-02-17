@@ -23,9 +23,9 @@ public final class PengZuEarthBranch: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: The taboo name
-    public init(_ name: String) {
+    public init(_ name: String) throws {
         guard let idx = PengZuEarthBranch.NAMES.firstIndex(of: name) else {
-            fatalError("Invalid PengZuEarthBranch name: \(name)")
+            throw TymeError.invalidName(name)
         }
         super.init(names: PengZuEarthBranch.NAMES, index: idx)
     }
@@ -38,14 +38,14 @@ public final class PengZuEarthBranch: LoopTyme {
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Create from name
     /// - Parameter name: The taboo name
     /// - Returns: PengZuEarthBranch instance
-    public static func fromName(_ name: String) -> PengZuEarthBranch {
-        return PengZuEarthBranch(name)
+    public static func fromName(_ name: String) throws -> PengZuEarthBranch {
+        return try PengZuEarthBranch(name)
     }
 
     /// Create from index
@@ -59,6 +59,6 @@ public final class PengZuEarthBranch: LoopTyme {
     /// - Parameter n: Number of steps to advance
     /// - Returns: Next PengZuEarthBranch instance
     public override func next(_ n: Int) -> PengZuEarthBranch {
-        return PengZuEarthBranch(nextIndex(n))
+        return try! PengZuEarthBranch(nextIndex(n))
     }
 }

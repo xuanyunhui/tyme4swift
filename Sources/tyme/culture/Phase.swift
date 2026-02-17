@@ -14,13 +14,13 @@ public final class Phase: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Phase name (e.g., "上旬", "中旬", "下旬")
-    public convenience init(name: String) {
-        self.init(names: Phase.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Phase.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Phase from index
@@ -33,8 +33,8 @@ public final class Phase: LoopTyme {
     /// Get Phase from name
     /// - Parameter name: Phase name (e.g., "上旬", "中旬", "下旬")
     /// - Returns: Phase instance
-    public static func fromName(_ name: String) -> Phase {
-        return Phase(name: name)
+    public static func fromName(_ name: String) throws -> Phase {
+        return try Phase(name: name)
     }
 
     /// Get next phase

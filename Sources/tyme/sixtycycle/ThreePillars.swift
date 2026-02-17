@@ -15,9 +15,9 @@ public final class ThreePillars: AbstractCulture {
 
     public convenience init(yearName: String, monthName: String, dayName: String) {
         self.init(
-            year: SixtyCycle.fromName(yearName),
-            month: SixtyCycle.fromName(monthName),
-            day: SixtyCycle.fromName(dayName)
+            year: try! SixtyCycle.fromName(yearName),
+            month: try! SixtyCycle.fromName(monthName),
+            day: try! SixtyCycle.fromName(dayName)
         )
     }
 

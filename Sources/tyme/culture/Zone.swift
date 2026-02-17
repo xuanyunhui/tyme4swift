@@ -14,13 +14,13 @@ public final class Zone: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Zone name ("东", "北", "西", "南")
-    public convenience init(name: String) {
-        self.init(names: Zone.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Zone.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Zone from index
@@ -33,8 +33,8 @@ public final class Zone: LoopTyme {
     /// Get Zone from name
     /// - Parameter name: Zone name ("东", "北", "西", "南")
     /// - Returns: Zone instance
-    public static func fromName(_ name: String) -> Zone {
-        return Zone(name: name)
+    public static func fromName(_ name: String) throws -> Zone {
+        return try Zone(name: name)
     }
 
     /// Get next zone
@@ -47,7 +47,7 @@ public final class Zone: LoopTyme {
     /// Get direction
     /// - Returns: Direction instance
     public func getDirection() -> Direction {
-        return Direction.fromName(getName())
+        return try! Direction.fromName(getName())
     }
 
     /// Get beast (神兽)

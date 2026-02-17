@@ -19,13 +19,13 @@ public final class Sound: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Sound name (e.g., "宫", "商", etc.)
-    public convenience init(name: String) {
-        self.init(names: Sound.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Sound.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Sound from index
@@ -38,8 +38,8 @@ public final class Sound: LoopTyme {
     /// Get Sound from name
     /// - Parameter name: Sound name (e.g., "宫", "商", etc.)
     /// - Returns: Sound instance
-    public static func fromName(_ name: String) -> Sound {
-        return Sound(name: name)
+    public static func fromName(_ name: String) throws -> Sound {
+        return try Sound(name: name)
     }
 
     /// Get next sound
@@ -58,6 +58,6 @@ public final class Sound: LoopTyme {
     /// Get Element instance
     /// - Returns: Element instance
     public func getElement() -> Element {
-        return Element.fromName(Sound.WU_XING[index])
+        return try! Element.fromName(Sound.NAMES[index])
     }
 }

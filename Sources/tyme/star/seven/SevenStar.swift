@@ -16,13 +16,13 @@ public final class SevenStar: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Star name (e.g., "日", "月", etc.)
-    public convenience init(name: String) {
-        self.init(names: SevenStar.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: SevenStar.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get SevenStar from index
@@ -35,8 +35,8 @@ public final class SevenStar: LoopTyme {
     /// Get SevenStar from name
     /// - Parameter name: Star name (e.g., "日", "月", etc.)
     /// - Returns: SevenStar instance
-    public static func fromName(_ name: String) -> SevenStar {
-        return SevenStar(name: name)
+    public static func fromName(_ name: String) throws -> SevenStar {
+        return try SevenStar(name: name)
     }
 
     /// Get next star

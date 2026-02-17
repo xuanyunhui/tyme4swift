@@ -13,16 +13,16 @@ public final class Zodiac: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Zodiac name (e.g., "鼠", "牛", etc.)
-    public init(_ name: String) {
+    public init(_ name: String) throws {
         guard let idx = Zodiac.NAMES.firstIndex(of: name) else {
-            fatalError("Invalid zodiac name: \(name)")
+            throw TymeError.invalidName(name)
         }
         super.init(names: Zodiac.NAMES, index: idx)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get zodiac from index
@@ -35,8 +35,8 @@ public final class Zodiac: LoopTyme {
     /// Get zodiac from name
     /// - Parameter name: Zodiac name (e.g., "鼠", "牛", etc.)
     /// - Returns: Zodiac instance
-    public static func fromName(_ name: String) -> Zodiac {
-        return Zodiac(name)
+    public static func fromName(_ name: String) throws -> Zodiac {
+        return try Zodiac(name)
     }
 
     /// Get next zodiac

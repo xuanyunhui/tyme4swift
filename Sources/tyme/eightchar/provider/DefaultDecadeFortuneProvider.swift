@@ -15,7 +15,7 @@ public final class DefaultDecadeFortuneProvider: DecadeFortuneProvider {
         let isForward = (isYangYear && isMale) || (!isYangYear && !isMale)
 
         // Use ChildLimit to get start age
-        let birthTime = SolarTime.fromYmdHms(year, month, day, hour, 0, 0)
+        let birthTime = try! SolarTime.fromYmdHms(year, month, day, hour, 0, 0)
         let childLimit = ChildLimit(birthTime: birthTime, gender: gender)
         let startAge = childLimit.getYearCount()
 

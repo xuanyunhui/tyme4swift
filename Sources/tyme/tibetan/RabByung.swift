@@ -35,13 +35,13 @@ public final class RabByung: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: RabByung name (e.g., "火兔", "土龙", etc.)
-    public convenience init(name: String) {
-        self.init(names: RabByung.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: RabByung.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get RabByung from index
@@ -54,8 +54,8 @@ public final class RabByung: LoopTyme {
     /// Get RabByung from name
     /// - Parameter name: RabByung name (e.g., "火兔", "土龙", etc.)
     /// - Returns: RabByung instance
-    public static func fromName(_ name: String) -> RabByung {
-        return RabByung(name: name)
+    public static func fromName(_ name: String) throws -> RabByung {
+        return try RabByung(name: name)
     }
 
     /// Get next RabByung

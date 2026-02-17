@@ -15,13 +15,13 @@ public final class Duty: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Duty name (e.g., "建", "除", etc.)
-    public convenience init(name: String) {
-        self.init(names: Duty.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Duty.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Duty from index
@@ -34,8 +34,8 @@ public final class Duty: LoopTyme {
     /// Get Duty from name
     /// - Parameter name: Duty name (e.g., "建", "除", etc.)
     /// - Returns: Duty instance
-    public static func fromName(_ name: String) -> Duty {
-        return Duty(name: name)
+    public static func fromName(_ name: String) throws -> Duty {
+        return try Duty(name: name)
     }
 
     /// Get next duty

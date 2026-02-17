@@ -15,13 +15,13 @@ public final class TenDay: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: TenDay name (e.g., "甲", "乙", etc.)
-    public convenience init(name: String) {
-        self.init(names: TenDay.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: TenDay.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get TenDay from index
@@ -34,8 +34,8 @@ public final class TenDay: LoopTyme {
     /// Get TenDay from name
     /// - Parameter name: TenDay name (e.g., "甲", "乙", etc.)
     /// - Returns: TenDay instance
-    public static func fromName(_ name: String) -> TenDay {
-        return TenDay(name: name)
+    public static func fromName(_ name: String) throws -> TenDay {
+        return try TenDay(name: name)
     }
 
     /// Get next ten day

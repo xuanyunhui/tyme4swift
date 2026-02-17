@@ -14,13 +14,13 @@ public final class GodType: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: GodType name (e.g., "年", "月", "日", "时")
-    public convenience init(name: String) {
-        self.init(names: GodType.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: GodType.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get GodType from index
@@ -33,8 +33,8 @@ public final class GodType: LoopTyme {
     /// Get GodType from name
     /// - Parameter name: GodType name (e.g., "年", "月", "日", "时")
     /// - Returns: GodType instance
-    public static func fromName(_ name: String) -> GodType {
-        return GodType(name: name)
+    public static func fromName(_ name: String) throws -> GodType {
+        return try GodType(name: name)
     }
 
     /// Get next god type

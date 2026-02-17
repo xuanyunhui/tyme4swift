@@ -60,7 +60,7 @@ public final class DefaultEightCharProvider: EightCharProvider {
 
     /// Get day pillar SixtyCycle
     public func getDaySixtyCycle(year: Int, month: Int, day: Int) -> SixtyCycle {
-        let solarDay = SolarDay.fromYmd(year, month, day)
+        let solarDay = try! SolarDay.fromYmd(year, month, day)
         let jd = solarDay.getJulianDay()
         let offset = Int(jd.getDay() + 0.5) + 49
         var index = offset % 60

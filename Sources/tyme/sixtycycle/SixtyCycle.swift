@@ -7,12 +7,13 @@ public final class SixtyCycle: LoopTyme {
         self.init(names: SixtyCycle.NAMES, index: index)
     }
 
-    public convenience init(name: String) {
-        self.init(names: SixtyCycle.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: SixtyCycle.NAMES, name: name)
     }
 
     public static func fromIndex(_ index: Int) -> SixtyCycle { SixtyCycle(index: index) }
-    public static func fromName(_ name: String) -> SixtyCycle { SixtyCycle(name: name) }
+    public static func fromName(_ name: String) throws -> SixtyCycle {
+        try SixtyCycle(name: name) }
 
     public func getHeavenStem() -> HeavenStem {
         HeavenStem.fromIndex(index % HeavenStem.NAMES.count)

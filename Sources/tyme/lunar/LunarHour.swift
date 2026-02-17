@@ -1,28 +1,28 @@
 import Foundation
 
 public final class LunarHour: SecondUnit, Tyme {
-    public static func validate(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) {
-        SecondUnit.validate(hour: hour, minute: minute, second: second)
-        LunarDay.validate(year: year, month: month, day: day)
+    public static func validate(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) throws {
+        try SecondUnit.validate(hour: hour, minute: minute, second: second)
+        try LunarDay.validate(year: year, month: month, day: day)
     }
 
-    public override init(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) {
-        LunarHour.validate(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
-        super.init(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
+    public override init(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) throws {
+        try! LunarHour.validate(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
+        try super.init(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
     }
 
-    public static func fromYmdHms(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int, _ second: Int) -> LunarHour {
-        LunarHour(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
+    public static func fromYmdHms(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int, _ second: Int) throws -> LunarHour {
+        try LunarHour(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
     }
 
-    public func getLunarDay() -> LunarDay { LunarDay.fromYmd(getYear(), getMonth(), getDay()) }
+    public func getLunarDay() -> LunarDay { try! LunarDay.fromYmd(getYear(), try! getMonth(), getDay()) }
 
     public func getName() -> String { EarthBranch.fromIndex(getIndexInDay()).getName() + "时" }
 
     public func getIndexInDay() -> Int { (getHour() + 1) / 2 }
 
     public func next(_ n: Int) -> LunarHour {
-        if n == 0 { return LunarHour.fromYmdHms(getYear(), getMonth(), getDay(), getHour(), getMinute(), getSecond()) }
+        if n == 0 { return try! LunarHour.fromYmdHms(getYear(), getMonth(), getDay(), getHour(), getMinute(), getSecond()) }
         var h = getHour() + n * 2
         let diff = h < 0 ? -1 : 1
         var hour = abs(h)
@@ -33,7 +33,7 @@ public final class LunarHour: SecondUnit, Tyme {
             days -= 1
         }
         let d = getLunarDay().next(days)
-        return LunarHour.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, getMinute(), getSecond())
+        return try! LunarHour.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, getMinute(), getSecond())
     }
 
     public func isBefore(_ target: LunarHour) -> Bool {
@@ -59,17 +59,17 @@ public final class LunarHour: SecondUnit, Tyme {
     }
 
     public func getSixtyCycle() -> SixtyCycle {
-        let earthBranchIndex = getIndexInDay() % 12
+        let earthBranchIndex = try! getIndexInDay() % 12
         var d = getLunarDay().getSixtyCycle()
         if getHour() >= 23 { d = d.next(1) }
         let stemIndex = d.getHeavenStem().getIndex() % 5 * 2 + earthBranchIndex
         let stem = HeavenStem.fromIndex(stemIndex).getName()
         let branch = EarthBranch.fromIndex(earthBranchIndex).getName()
-        return SixtyCycle.fromName(stem + branch)
+        return try! SixtyCycle.fromName(stem + branch)
     }
 
     public func getSolarTime() -> SolarTime {
-        let d = getLunarDay().getSolarDay()
-        return SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), getHour(), getMinute(), getSecond())
+        let d = try! getLunarDay().getSolarDay()
+        return try! SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), getHour(), getMinute(), getSecond())
     }
 }

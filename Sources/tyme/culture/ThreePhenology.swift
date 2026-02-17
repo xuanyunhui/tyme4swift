@@ -14,13 +14,13 @@ public final class ThreePhenology: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: ThreePhenology name (e.g., "初候", "二候", "三候")
-    public convenience init(name: String) {
-        self.init(names: ThreePhenology.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: ThreePhenology.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get ThreePhenology from index
@@ -33,8 +33,8 @@ public final class ThreePhenology: LoopTyme {
     /// Get ThreePhenology from name
     /// - Parameter name: ThreePhenology name (e.g., "初候", "二候", "三候")
     /// - Returns: ThreePhenology instance
-    public static func fromName(_ name: String) -> ThreePhenology {
-        return ThreePhenology(name: name)
+    public static func fromName(_ name: String) throws -> ThreePhenology {
+        return try ThreePhenology(name: name)
     }
 
     /// Get next three-phenology

@@ -14,13 +14,13 @@ public final class Constellation: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Constellation name (e.g., "白羊", "金牛", etc.)
-    public convenience init(name: String) {
-        self.init(names: Constellation.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Constellation.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Constellation from index
@@ -33,8 +33,8 @@ public final class Constellation: LoopTyme {
     /// Get Constellation from name
     /// - Parameter name: Constellation name (e.g., "白羊", "金牛", etc.)
     /// - Returns: Constellation instance
-    public static func fromName(_ name: String) -> Constellation {
-        return Constellation(name: name)
+    public static func fromName(_ name: String) throws -> Constellation {
+        return try Constellation(name: name)
     }
 
     /// Get next constellation

@@ -13,9 +13,9 @@ open class LoopTyme: AbstractTyme {
         super.init()
     }
 
-    public convenience init(names: [String], name: String) {
+    public convenience init(names: [String], name: String) throws {
         guard let i = names.firstIndex(of: name) else {
-            fatalError("Invalid name: \(name)")
+            throw TymeError.invalidName(name)
         }
         self.init(names: names, index: i)
     }

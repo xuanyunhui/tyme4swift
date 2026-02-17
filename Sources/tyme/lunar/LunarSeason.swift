@@ -7,16 +7,16 @@ public final class LunarSeason: LoopTyme {
         self.init(names: LunarSeason.NAMES, index: index)
     }
 
-    public convenience init(name: String) {
-        self.init(names: LunarSeason.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: LunarSeason.NAMES, name: name)
     }
 
     public static func fromIndex(_ index: Int) -> LunarSeason {
         LunarSeason(index: index)
     }
 
-    public static func fromName(_ name: String) -> LunarSeason {
-        LunarSeason(name: name)
+    public static func fromName(_ name: String) throws -> LunarSeason {
+        try LunarSeason(name: name)
     }
 
     public override func next(_ n: Int) -> LunarSeason {

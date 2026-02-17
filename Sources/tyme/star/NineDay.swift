@@ -24,13 +24,13 @@ public final class NineDay: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Palace name (e.g., "坎", "坤", etc.)
-    public convenience init(name: String) {
-        self.init(names: NineDay.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: NineDay.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get NineDay from index
@@ -43,8 +43,8 @@ public final class NineDay: LoopTyme {
     /// Get NineDay from name
     /// - Parameter name: Palace name (e.g., "坎", "坤", etc.)
     /// - Returns: NineDay instance
-    public static func fromName(_ name: String) -> NineDay {
-        return NineDay(name: name)
+    public static func fromName(_ name: String) throws -> NineDay {
+        return try NineDay(name: name)
     }
 
     /// Get NineDay from number

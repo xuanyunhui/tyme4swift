@@ -8,8 +8,8 @@ open class WeekUnit: MonthUnit {
 
     public func getStart() -> Week { Week.fromIndex(start) }
 
-    public static func validate(index: Int, start: Int) {
-        if index < 0 || index > 5 { fatalError("illegal week index: \(index)") }
-        if start < 0 || start > 6 { fatalError("illegal week start: \(start)") }
+    public static func validate(index: Int, start: Int) throws {
+        if index < 0 || index > 5 { throw TymeError.invalidIndex(index) }
+        if start < 0 || start > 6 { throw TymeError.invalidIndex(start) }
     }
 }

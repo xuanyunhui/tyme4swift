@@ -9,24 +9,24 @@ public final class SolarTerm: LoopTyme {
     public required init(names: [String], index: Int) {
         self.year = 2000
         self.cursoryJulianDay = 0
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
-    public init(year: Int, index: Int) {
+    public init(year: Int, index: Int) throws {
         let size = SolarTerm.NAMES.count
         let normalizedYear = (year * size + index) / size
         let normalizedIndex = ((index % size) + size) % size
         self.year = normalizedYear
         self.cursoryJulianDay = 0
-        super.init(names: SolarTerm.NAMES, index: normalizedIndex)
+        try super.init(names: SolarTerm.NAMES, index: normalizedIndex)
         initByYear(normalizedYear, normalizedIndex)
     }
 
-    public convenience init(year: Int, name: String) {
+    public convenience init(year: Int, name: String) throws {
         guard let idx = SolarTerm.NAMES.firstIndex(of: name) else {
-            fatalError("Invalid solar term name: \(name)")
+            throw TymeError.invalidName(name)
         }
-        self.init(year: year, index: idx)
+        try! self.init(year: year, index: idx)
     }
 
     private func initByYear(_ year: Int, _ offset: Int) {
@@ -38,17 +38,17 @@ public final class SolarTerm: LoopTyme {
     }
 
     public static func fromIndex(_ year: Int, _ index: Int) -> SolarTerm {
-        SolarTerm(year: year, index: index)
+        try! SolarTerm(year: year, index: index)
     }
 
-    public static func fromName(_ year: Int, _ name: String) -> SolarTerm {
-        SolarTerm(year: year, name: name)
+    public static func fromName(_ year: Int, _ name: String) throws -> SolarTerm {
+        try! SolarTerm(year: year, name: name)
     }
 
     public override func next(_ n: Int) -> SolarTerm {
         let size = SolarTerm.NAMES.count
         let i = index + n
-        return SolarTerm(year: (year * size + i) / size, index: ((i % size) + size) % size)
+        return try! SolarTerm(year: (year * size + i) / size, index: ((i % size) + size) % size)
     }
 
     public func isJie() -> Bool { index % 2 == 1 }
