@@ -62,14 +62,14 @@ import Testing
     @Test func testHideHeavenStem() throws {
         // Test 子 branch hidden stems (癸)
         let zi = EarthBranch.fromIndex(0)
-        let ziHideStems = zi.getHideHeavenStems()
+        let ziHideStems = zi.hideHeavenStems
         #expect(ziHideStems.count == 1)
         #expect(ziHideStems[0].getName() == "癸")
         #expect(ziHideStems[0].isMain())
 
         // Test 丑 branch hidden stems (己癸辛)
         let chou = EarthBranch.fromIndex(1)
-        let chouHideStems = chou.getHideHeavenStems()
+        let chouHideStems = chou.hideHeavenStems
         #expect(chouHideStems.count == 3)
         #expect(chouHideStems[0].getName() == "己")
         #expect(chouHideStems[1].getName() == "癸")
@@ -77,7 +77,7 @@ import Testing
 
         // Test 寅 branch hidden stems (甲丙戊)
         let yin = EarthBranch.fromIndex(2)
-        let yinHideStems = yin.getHideHeavenStems()
+        let yinHideStems = yin.hideHeavenStems
         #expect(yinHideStems.count == 3)
         #expect(yinHideStems[0].getName() == "甲")
         #expect(yinHideStems[0].isMain())
@@ -87,61 +87,61 @@ import Testing
         #expect(yinHideStems[2].isResidual())
 
         // Test getMainHideHeavenStem
-        let mainStem = zi.getMainHideHeavenStem()
+        let mainStem = zi.mainHideHeavenStem
         #expect(mainStem != nil)
         #expect(mainStem?.getName() == "癸")
     }
     @Test func testSixtyCycleYear() throws {
         // Test year 2024 (甲辰年)
         let year2024 = SixtyCycleYear.fromYear(2024)
-        #expect(year2024.getYear() == 2024)
+        #expect(year2024.year == 2024)
         #expect(year2024.getName() == "甲辰")
-        #expect(year2024.getHeavenStem().getName() == "甲")
-        #expect(year2024.getEarthBranch().getName() == "辰")
-        #expect(year2024.getZodiac().getName() == "龙")
+        #expect(year2024.heavenStem.getName() == "甲")
+        #expect(year2024.earthBranch.getName() == "辰")
+        #expect(year2024.zodiac.getName() == "龙")
 
         // Test year 2023 (癸卯年)
         let year2023 = SixtyCycleYear.fromYear(2023)
         #expect(year2023.getName() == "癸卯")
-        #expect(year2023.getZodiac().getName() == "兔")
+        #expect(year2023.zodiac.getName() == "兔")
 
         // Test next
         let year2025 = year2024.next(1)
-        #expect(year2025.getYear() == 2025)
+        #expect(year2025.year == 2025)
         #expect(year2025.getName() == "乙巳")
 
         // Test NaYin
-        _ = year2024.getNaYin()
+        _ = year2024.naYin
     }
     @Test func testSixtyCycleMonth() throws {
         // Test 2024年1月
         let month = SixtyCycleMonth.fromYm(2024, 1)
-        #expect(month.getYear() == 2024)
-        #expect(month.getMonth() == 1)
-        _ = month.getHeavenStem()
-        _ = month.getEarthBranch()
-        _ = month.getSixtyCycle()
-        _ = month.getNaYin()
+        #expect(month.year == 2024)
+        #expect(month.month == 1)
+        _ = month.heavenStem
+        _ = month.earthBranch
+        _ = month.sixtyCycle
+        _ = month.naYin
 
         // Test next
         let nextMonth = month.next(1)
-        #expect(nextMonth.getMonth() == 2)
+        #expect(nextMonth.month == 2)
 
         // Test wrap around
         let decMonth = SixtyCycleMonth.fromYm(2024, 12)
         let janMonth = decMonth.next(1)
-        #expect(janMonth.getYear() == 2025)
-        #expect(janMonth.getMonth() == 1)
+        #expect(janMonth.year == 2025)
+        #expect(janMonth.month == 1)
     }
     @Test func testSixtyCycleDay() throws {
         // Test a specific date
         let day = try SixtyCycleDay.fromYmd(2024, 2, 10)
-        _ = day.getSixtyCycle()
-        _ = day.getHeavenStem()
-        _ = day.getEarthBranch()
-        _ = day.getNaYin()
-        _ = day.getDuty()
-        _ = day.getTwentyEightStar()
+        _ = day.sixtyCycle
+        _ = day.heavenStem
+        _ = day.earthBranch
+        _ = day.naYin
+        _ = day.duty
+        _ = day.twentyEightStar
 
         // Test next
         _ = day.next(1)
@@ -154,29 +154,29 @@ import Testing
     @Test func testSixtyCycleHour() throws {
         // Test a specific time
         let hour = try SixtyCycleHour.fromYmdHms(2024, 2, 10, 12, 0, 0)
-        _ = hour.getSixtyCycle()
-        _ = hour.getHeavenStem()
-        _ = hour.getEarthBranch()
-        _ = hour.getNaYin()
+        _ = hour.sixtyCycle
+        _ = hour.heavenStem
+        _ = hour.earthBranch
+        _ = hour.naYin
 
-        // Test getIndexInDay
-        let hourIndex = hour.getIndexInDay()
+        // Test indexInDay
+        let hourIndex = hour.indexInDay
         #expect(hourIndex == 6) // 12:00 is 午时 (index 6)
 
         // Test 子时 (23:00-01:00)
         let ziHour = try SixtyCycleHour.fromYmdHms(2024, 2, 10, 0, 0, 0)
-        #expect(ziHour.getIndexInDay() == 0)
+        #expect(ziHour.indexInDay == 0)
 
         // Test next
         _ = hour.next(1)
     }
     @Test func testHideHeavenStemDay() {
         let eb = EarthBranch.fromIndex(0) // 子
-        let stems = eb.getHideHeavenStems()
+        let stems = eb.hideHeavenStems
         let day = HideHeavenStemDay(hideHeavenStem: stems[0], dayIndex: 0)
-        #expect(day.getHideHeavenStem().getName() == "癸")
+        #expect(day.hideHeavenStem.getName() == "癸")
         #expect(day.getName() == "癸水")  // 癸的五行是水
-        #expect(day.getDayIndex() == 0)
+        #expect(day.dayIndex == 0)
         #expect(day.description == "癸水第1天")
     }
 }
