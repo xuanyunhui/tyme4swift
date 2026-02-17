@@ -8,12 +8,12 @@ import Testing
         for i in 0..<4 {
             let godType = GodType.fromIndex(i)
             #expect(godType.getName() == expectedNames[i])
-            #expect(godType.getIndex() == i)
+            #expect(godType.index == i)
         }
 
         // Test fromName
         let nian = try GodType.fromName("年")
-        #expect(nian.getIndex() == 0)
+        #expect(nian.index == 0)
 
         // Test next
         let yue = nian.next(1)

@@ -6,24 +6,24 @@ import Testing
         // Test fromIndex
         let rat = Zodiac.fromIndex(0)
         #expect(rat.getName() == "鼠")
-        #expect(rat.getIndex() == 0)
+        #expect(rat.index == 0)
 
         // Test fromName
         let ox = try Zodiac.fromName("牛")
         #expect(ox.getName() == "牛")
-        #expect(ox.getIndex() == 1)
+        #expect(ox.index == 1)
 
         // Test next
         let tiger = rat.next(2)
         #expect(tiger.getName() == "虎")
-        #expect(tiger.getIndex() == 2)
+        #expect(tiger.index == 2)
 
         // Test wrap around
         let pig = Zodiac.fromIndex(11)
         #expect(pig.getName() == "猪")
         let nextRat = pig.next(1)
         #expect(nextRat.getName() == "鼠")
-        #expect(nextRat.getIndex() == 0)
+        #expect(nextRat.index == 0)
 
         // Test getEarthBranch
         let ratBranch = rat.getEarthBranch()
@@ -33,24 +33,24 @@ import Testing
         // Test fromIndex
         let jia = PengZuHeavenStem.fromIndex(0)
         #expect(jia.getName() == "甲不开仓财物耗散")
-        #expect(jia.getIndex() == 0)
+        #expect(jia.index == 0)
 
         // Test fromName
         let yi = try PengZuHeavenStem.fromName("乙不栽植千株不长")
         #expect(yi.getName() == "乙不栽植千株不长")
-        #expect(yi.getIndex() == 1)
+        #expect(yi.index == 1)
 
         // Test next
         let bing = jia.next(2)
         #expect(bing.getName() == "丙不修灶必见灾殃")
-        #expect(bing.getIndex() == 2)
+        #expect(bing.index == 2)
 
         // Test wrap around
         let gui = PengZuHeavenStem.fromIndex(9)
         #expect(gui.getName() == "癸不词讼理弱敌强")
         let nextJia = gui.next(1)
         #expect(nextJia.getName() == "甲不开仓财物耗散")
-        #expect(nextJia.getIndex() == 0)
+        #expect(nextJia.index == 0)
 
         // Test all 10 stems
         let expectedNames = [
@@ -74,24 +74,24 @@ import Testing
         // Test fromIndex
         let zi = PengZuEarthBranch.fromIndex(0)
         #expect(zi.getName() == "子不问卜自惹祸殃")
-        #expect(zi.getIndex() == 0)
+        #expect(zi.index == 0)
 
         // Test fromName
         let chou = try PengZuEarthBranch.fromName("丑不冠带主不还乡")
         #expect(chou.getName() == "丑不冠带主不还乡")
-        #expect(chou.getIndex() == 1)
+        #expect(chou.index == 1)
 
         // Test next
         let yin = zi.next(2)
         #expect(yin.getName() == "寅不祭祀神鬼不尝")
-        #expect(yin.getIndex() == 2)
+        #expect(yin.index == 2)
 
         // Test wrap around
         let hai = PengZuEarthBranch.fromIndex(11)
         #expect(hai.getName() == "亥不嫁娶不利新郎")
         let nextZi = hai.next(1)
         #expect(nextZi.getName() == "子不问卜自惹祸殃")
-        #expect(nextZi.getIndex() == 0)
+        #expect(nextZi.index == 0)
 
         // Test all 12 branches
         let expectedNames = [
@@ -134,9 +134,9 @@ import Testing
 
         // Test getPengZuHeavenStem and getPengZuEarthBranch
         let heavenStem = pengZu1.getPengZuHeavenStem()
-        #expect(heavenStem.getIndex() == 0)
+        #expect(heavenStem.index == 0)
         let earthBranch = pengZu1.getPengZuEarthBranch()
-        #expect(earthBranch.getIndex() == 0)
+        #expect(earthBranch.index == 0)
 
         // Test with SixtyCycle 癸亥 (index 59, last one)
         let guiHai = SixtyCycle.fromIndex(59)
@@ -150,19 +150,19 @@ import Testing
         // Test fromIndex
         let ji = Luck.fromIndex(0)
         #expect(ji.getName() == "吉")
-        #expect(ji.getIndex() == 0)
+        #expect(ji.index == 0)
         #expect(ji.isAuspicious())
         #expect(!ji.isInauspicious())
 
         let xiong = Luck.fromIndex(1)
         #expect(xiong.getName() == "凶")
-        #expect(xiong.getIndex() == 1)
+        #expect(xiong.index == 1)
         #expect(!xiong.isAuspicious())
         #expect(xiong.isInauspicious())
 
         // Test fromName
         let ji2 = try Luck.fromName("吉")
-        #expect(ji2.getIndex() == 0)
+        #expect(ji2.index == 0)
 
         // Test next
         let xiong2 = ji.next(1)
@@ -176,12 +176,12 @@ import Testing
         for i in 0..<7 {
             let star = SevenStar.fromIndex(i)
             #expect(star.getName() == expectedNames[i])
-            #expect(star.getIndex() == i)
+            #expect(star.index == i)
         }
 
         // Test fromName
         let sun = try SevenStar.fromName("日")
-        #expect(sun.getIndex() == 0)
+        #expect(sun.index == 0)
 
         // Test next
         let moon = sun.next(1)
@@ -202,12 +202,12 @@ import Testing
         for i in 0..<6 {
             let star = SixStar.fromIndex(i)
             #expect(star.getName() == expectedNames[i])
-            #expect(star.getIndex() == i)
+            #expect(star.index == i)
         }
 
         // Test fromName
         let sensho = try SixStar.fromName("先胜")
-        #expect(sensho.getIndex() == 0)
+        #expect(sensho.index == 0)
 
         // Test next
         let tomobiki = sensho.next(1)
@@ -224,12 +224,12 @@ import Testing
         for i in 0..<10 {
             let star = TenStar.fromIndex(i)
             #expect(star.getName() == expectedNames[i])
-            #expect(star.getIndex() == i)
+            #expect(star.index == i)
         }
 
         // Test fromName
         let bijian = try TenStar.fromName("比肩")
-        #expect(bijian.getIndex() == 0)
+        #expect(bijian.index == 0)
 
         // Test next
         let jiecai = bijian.next(1)
@@ -244,19 +244,19 @@ import Testing
         // Test fromIndex
         let huangdao = Ecliptic.fromIndex(0)
         #expect(huangdao.getName() == "黄道")
-        #expect(huangdao.getIndex() == 0)
+        #expect(huangdao.index == 0)
         #expect(huangdao.isAuspicious())
         #expect(!huangdao.isInauspicious())
 
         let heidao = Ecliptic.fromIndex(1)
         #expect(heidao.getName() == "黑道")
-        #expect(heidao.getIndex() == 1)
+        #expect(heidao.index == 1)
         #expect(!heidao.isAuspicious())
         #expect(heidao.isInauspicious())
 
         // Test fromName
         let huangdao2 = try Ecliptic.fromName("黄道")
-        #expect(huangdao2.getIndex() == 0)
+        #expect(huangdao2.index == 0)
 
         // Test getLuck
         let luck1 = huangdao.getLuck()
@@ -274,12 +274,12 @@ import Testing
         for i in 0..<12 {
             let star = TwelveStar.fromIndex(i)
             #expect(star.getName() == expectedNames[i])
-            #expect(star.getIndex() == i)
+            #expect(star.index == i)
         }
 
         // Test fromName
         let qinglong = try TwelveStar.fromName("青龙")
-        #expect(qinglong.getIndex() == 0)
+        #expect(qinglong.index == 0)
 
         // Test next
         let mingtang = qinglong.next(1)
@@ -307,12 +307,12 @@ import Testing
         for i in 0..<4 {
             let zone = Zone.fromIndex(i)
             #expect(zone.getName() == expectedNames[i])
-            #expect(zone.getIndex() == i)
+            #expect(zone.index == i)
         }
 
         // Test fromName
         let east = try Zone.fromName("东")
-        #expect(east.getIndex() == 0)
+        #expect(east.index == 0)
 
         // Test next
         let north = east.next(1)
@@ -337,12 +337,12 @@ import Testing
         for i in 0..<4 {
             let beast = Beast.fromIndex(i)
             #expect(beast.getName() == expectedNames[i])
-            #expect(beast.getIndex() == i)
+            #expect(beast.index == i)
         }
 
         // Test fromName
         let qinglong = try Beast.fromName("青龙")
-        #expect(qinglong.getIndex() == 0)
+        #expect(qinglong.index == 0)
 
         // Test next
         let xuanwu = qinglong.next(1)
@@ -363,12 +363,12 @@ import Testing
         for i in 0..<9 {
             let land = Land.fromIndex(i)
             #expect(land.getName() == expectedNames[i])
-            #expect(land.getIndex() == i)
+            #expect(land.index == i)
         }
 
         // Test fromName
         let xuantian = try Land.fromName("玄天")
-        #expect(xuantian.getIndex() == 0)
+        #expect(xuantian.index == 0)
 
         // Test next
         let zhutian = xuantian.next(1)
@@ -389,12 +389,12 @@ import Testing
         for i in 0..<7 {
             let animal = Animal.fromIndex(i)
             #expect(animal.getName() == expectedNames[i])
-            #expect(animal.getIndex() == i)
+            #expect(animal.index == i)
         }
 
         // Test fromName
         let jiao = try Animal.fromName("蛟")
-        #expect(jiao.getIndex() == 0)
+        #expect(jiao.index == 0)
 
         // Test next
         let long = jiao.next(1)
@@ -415,12 +415,12 @@ import Testing
         for i in 0..<7 {
             let star = TwentyEightStar.fromIndex(i)
             #expect(star.getName() == expectedNames[i])
-            #expect(star.getIndex() == i)
+            #expect(star.index == i)
         }
 
         // Test fromName
         let jiao = try TwentyEightStar.fromName("角")
-        #expect(jiao.getIndex() == 0)
+        #expect(jiao.index == 0)
 
         // Test next
         let kang = jiao.next(1)
@@ -468,12 +468,12 @@ import Testing
         for i in 0..<12 {
             let duty = Duty.fromIndex(i)
             #expect(duty.getName() == expectedNames[i])
-            #expect(duty.getIndex() == i)
+            #expect(duty.index == i)
         }
 
         // Test fromName
         let jian = try Duty.fromName("建")
-        #expect(jian.getIndex() == 0)
+        #expect(jian.index == 0)
 
         // Test next
         let chu = jian.next(1)
@@ -490,12 +490,12 @@ import Testing
         for i in 0..<12 {
             let constellation = Constellation.fromIndex(i)
             #expect(constellation.getName() == expectedNames[i])
-            #expect(constellation.getIndex() == i)
+            #expect(constellation.index == i)
         }
 
         // Test fromName
         let aries = try Constellation.fromName("白羊")
-        #expect(aries.getIndex() == 0)
+        #expect(aries.index == 0)
 
         // Test next
         let taurus = aries.next(1)
@@ -513,13 +513,13 @@ import Testing
         for i in 0..<5 {
             let sound = Sound.fromIndex(i)
             #expect(sound.getName() == expectedNames[i])
-            #expect(sound.getIndex() == i)
+            #expect(sound.index == i)
             #expect(sound.getWuXing() == expectedWuXing[i])
         }
 
         // Test fromName
         let gong = try Sound.fromName("宫")
-        #expect(gong.getIndex() == 0)
+        #expect(gong.index == 0)
 
         // Test next
         let shang = gong.next(1)
@@ -540,12 +540,12 @@ import Testing
         for i in 0..<3 {
             let phase = Phase.fromIndex(i)
             #expect(phase.getName() == expectedNames[i])
-            #expect(phase.getIndex() == i)
+            #expect(phase.index == i)
         }
 
         // Test fromName
         let shangXun = try Phase.fromName("上旬")
-        #expect(shangXun.getIndex() == 0)
+        #expect(shangXun.index == 0)
 
         // Test next
         let zhongXun = shangXun.next(1)
@@ -562,12 +562,12 @@ import Testing
         for i in 0..<3 {
             let phenology = Phenology.fromIndex(i)
             #expect(phenology.getName() == expectedNames[i])
-            #expect(phenology.getIndex() == i)
+            #expect(phenology.index == i)
         }
 
         // Test fromName
         let qiuYinJie = try Phenology.fromName("蚯蚓结")
-        #expect(qiuYinJie.getIndex() == 0)
+        #expect(qiuYinJie.index == 0)
 
         // Test next
         let miJiaoJie = qiuYinJie.next(1)
@@ -591,12 +591,12 @@ import Testing
         for i in 0..<3 {
             let threePhenology = ThreePhenology.fromIndex(i)
             #expect(threePhenology.getName() == expectedNames[i])
-            #expect(threePhenology.getIndex() == i)
+            #expect(threePhenology.index == i)
         }
 
         // Test fromName
         let chuHou = try ThreePhenology.fromName("初候")
-        #expect(chuHou.getIndex() == 0)
+        #expect(chuHou.index == 0)
 
         // Test next
         let erHou = chuHou.next(1)
@@ -613,13 +613,13 @@ import Testing
         for i in 0..<5 {
             let phaseDay = PhaseDay.fromIndex(i)
             #expect(phaseDay.getName() == expectedNames[i])
-            #expect(phaseDay.getIndex() == i)
+            #expect(phaseDay.index == i)
             #expect(phaseDay.getDayNumber() == i + 1)
         }
 
         // Test fromName
         let yi = try PhaseDay.fromName("一")
-        #expect(yi.getIndex() == 0)
+        #expect(yi.index == 0)
 
         // Test next
         let er = yi.next(1)
@@ -636,12 +636,12 @@ import Testing
         for i in 0..<10 {
             let tenDay = TenDay.fromIndex(i)
             #expect(tenDay.getName() == expectedNames[i])
-            #expect(tenDay.getIndex() == i)
+            #expect(tenDay.index == i)
         }
 
         // Test fromName
         let jia = try TenDay.fromName("甲")
-        #expect(jia.getIndex() == 0)
+        #expect(jia.index == 0)
 
         // Test next
         let yi = jia.next(1)
@@ -662,12 +662,12 @@ import Testing
         for i in 0..<12 {
             let terrain = Terrain.fromIndex(i)
             #expect(terrain.getName() == expectedNames[i])
-            #expect(terrain.getIndex() == i)
+            #expect(terrain.index == i)
         }
 
         // Test fromName
         let changSheng = try Terrain.fromName("长生")
-        #expect(changSheng.getIndex() == 0)
+        #expect(changSheng.index == 0)
 
         // Test next
         let muYu = changSheng.next(1)
@@ -698,13 +698,13 @@ import Testing
         for i in 0..<5 {
             let naYin = NaYin.fromIndex(i)
             #expect(naYin.getName() == expectedNames[i])
-            #expect(naYin.getIndex() == i)
+            #expect(naYin.index == i)
             #expect(naYin.getWuXing() == expectedWuXing[i])
         }
 
         // Test fromName
         let haiZhongJin = try NaYin.fromName("海中金")
-        #expect(haiZhongJin.getIndex() == 0)
+        #expect(haiZhongJin.index == 0)
 
         // Test next
         let luZhongHuo = haiZhongJin.next(1)
@@ -733,12 +733,12 @@ import Testing
         for i in 0..<5 {
             let sixty = Sixty.fromIndex(i)
             #expect(sixty.getName() == expectedNames[i])
-            #expect(sixty.getIndex() == i)
+            #expect(sixty.index == i)
         }
 
         // Test fromName
         let jiaZi = try Sixty.fromName("甲子")
-        #expect(jiaZi.getIndex() == 0)
+        #expect(jiaZi.index == 0)
 
         // Test next
         let yiChou = jiaZi.next(1)
@@ -771,13 +771,13 @@ import Testing
         for i in 0..<10 {
             let ten = Ten.fromIndex(i)
             #expect(ten.getName() == expectedNames[i])
-            #expect(ten.getIndex() == i)
+            #expect(ten.index == i)
             #expect(ten.getDayNumber() == i + 1)
         }
 
         // Test fromName
         let yi = try Ten.fromName("一")
-        #expect(yi.getIndex() == 0)
+        #expect(yi.index == 0)
 
         // Test next
         let er = yi.next(1)
@@ -794,13 +794,13 @@ import Testing
         for i in 0..<5 {
             let twenty = Twenty.fromIndex(i)
             #expect(twenty.getName() == expectedNames[i])
-            #expect(twenty.getIndex() == i)
+            #expect(twenty.index == i)
             #expect(twenty.getDayNumber() == i + 1)
         }
 
         // Test fromName
         let chuYi = try Twenty.fromName("初一")
-        #expect(chuYi.getIndex() == 0)
+        #expect(chuYi.index == 0)
 
         // Test next
         let chuEr = chuYi.next(1)
@@ -936,12 +936,12 @@ import Testing
         for i in 0..<3 {
             let dog = Dog.fromIndex(i)
             #expect(dog.getName() == expectedNames[i])
-            #expect(dog.getIndex() == i)
+            #expect(dog.index == i)
         }
 
         // Test fromName
         let chuFu = try Dog.fromName("初伏")
-        #expect(chuFu.getIndex() == 0)
+        #expect(chuFu.index == 0)
 
         // Test next
         let zhongFu = chuFu.next(1)
@@ -968,12 +968,12 @@ import Testing
         for i in 0..<9 {
             let nine = Nine.fromIndex(i)
             #expect(nine.getName() == expectedNames[i])
-            #expect(nine.getIndex() == i)
+            #expect(nine.index == i)
         }
 
         // Test fromName
         let yiJiu = try Nine.fromName("一九")
-        #expect(yiJiu.getIndex() == 0)
+        #expect(yiJiu.index == 0)
 
         // Test next
         let erJiu = yiJiu.next(1)
@@ -1040,8 +1040,8 @@ import Testing
         #expect("空亡" == MinorRen.fromIndex(5).getName())
     }
     @Test func testMinorRenFromName() throws {
-        #expect(0 == (try MinorRen.fromName("大安").getIndex()))
-        #expect(3 == (try MinorRen.fromName("赤口").getIndex()))
+        #expect(0 == (try MinorRen.fromName("大安").index))
+        #expect(3 == (try MinorRen.fromName("赤口").index))
     }
     @Test func testMinorRenLuck() throws {
         // Even index = 吉, Odd index = 凶
@@ -1101,14 +1101,14 @@ import Testing
     @Test func testRabByungElement() throws {
         let e = try RabByungElement(index: 3) // 金→铁
         #expect(e.getName() == "铁")
-        #expect(e.getIndex() == 3)
+        #expect(e.index == 3)
         #expect(e.getReinforce().getName() == "水")  // 铁生水
         #expect(e.getRestrain().getName() == "木")   // 铁克木
         #expect(e.getReinforced().getName() == "土") // 土生铁
         #expect(e.getRestrained().getName() == "火") // 火克铁
 
         let e2 = try RabByungElement.fromName("铁")
-        #expect(e2.getIndex() == 3)
+        #expect(e2.index == 3)
         #expect(e2.getName() == "铁")
 
         // Test cycle
