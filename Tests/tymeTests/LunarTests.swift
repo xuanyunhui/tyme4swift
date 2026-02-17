@@ -1,29 +1,24 @@
-import XCTest
+import Testing
 @testable import tyme
 
-final class LunarTests: XCTestCase {
-    func testLunarYear() throws {
+@Suite struct LunarTests {
+    @Test func testLunarYear() throws {
         let lunar = try LunarYear.fromYear(2024)
-        XCTAssertNotNil(lunar)
-        XCTAssertEqual(lunar.getYear(), 2024)
+        #expect(lunar.getYear() == 2024)
     }
-    func testLunarEightCharProvider() throws {
+    @Test func testLunarEightCharProvider() throws {
         let provider = LunarEightCharProvider()
 
         // Test year pillar
-        let yearSixtyCycle = provider.getYearSixtyCycle(year: 2024, month: 2, day: 10)
-        XCTAssertNotNil(yearSixtyCycle)
+        _ = provider.getYearSixtyCycle(year: 2024, month: 2, day: 10)
 
         // Test month pillar
-        let monthSixtyCycle = provider.getMonthSixtyCycle(year: 2024, month: 2, day: 10)
-        XCTAssertNotNil(monthSixtyCycle)
+        _ = provider.getMonthSixtyCycle(year: 2024, month: 2, day: 10)
 
         // Test day pillar
-        let daySixtyCycle = provider.getDaySixtyCycle(year: 2024, month: 2, day: 10)
-        XCTAssertNotNil(daySixtyCycle)
+        _ = provider.getDaySixtyCycle(year: 2024, month: 2, day: 10)
 
         // Test hour pillar
-        let hourSixtyCycle = provider.getHourSixtyCycle(year: 2024, month: 2, day: 10, hour: 12)
-        XCTAssertNotNil(hourSixtyCycle)
+        _ = provider.getHourSixtyCycle(year: 2024, month: 2, day: 10, hour: 12)
     }
 }
