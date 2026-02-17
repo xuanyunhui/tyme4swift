@@ -126,3 +126,27 @@ public final class EightChar {
         return solarMonth
     }
 }
+
+extension EightChar: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case solarYear, solarMonth, solarDay, solarHour
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            year: try container.decode(Int.self, forKey: .solarYear),
+            month: try container.decode(Int.self, forKey: .solarMonth),
+            day: try container.decode(Int.self, forKey: .solarDay),
+            hour: try container.decode(Int.self, forKey: .solarHour)
+        )
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(solarYear, forKey: .solarYear)
+        try container.encode(solarMonth, forKey: .solarMonth)
+        try container.encode(solarDay, forKey: .solarDay)
+        try container.encode(solarHour, forKey: .solarHour)
+    }
+}
