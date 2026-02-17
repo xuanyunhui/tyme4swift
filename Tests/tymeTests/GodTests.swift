@@ -183,4 +183,12 @@ import Testing
             #expect(!taboo.getName().isEmpty)
         }
     }
+    @Test func testGodDirectionAllIndices() {
+        for i in 0..<10 {
+            let hs = HeavenStem.fromIndex(i)
+            _ = YangNobleGod.fromHeavenStem(hs).direction
+            _ = YinNobleGod.fromHeavenStem(hs).direction
+            _ = FortuneGod.fromHeavenStem(hs).direction
+        }
+    }
 }
