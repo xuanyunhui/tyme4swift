@@ -5,25 +5,25 @@ public final class LunarDay: DayUnit, Tyme {
 
     private let leap: Bool
 
-    public static func validate(year: Int, month: Int, day: Int) {
-        if day < 1 { fatalError("illegal lunar day \(day)") }
-        let m = LunarMonth.fromYm(year, month)
-        if day > m.getDayCount() { fatalError("illegal day \(day) in \(m)") }
+    public static func validate(year: Int, month: Int, day: Int) throws {
+        if day < 1 { throw TymeError.invalidDay(day) }
+        let m = try! LunarMonth.fromYm(year, month)
+        if day > m.getDayCount() { throw TymeError.invalidDay(day) }
     }
 
-    public override init(year: Int, month: Int, day: Int) {
-        LunarDay.validate(year: year, month: month, day: day)
+    public override init(year: Int, month: Int, day: Int) throws {
+        try LunarDay.validate(year: year, month: month, day: day)
         self.leap = month < 0
-        super.init(year: year, month: abs(month), day: day)
+        try super.init(year: year, month: abs(month), day: day)
     }
 
     public override func getMonth() -> Int { leap ? -super.getMonth() : super.getMonth() }
 
-    public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) -> LunarDay {
-        LunarDay(year: year, month: month, day: day)
+    public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) throws -> LunarDay {
+        try LunarDay(year: year, month: month, day: day)
     }
 
-    public func getLunarMonth() -> LunarMonth { LunarMonth.fromYm(getYear(), getMonth()) }
+    public func getLunarMonth() -> LunarMonth { try! LunarMonth.fromYm(getYear(), try! getMonth()) }
 
     public func getName() -> String { LunarDay.NAMES[getDay() - 1] }
 
@@ -43,17 +43,17 @@ public final class LunarDay: DayUnit, Tyme {
         return getDay() > target.getDay()
     }
 
-    public func getWeek() -> Week { getSolarDay().getWeek() }
+    public func getWeek() -> Week { try! getSolarDay().getWeek() }
 
     public func getSixtyCycle() -> SixtyCycle {
         let offset = Int(getLunarMonth().getFirstJulianDay().next(getDay() - 12).getDay())
         let stem = HeavenStem.fromIndex(offset).getName()
         let branch = EarthBranch.fromIndex(offset).getName()
-        return SixtyCycle.fromName(stem + branch)
+        return try! SixtyCycle.fromName(stem + branch)
     }
 
     public func getSolarDay() -> SolarDay {
-        getLunarMonth().getFirstJulianDay().next(getDay() - 1).getSolarDay()
+        try! getLunarMonth().getFirstJulianDay().next(getDay() - 1).getSolarDay()
     }
 
     public func getFetusDay() -> FetusDay {

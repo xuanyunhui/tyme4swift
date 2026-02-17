@@ -70,7 +70,7 @@ public final class TibetanDay: AbstractCulture {
     /// Get Tibetan month
     /// - Returns: TibetanMonth instance
     public func getTibetanMonth() -> TibetanMonth {
-        return TibetanMonth.fromYm(year, getMonthWithLeap())
+        return try! TibetanMonth.fromYm(year, getMonthWithLeap())
     }
 
     /// Get Tibetan year

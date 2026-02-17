@@ -27,7 +27,7 @@ public final class WealthGod: AbstractCulture {
     /// Get direction
     /// - Returns: Direction instance
     public func getDirection() -> Direction {
-        return Direction.fromName(getName())
+        return try! Direction.fromName(getName())
     }
 
     /// Create from heaven stem

@@ -24,8 +24,8 @@ public final class SixtyCycleDay: AbstractCulture {
     ///   - year: The year
     ///   - month: The month
     ///   - day: The day
-    public convenience init(year: Int, month: Int, day: Int) {
-        self.init(solarDay: SolarDay(year: year, month: month, day: day))
+    public convenience init(year: Int, month: Int, day: Int) throws {
+        try self.init(solarDay: try SolarDay(year: year, month: month, day: day))
     }
 
     /// Get SolarDay
@@ -91,7 +91,7 @@ public final class SixtyCycleDay: AbstractCulture {
     /// - Parameter n: Number of days to advance
     /// - Returns: Next SixtyCycleDay
     public func next(_ n: Int) -> SixtyCycleDay {
-        return SixtyCycleDay(solarDay: solarDay.next(n))
+        return try! SixtyCycleDay(solarDay: solarDay.next(n))
     }
 
     /// Create from SolarDay
@@ -107,8 +107,8 @@ public final class SixtyCycleDay: AbstractCulture {
     ///   - month: The month
     ///   - day: The day
     /// - Returns: SixtyCycleDay instance
-    public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) -> SixtyCycleDay {
-        return SixtyCycleDay(year: year, month: month, day: day)
+    public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) throws -> SixtyCycleDay {
+        return try SixtyCycleDay(year: year, month: month, day: day)
     }
 
     /// 三柱（年柱、月柱、日柱）
@@ -136,7 +136,7 @@ public final class SixtyCycleDay: AbstractCulture {
         let monthHeavenStemIndex = (firstMonthHeavenStemIndex + normalizedOffset) % 10
         let monthEarthBranchIndex = (2 + normalizedOffset) % 12
         let monthName = HeavenStem.NAMES[monthHeavenStemIndex] + EarthBranch.NAMES[monthEarthBranchIndex]
-        let monthSixtyCycle = SixtyCycle.fromName(monthName)
+        let monthSixtyCycle = try! SixtyCycle.fromName(monthName)
 
         return ThreePillars(year: yearSixtyCycle, month: monthSixtyCycle, day: sixtyCycle)
     }

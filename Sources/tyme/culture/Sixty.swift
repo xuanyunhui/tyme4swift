@@ -14,13 +14,13 @@ public final class Sixty: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Sixty name (e.g., "甲子", "乙丑", etc.)
-    public convenience init(name: String) {
-        self.init(names: Sixty.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Sixty.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Sixty from index
@@ -33,8 +33,8 @@ public final class Sixty: LoopTyme {
     /// Get Sixty from name
     /// - Parameter name: Sixty name (e.g., "甲子", "乙丑", etc.)
     /// - Returns: Sixty instance
-    public static func fromName(_ name: String) -> Sixty {
-        return Sixty(name: name)
+    public static func fromName(_ name: String) throws -> Sixty {
+        return try Sixty(name: name)
     }
 
     /// Get next sixty

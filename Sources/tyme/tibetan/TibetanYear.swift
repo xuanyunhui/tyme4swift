@@ -77,7 +77,7 @@ public final class TibetanYear: AbstractCulture {
     /// - Parameter n: Number of years to advance
     /// - Returns: Next TibetanYear instance
     public func next(_ n: Int) -> TibetanYear {
-        return TibetanYear(year: year + n)
+        return try! TibetanYear(year: year + n)
     }
 
     /// Create from year

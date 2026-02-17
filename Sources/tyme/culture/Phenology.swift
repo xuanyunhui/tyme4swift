@@ -40,13 +40,13 @@ public final class Phenology: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Phenology name
-    public convenience init(name: String) {
-        self.init(names: Phenology.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Phenology.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Phenology from index
@@ -59,8 +59,8 @@ public final class Phenology: LoopTyme {
     /// Get Phenology from name
     /// - Parameter name: Phenology name
     /// - Returns: Phenology instance
-    public static func fromName(_ name: String) -> Phenology {
-        return Phenology(name: name)
+    public static func fromName(_ name: String) throws -> Phenology {
+        return try Phenology(name: name)
     }
 
     /// Get next phenology

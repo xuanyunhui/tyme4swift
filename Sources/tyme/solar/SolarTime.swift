@@ -1,30 +1,30 @@
 import Foundation
 
 public final class SolarTime: SecondUnit, Tyme {
-    public override init(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) {
-        SolarUtil.validateYmd(year: year, month: month, day: day)
-        super.init(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
+    public override init(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) throws {
+        try SolarUtil.validateYmd(year: year, month: month, day: day)
+        try super.init(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
     }
 
-    public static func fromYmdHms(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int, _ second: Int) -> SolarTime {
-        SolarTime(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
+    public static func fromYmdHms(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int, _ second: Int) throws -> SolarTime {
+        try SolarTime(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
     }
 
     public func getName() -> String {
-        String(format: "%04d-%02d-%02d %02d:%02d:%02d", getYear(), getMonth(), getDay(), getHour(), getMinute(), getSecond())
+        String(format: "%04d-%02d-%02d %02d:%02d:%02d", try! getYear(), getMonth(), getDay(), getHour(), getMinute(), getSecond())
     }
 
     public func getJulianDay() -> JulianDay {
-        JulianDay.fromYmdHms(year: getYear(), month: getMonth(), day: getDay(), hour: getHour(), minute: getMinute(), second: getSecond())
+        try! JulianDay.fromYmdHms(year: getYear(), month: getMonth(), day: getDay(), hour: getHour(), minute: getMinute(), second: getSecond())
     }
 
-    public func getSolarDay() -> SolarDay { SolarDay(year: getYear(), month: getMonth(), day: getDay()) }
+    public func getSolarDay() -> SolarDay { try! SolarDay(year: getYear(), month: getMonth(), day: getDay()) }
 
     public func next(_ n: Int) -> SolarTime {
         let jd = getJulianDay()
         let target = JulianDay(jd.value + Double(n) / 86400.0)
         let ymd = target.toYmdHms()
-        return SolarTime(year: ymd.year, month: ymd.month, day: ymd.day, hour: ymd.hour, minute: ymd.minute, second: ymd.second)
+        return try! SolarTime(year: ymd.year, month: ymd.month, day: ymd.day, hour: ymd.hour, minute: ymd.minute, second: ymd.second)
     }
 
     public func subtract(_ target: SolarTime) -> Int {
@@ -62,12 +62,12 @@ public final class SolarTime: SecondUnit, Tyme {
     }
 
     public func getLunarHour() -> LunarHour {
-        let d = getSolarDay().getLunarDay()
-        return LunarHour.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), getHour(), getMinute(), getSecond())
+        let d = try! getSolarDay().getLunarDay()
+        return try! LunarHour.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), getHour(), getMinute(), getSecond())
     }
 
     public func getTerm() -> SolarTerm {
-        var term = getSolarDay().getTerm()
+        var term = try! getSolarDay().getTerm()
         if isBefore(term.getJulianDay().getSolarTime()) {
             term = term.next(-1)
         }

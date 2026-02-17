@@ -15,13 +15,13 @@ public final class Land: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Land name (e.g., "玄天", "朱天", etc.)
-    public convenience init(name: String) {
-        self.init(names: Land.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Land.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Land from index
@@ -34,8 +34,8 @@ public final class Land: LoopTyme {
     /// Get Land from name
     /// - Parameter name: Land name (e.g., "玄天", "朱天", etc.)
     /// - Returns: Land instance
-    public static func fromName(_ name: String) -> Land {
-        return Land(name: name)
+    public static func fromName(_ name: String) throws -> Land {
+        return try Land(name: name)
     }
 
     /// Get next land

@@ -7,20 +7,20 @@ public final class Direction: LoopTyme {
         self.init(names: Direction.NAMES, index: index)
     }
 
-    public convenience init(name: String) {
-        self.init(names: Direction.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Direction.NAMES, name: name)
     }
 
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     public static func fromIndex(_ index: Int) -> Direction {
         Direction(index: index)
     }
 
-    public static func fromName(_ name: String) -> Direction {
-        Direction(name: name)
+    public static func fromName(_ name: String) throws -> Direction {
+        try Direction(name: name)
     }
 
     public func stepsTo(_ targetIndex: Int) -> Int {

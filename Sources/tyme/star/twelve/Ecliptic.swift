@@ -14,13 +14,13 @@ public final class Ecliptic: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Ecliptic name ("黄道" or "黑道")
-    public convenience init(name: String) {
-        self.init(names: Ecliptic.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Ecliptic.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Ecliptic from index
@@ -33,8 +33,8 @@ public final class Ecliptic: LoopTyme {
     /// Get Ecliptic from name
     /// - Parameter name: Ecliptic name ("黄道" or "黑道")
     /// - Returns: Ecliptic instance
-    public static func fromName(_ name: String) -> Ecliptic {
-        return Ecliptic(name: name)
+    public static func fromName(_ name: String) throws -> Ecliptic {
+        return try Ecliptic(name: name)
     }
 
     /// Get next ecliptic

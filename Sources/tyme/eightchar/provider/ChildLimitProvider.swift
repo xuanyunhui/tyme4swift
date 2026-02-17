@@ -19,7 +19,7 @@ extension ChildLimitProvider {
         d += h / 24
         h = h % 24
 
-        var sm = SolarMonth.fromYm(birthTime.getYear() + addYear, birthTime.getMonth()).next(addMonth)
+        var sm = try! SolarMonth.fromYm(birthTime.getYear() + addYear, birthTime.getMonth()).next(addMonth)
 
         var dc = sm.getDayCount()
         while d > dc {
@@ -30,7 +30,7 @@ extension ChildLimitProvider {
 
         return ChildLimitInfo(
             startTime: birthTime,
-            endTime: SolarTime.fromYmdHms(sm.getYear(), sm.getMonth(), d, h, mi, s),
+            endTime: try! SolarTime.fromYmdHms(sm.getYear(), sm.getMonth(), d, h, mi, s),
             yearCount: addYear,
             monthCount: addMonth,
             dayCount: addDay,

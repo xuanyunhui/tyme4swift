@@ -9,7 +9,7 @@ public final class KitchenGodSteed: AbstractCulture {
     private let firstDaySixtyCycle: SixtyCycle
 
     public init(lunarYear: Int) {
-        firstDaySixtyCycle = LunarDay.fromYmd(lunarYear, 1, 1).getSixtyCycle()
+        firstDaySixtyCycle = try! LunarDay.fromYmd(lunarYear, 1, 1).getSixtyCycle()
     }
 
     public static func fromLunarYear(_ lunarYear: Int) -> KitchenGodSteed {

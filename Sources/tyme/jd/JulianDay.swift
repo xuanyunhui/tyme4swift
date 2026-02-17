@@ -14,10 +14,10 @@ public struct JulianDay: CustomStringConvertible {
         JulianDay(day)
     }
 
-    public static func fromYmdHms(year: Int, month: Int, day: Int, hour: Int = 0, minute: Int = 0, second: Int = 0) -> JulianDay {
+    public static func fromYmdHms(year: Int, month: Int, day: Int, hour: Int = 0, minute: Int = 0, second: Int = 0) throws -> JulianDay {
         // Disallow missing dates during Gregorian reform
         if year == 1582 && month == 10 && day >= 5 && day <= 14 {
-            fatalError("Invalid date during Gregorian switch: 1582-10-05..14")
+            throw TymeError.invalidDate("1582-10-05..14")
         }
 
         var y = year
@@ -67,10 +67,10 @@ public struct JulianDay: CustomStringConvertible {
 
     public func getSolarTime() -> SolarTime {
         let ymd = toYmdHms()
-        return SolarTime.fromYmdHms(ymd.year, ymd.month, ymd.day, ymd.hour, ymd.minute, ymd.second)
+        return try! SolarTime.fromYmdHms(ymd.year, ymd.month, ymd.day, ymd.hour, ymd.minute, ymd.second)
     }
 
-    public func getSolarDay() -> SolarDay { getSolarTime().getSolarDay() }
+    public func getSolarDay() -> SolarDay { try! getSolarTime().getSolarDay() }
 
     public func getWeek() -> Week {
         Week.fromIndex(Int(value + 0.5) + 7000001)

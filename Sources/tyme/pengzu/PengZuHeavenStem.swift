@@ -21,9 +21,9 @@ public final class PengZuHeavenStem: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: The taboo name
-    public init(_ name: String) {
+    public init(_ name: String) throws {
         guard let idx = PengZuHeavenStem.NAMES.firstIndex(of: name) else {
-            fatalError("Invalid PengZuHeavenStem name: \(name)")
+            throw TymeError.invalidName(name)
         }
         super.init(names: PengZuHeavenStem.NAMES, index: idx)
     }
@@ -36,14 +36,14 @@ public final class PengZuHeavenStem: LoopTyme {
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Create from name
     /// - Parameter name: The taboo name
     /// - Returns: PengZuHeavenStem instance
-    public static func fromName(_ name: String) -> PengZuHeavenStem {
-        return PengZuHeavenStem(name)
+    public static func fromName(_ name: String) throws -> PengZuHeavenStem {
+        return try PengZuHeavenStem(name)
     }
 
     /// Create from index
@@ -57,6 +57,6 @@ public final class PengZuHeavenStem: LoopTyme {
     /// - Parameter n: Number of steps to advance
     /// - Returns: Next PengZuHeavenStem instance
     public override func next(_ n: Int) -> PengZuHeavenStem {
-        return PengZuHeavenStem(nextIndex(n))
+        return try! PengZuHeavenStem(nextIndex(n))
     }
 }

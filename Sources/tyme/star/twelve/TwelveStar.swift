@@ -19,13 +19,13 @@ public final class TwelveStar: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Star name (e.g., "青龙", "明堂", etc.)
-    public convenience init(name: String) {
-        self.init(names: TwelveStar.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: TwelveStar.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get TwelveStar from index
@@ -38,8 +38,8 @@ public final class TwelveStar: LoopTyme {
     /// Get TwelveStar from name
     /// - Parameter name: Star name (e.g., "青龙", "明堂", etc.)
     /// - Returns: TwelveStar instance
-    public static func fromName(_ name: String) -> TwelveStar {
-        return TwelveStar(name: name)
+    public static func fromName(_ name: String) throws -> TwelveStar {
+        return try TwelveStar(name: name)
     }
 
     /// Get next star

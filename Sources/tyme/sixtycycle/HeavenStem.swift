@@ -27,20 +27,20 @@ public final class HeavenStem: LoopTyme {
         self.init(names: HeavenStem.NAMES, index: index)
     }
 
-    public convenience init(name: String) {
-        self.init(names: HeavenStem.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: HeavenStem.NAMES, name: name)
     }
 
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     public static func fromIndex(_ index: Int) -> HeavenStem {
         HeavenStem(index: index)
     }
 
-    public static func fromName(_ name: String) -> HeavenStem {
-        HeavenStem(name: name)
+    public static func fromName(_ name: String) throws -> HeavenStem {
+        try HeavenStem(name: name)
     }
 
     public func stepsTo(_ targetIndex: Int) -> Int {

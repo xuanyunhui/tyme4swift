@@ -22,13 +22,13 @@ public final class TwentyEightStar: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Star name (e.g., "角", "亢", etc.)
-    public convenience init(name: String) {
-        self.init(names: TwentyEightStar.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: TwentyEightStar.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get TwentyEightStar from index
@@ -41,8 +41,8 @@ public final class TwentyEightStar: LoopTyme {
     /// Get TwentyEightStar from name
     /// - Parameter name: Star name (e.g., "角", "亢", etc.)
     /// - Returns: TwentyEightStar instance
-    public static func fromName(_ name: String) -> TwentyEightStar {
-        return TwentyEightStar(name: name)
+    public static func fromName(_ name: String) throws -> TwentyEightStar {
+        return try TwentyEightStar(name: name)
     }
 
     /// Get next star

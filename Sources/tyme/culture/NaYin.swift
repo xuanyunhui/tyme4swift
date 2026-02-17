@@ -31,13 +31,13 @@ public final class NaYin: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: NaYin name (e.g., "海中金", "炉中火", etc.)
-    public convenience init(name: String) {
-        self.init(names: NaYin.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: NaYin.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get NaYin from index
@@ -50,8 +50,8 @@ public final class NaYin: LoopTyme {
     /// Get NaYin from name
     /// - Parameter name: NaYin name (e.g., "海中金", "炉中火", etc.)
     /// - Returns: NaYin instance
-    public static func fromName(_ name: String) -> NaYin {
-        return NaYin(name: name)
+    public static func fromName(_ name: String) throws -> NaYin {
+        return try NaYin(name: name)
     }
 
     /// Get NaYin from SixtyCycle index
@@ -77,6 +77,6 @@ public final class NaYin: LoopTyme {
     /// Get Element instance
     /// - Returns: Element instance
     public func getElement() -> Element {
-        return Element.fromName(NaYin.WU_XING[index])
+        return try! Element.fromName(NaYin.NAMES[index])
     }
 }

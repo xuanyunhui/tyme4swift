@@ -14,13 +14,13 @@ public final class PlumRain: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: PlumRain name ("入梅" or "出梅")
-    public convenience init(name: String) {
-        self.init(names: PlumRain.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: PlumRain.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get PlumRain from index
@@ -33,8 +33,8 @@ public final class PlumRain: LoopTyme {
     /// Get PlumRain from name
     /// - Parameter name: PlumRain name ("入梅" or "出梅")
     /// - Returns: PlumRain instance
-    public static func fromName(_ name: String) -> PlumRain {
-        return PlumRain(name: name)
+    public static func fromName(_ name: String) throws -> PlumRain {
+        return try PlumRain(name: name)
     }
 
     /// Get next plum rain

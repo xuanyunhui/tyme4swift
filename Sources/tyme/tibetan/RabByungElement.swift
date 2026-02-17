@@ -11,32 +11,32 @@ public final class RabByungElement: AbstractCulture {
 
     /// Initialize with index
     /// - Parameter index: Element index (0-4)
-    public init(index: Int) {
+    public init(index: Int) throws {
         self.element = Element.fromIndex(index)
-        super.init()
+        try super.init()
     }
 
     /// Initialize with name
     /// - Parameter name: Element name (支持 "铁" 或 "金")
-    public init(name: String) {
+    public init(name: String) throws {
         // Convert 铁 to 金 for internal Element
         let elementName = name.replacingOccurrences(of: "铁", with: "金")
-        self.element = Element.fromName(elementName)
-        super.init()
+        self.element = try! Element.fromName(elementName)
+        try super.init()
     }
 
     /// Create from index
     /// - Parameter index: Element index
     /// - Returns: RabByungElement instance
-    public static func fromIndex(_ index: Int) -> RabByungElement {
-        return RabByungElement(index: index)
+    public static func fromIndex(_ index: Int) throws -> RabByungElement {
+        return try RabByungElement(index: index)
     }
 
     /// Create from name
     /// - Parameter name: Element name
     /// - Returns: RabByungElement instance
-    public static func fromName(_ name: String) -> RabByungElement {
-        return RabByungElement(name: name)
+    public static func fromName(_ name: String) throws -> RabByungElement {
+        return try RabByungElement(name: name)
     }
 
     /// Get element name (金→铁)
@@ -56,7 +56,7 @@ public final class RabByungElement: AbstractCulture {
     /// - Returns: Next RabByungElement
     public func next(_ n: Int) -> RabByungElement {
         let nextElement = element.next(n)
-        return RabByungElement(index: nextElement.getIndex())
+        return try! RabByungElement(index: nextElement.getIndex())
     }
 
     // MARK: - Five Elements Relationships (五行生克)

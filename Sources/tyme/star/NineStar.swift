@@ -43,13 +43,13 @@ public final class NineStar: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Star name (e.g., "一白", "二黑", etc.)
-    public convenience init(name: String) {
-        self.init(names: NineStar.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: NineStar.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get NineStar from index
@@ -62,16 +62,16 @@ public final class NineStar: LoopTyme {
     /// Get NineStar from name
     /// - Parameter name: Star name (e.g., "一白", "二黑", etc.)
     /// - Returns: NineStar instance
-    public static func fromName(_ name: String) -> NineStar {
-        return NineStar(name: name)
+    public static func fromName(_ name: String) throws -> NineStar {
+        return try NineStar(name: name)
     }
 
     /// Get NineStar from celestial name
     /// - Parameter celestialName: Celestial name (e.g., "贪狼", "巨门", etc.)
     /// - Returns: NineStar instance
-    public static func fromCelestialName(_ celestialName: String) -> NineStar {
+    public static func fromCelestialName(_ celestialName: String) throws -> NineStar {
         guard let idx = NineStar.CELESTIAL_NAMES.firstIndex(of: celestialName) else {
-            fatalError("Invalid celestial name: \(celestialName)")
+            throw TymeError.invalidName(celestialName)
         }
         return NineStar(index: idx)
     }
@@ -122,7 +122,7 @@ public final class NineStar: LoopTyme {
     /// Get Element instance
     /// - Returns: Element instance
     public func getElement() -> Element {
-        return Element.fromName(NineStar.WU_XING[index])
+        return try! Element.fromName(NineStar.NAMES[index])
     }
 
     /// Get direction
@@ -138,7 +138,7 @@ public final class NineStar: LoopTyme {
         if dir == "中" {
             return nil
         }
-        return Direction.fromName(dir)
+        return try! Direction.fromName(dir)
     }
 
     /// Get Bagua (八卦)

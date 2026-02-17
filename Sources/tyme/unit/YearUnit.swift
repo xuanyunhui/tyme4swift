@@ -3,7 +3,8 @@ import Foundation
 open class YearUnit {
     internal let year: Int
 
-    public init(year: Int) {
+    public init(year: Int) throws {
+        try SolarUtil.validateYear(year)
         self.year = year
     }
 

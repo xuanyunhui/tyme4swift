@@ -15,13 +15,13 @@ public final class Nine: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Nine name (e.g., "一九", "二九", etc.)
-    public convenience init(name: String) {
-        self.init(names: Nine.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Nine.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Nine from index
@@ -34,8 +34,8 @@ public final class Nine: LoopTyme {
     /// Get Nine from name
     /// - Parameter name: Nine name (e.g., "一九", "二九", etc.)
     /// - Returns: Nine instance
-    public static func fromName(_ name: String) -> Nine {
-        return Nine(name: name)
+    public static func fromName(_ name: String) throws -> Nine {
+        return try Nine(name: name)
     }
 
     /// Get next nine period

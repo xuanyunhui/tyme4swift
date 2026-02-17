@@ -15,13 +15,13 @@ public final class SixStar: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Star name (e.g., "先胜", "友引", etc.)
-    public convenience init(name: String) {
-        self.init(names: SixStar.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: SixStar.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get SixStar from index
@@ -34,8 +34,8 @@ public final class SixStar: LoopTyme {
     /// Get SixStar from name
     /// - Parameter name: Star name (e.g., "先胜", "友引", etc.)
     /// - Returns: SixStar instance
-    public static func fromName(_ name: String) -> SixStar {
-        return SixStar(name: name)
+    public static func fromName(_ name: String) throws -> SixStar {
+        return try SixStar(name: name)
     }
 
     /// Get next star

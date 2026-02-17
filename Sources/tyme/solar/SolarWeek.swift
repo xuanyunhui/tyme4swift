@@ -3,31 +3,31 @@ import Foundation
 public final class SolarWeek: WeekUnit, Tyme {
     public static let NAMES = ["第一周", "第二周", "第三周", "第四周", "第五周", "第六周"]
 
-    public static func validate(year: Int, month: Int, index: Int, start: Int) {
-        WeekUnit.validate(index: index, start: start)
-        let m = SolarMonth(year: year, month: month)
+    public static func validate(year: Int, month: Int, index: Int, start: Int) throws {
+        try WeekUnit.validate(index: index, start: start)
+        let m = try SolarMonth(year: year, month: month)
         if index >= m.getWeekCount(start) {
-            fatalError("illegal solar week index: \(index) in month: \(m)")
+            throw TymeError.invalidIndex(index)
         }
     }
 
-    public init(year: Int, month: Int, index: Int, start: Int) {
-        SolarWeek.validate(year: year, month: month, index: index, start: start)
-        super.init(year: year, month: month)
+    public init(year: Int, month: Int, index: Int, start: Int) throws {
+        try SolarWeek.validate(year: year, month: month, index: index, start: start)
+        try super.init(year: year, month: month)
         self.index = index
         self.start = start
     }
 
-    public static func fromYm(_ year: Int, _ month: Int, _ index: Int, _ start: Int) -> SolarWeek {
-        SolarWeek(year: year, month: month, index: index, start: start)
+    public static func fromYm(_ year: Int, _ month: Int, _ index: Int, _ start: Int) throws -> SolarWeek {
+        try SolarWeek(year: year, month: month, index: index, start: start)
     }
 
-    public func getSolarMonth() -> SolarMonth { SolarMonth(year: getYear(), month: getMonth()) }
+    public func getSolarMonth() -> SolarMonth { try! SolarMonth(year: getYear(), month: getMonth()) }
 
     public func getIndexInYear() -> Int {
         var i = 0
-        let firstDay = getFirstDay()
-        var w = SolarWeek(year: getYear(), month: 1, index: 0, start: start)
+        let firstDay = try! getFirstDay()
+        var w = try! SolarWeek(year: getYear(), month: 1, index: 0, start: start)
         while w.getFirstDay().getName() != firstDay.getName() {
             w = w.next(1)
             i += 1
@@ -57,16 +57,16 @@ public final class SolarWeek: WeekUnit, Tyme {
                 d += m.getWeekCount(start)
             }
         }
-        return SolarWeek(year: m.getYear(), month: m.getMonth(), index: d, start: start)
+        return try! SolarWeek(year: m.getYear(), month: m.getMonth(), index: d, start: start)
     }
 
     public func getFirstDay() -> SolarDay {
-        let firstDay = SolarDay(year: getYear(), month: getMonth(), day: 1)
+        let firstDay = try! SolarDay(year: getYear(), month: getMonth(), day: 1)
         return firstDay.next(index * 7 - indexOf(firstDay.getWeek().getIndex() - start, 7))
     }
 
     public func getDays() -> [SolarDay] {
-        let d = getFirstDay()
+        let d = try! getFirstDay()
         return (0..<7).map { d.next($0) }
     }
 }

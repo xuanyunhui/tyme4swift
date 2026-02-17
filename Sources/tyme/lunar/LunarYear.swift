@@ -44,17 +44,17 @@ public final class LunarYear: YearUnit, Tyme {
         return result
     }()
 
-    public static func validate(_ year: Int) {
-        if year < -1 || year > 9999 { fatalError("illegal lunar year: \(year)") }
+    public static func validate(_ year: Int) throws {
+        if year < -1 || year > 9999 { throw TymeError.invalidYear(year) }
     }
 
-    public override init(year: Int) {
-        LunarYear.validate(year)
-        super.init(year: year)
+    public override init(year: Int) throws {
+        try LunarYear.validate(year)
+        try super.init(year: year)
     }
 
-    public static func fromYear(_ year: Int) -> LunarYear {
-        LunarYear(year: year)
+    public static func fromYear(_ year: Int) throws -> LunarYear {
+        try LunarYear(year: year)
     }
 
     public func getSixtyCycle() -> SixtyCycle {
@@ -66,7 +66,7 @@ public final class LunarYear: YearUnit, Tyme {
     }
 
     public func getMonthCount() -> Int {
-        getLeapMonth() < 1 ? 12 : 13
+        try! getLeapMonth() < 1 ? 12 : 13
     }
 
     public func getName() -> String {
@@ -74,11 +74,11 @@ public final class LunarYear: YearUnit, Tyme {
     }
 
     public func next(_ n: Int) -> LunarYear {
-        LunarYear(year: getYear() + n)
+        try! LunarYear(year: getYear() + n)
     }
 
     public func getLeapMonth() -> Int {
-        if getYear() == -1 { return 11 }
+        if try! getYear() == -1 { return 11 }
         for (i, years) in LunarYear.leapData.enumerated() {
             if years.contains(getYear()) { return i + 1 }
         }
@@ -86,12 +86,12 @@ public final class LunarYear: YearUnit, Tyme {
     }
 
     public func getFirstMonth() -> LunarMonth {
-        LunarMonth(year: getYear(), month: 1)
+        try! LunarMonth(year: getYear(), month: 1)
     }
 
     public func getMonths() -> [LunarMonth] {
         var months: [LunarMonth] = []
-        var m = getFirstMonth()
+        var m = try! getFirstMonth()
         while m.getYear() == getYear() {
             months.append(m)
             m = m.next(1)

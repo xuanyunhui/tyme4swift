@@ -29,13 +29,13 @@ public final class Dipper: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Star name (e.g., "天枢", "天璇", etc.)
-    public convenience init(name: String) {
-        self.init(names: Dipper.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Dipper.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Dipper star from index
@@ -48,16 +48,16 @@ public final class Dipper: LoopTyme {
     /// Get Dipper star from name
     /// - Parameter name: Star name (e.g., "天枢", "天璇", etc.)
     /// - Returns: Dipper instance
-    public static func fromName(_ name: String) -> Dipper {
-        return Dipper(name: name)
+    public static func fromName(_ name: String) throws -> Dipper {
+        return try Dipper(name: name)
     }
 
     /// Get Dipper star from alternative name
     /// - Parameter alternativeName: Alternative name (e.g., "贪狼", "巨门", etc.)
     /// - Returns: Dipper instance
-    public static func fromAlternativeName(_ alternativeName: String) -> Dipper {
+    public static func fromAlternativeName(_ alternativeName: String) throws -> Dipper {
         guard let idx = Dipper.ALTERNATIVE_NAMES.firstIndex(of: alternativeName) else {
-            fatalError("Invalid alternative name: \(alternativeName)")
+            throw TymeError.invalidName(alternativeName)
         }
         return Dipper(index: idx)
     }

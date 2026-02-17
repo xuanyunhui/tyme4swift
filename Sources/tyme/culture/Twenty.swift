@@ -19,13 +19,13 @@ public final class Twenty: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Twenty name (e.g., "初一", "初二", etc.)
-    public convenience init(name: String) {
-        self.init(names: Twenty.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Twenty.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Twenty from index
@@ -38,8 +38,8 @@ public final class Twenty: LoopTyme {
     /// Get Twenty from name
     /// - Parameter name: Twenty name (e.g., "初一", "初二", etc.)
     /// - Returns: Twenty instance
-    public static func fromName(_ name: String) -> Twenty {
-        return Twenty(name: name)
+    public static func fromName(_ name: String) throws -> Twenty {
+        return try Twenty(name: name)
     }
 
     /// Get next twenty

@@ -64,7 +64,7 @@ public final class SixtyCycleYear: AbstractCulture {
     /// - Parameter n: Number of years to advance
     /// - Returns: Next SixtyCycleYear
     public func next(_ n: Int) -> SixtyCycleYear {
-        return SixtyCycleYear(year: year + n)
+        return try! SixtyCycleYear(year: year + n)
     }
 
     /// Create from year

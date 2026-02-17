@@ -15,13 +15,13 @@ public final class Dog: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Dog name (e.g., "初伏", "中伏", "末伏")
-    public convenience init(name: String) {
-        self.init(names: Dog.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Dog.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Dog from index
@@ -34,8 +34,8 @@ public final class Dog: LoopTyme {
     /// Get Dog from name
     /// - Parameter name: Dog name (e.g., "初伏", "中伏", "末伏")
     /// - Returns: Dog instance
-    public static func fromName(_ name: String) -> Dog {
-        return Dog(name: name)
+    public static func fromName(_ name: String) throws -> Dog {
+        return try Dog(name: name)
     }
 
     /// Get next dog period

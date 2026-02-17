@@ -3,7 +3,7 @@ import XCTest
 
 final class Tyme4SwiftTests: XCTestCase {
     func testJulianDay() throws {
-        let jd = JulianDay.fromYmdHms(year: 2000, month: 1, day: 1)
+        let jd = try JulianDay.fromYmdHms(year: 2000, month: 1, day: 1)
         let solar = jd.getSolarDay()
         XCTAssertEqual(solar.getYear(), 2000)
         XCTAssertEqual(solar.getMonth(), 1)
@@ -11,14 +11,14 @@ final class Tyme4SwiftTests: XCTestCase {
     }
     
     func testSolarDay() throws {
-        let solar = SolarDay(year: 2024, month: 2, day: 10)
+        let solar = try SolarDay(year: 2024, month: 2, day: 10)
         XCTAssertEqual(solar.getYear(), 2024)
         XCTAssertEqual(solar.getMonth(), 2)
         XCTAssertEqual(solar.getDay(), 10)
     }
     
     func testLunarYear() throws {
-        let lunar = LunarYear.fromYear(2024)
+        let lunar = try LunarYear.fromYear(2024)
         XCTAssertNotNil(lunar)
         XCTAssertEqual(lunar.getYear(), 2024)
     }
@@ -45,7 +45,7 @@ final class Tyme4SwiftTests: XCTestCase {
     }
     
     func testSolarTerm() throws {
-        let term = SolarTerm(year: 2024, index: 0)
+        let term = try SolarTerm(year: 2024, index: 0)
         XCTAssertEqual(term.getName(), "冬至")
         XCTAssertEqual(term.getYear(), 2024)
     }
@@ -57,7 +57,7 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual(rat.getIndex(), 0)
         
         // Test fromName
-        let ox = Zodiac.fromName("牛")
+        let ox = try Zodiac.fromName("牛")
         XCTAssertEqual(ox.getName(), "牛")
         XCTAssertEqual(ox.getIndex(), 1)
         
@@ -87,7 +87,7 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual(jia.getIndex(), 0)
 
         // Test fromName
-        let yi = PengZuHeavenStem.fromName("乙不栽植千株不长")
+        let yi = try PengZuHeavenStem.fromName("乙不栽植千株不长")
         XCTAssertEqual(yi.getName(), "乙不栽植千株不长")
         XCTAssertEqual(yi.getIndex(), 1)
 
@@ -129,7 +129,7 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual(zi.getIndex(), 0)
 
         // Test fromName
-        let chou = PengZuEarthBranch.fromName("丑不冠带主不还乡")
+        let chou = try PengZuEarthBranch.fromName("丑不冠带主不还乡")
         XCTAssertEqual(chou.getName(), "丑不冠带主不还乡")
         XCTAssertEqual(chou.getIndex(), 1)
 
@@ -217,7 +217,7 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertTrue(xiong.isInauspicious())
 
         // Test fromName
-        let ji2 = Luck.fromName("吉")
+        let ji2 = try Luck.fromName("吉")
         XCTAssertEqual(ji2.getIndex(), 0)
 
         // Test next
@@ -237,7 +237,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let sun = SevenStar.fromName("日")
+        let sun = try SevenStar.fromName("日")
         XCTAssertEqual(sun.getIndex(), 0)
 
         // Test next
@@ -264,7 +264,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let sensho = SixStar.fromName("先胜")
+        let sensho = try SixStar.fromName("先胜")
         XCTAssertEqual(sensho.getIndex(), 0)
 
         // Test next
@@ -287,7 +287,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let bijian = TenStar.fromName("比肩")
+        let bijian = try TenStar.fromName("比肩")
         XCTAssertEqual(bijian.getIndex(), 0)
 
         // Test next
@@ -315,7 +315,7 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertTrue(heidao.isInauspicious())
 
         // Test fromName
-        let huangdao2 = Ecliptic.fromName("黄道")
+        let huangdao2 = try Ecliptic.fromName("黄道")
         XCTAssertEqual(huangdao2.getIndex(), 0)
 
         // Test getLuck
@@ -339,7 +339,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let qinglong = TwelveStar.fromName("青龙")
+        let qinglong = try TwelveStar.fromName("青龙")
         XCTAssertEqual(qinglong.getIndex(), 0)
 
         // Test next
@@ -373,7 +373,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let east = Zone.fromName("东")
+        let east = try Zone.fromName("东")
         XCTAssertEqual(east.getIndex(), 0)
 
         // Test next
@@ -404,7 +404,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let qinglong = Beast.fromName("青龙")
+        let qinglong = try Beast.fromName("青龙")
         XCTAssertEqual(qinglong.getIndex(), 0)
 
         // Test next
@@ -431,7 +431,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let xuantian = Land.fromName("玄天")
+        let xuantian = try Land.fromName("玄天")
         XCTAssertEqual(xuantian.getIndex(), 0)
 
         // Test next
@@ -458,7 +458,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let jiao = Animal.fromName("蛟")
+        let jiao = try Animal.fromName("蛟")
         XCTAssertEqual(jiao.getIndex(), 0)
 
         // Test next
@@ -485,7 +485,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let jiao = TwentyEightStar.fromName("角")
+        let jiao = try TwentyEightStar.fromName("角")
         XCTAssertEqual(jiao.getIndex(), 0)
 
         // Test next
@@ -539,7 +539,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let jian = Duty.fromName("建")
+        let jian = try Duty.fromName("建")
         XCTAssertEqual(jian.getIndex(), 0)
 
         // Test next
@@ -562,7 +562,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let aries = Constellation.fromName("白羊")
+        let aries = try Constellation.fromName("白羊")
         XCTAssertEqual(aries.getIndex(), 0)
 
         // Test next
@@ -589,7 +589,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let gong = Sound.fromName("宫")
+        let gong = try Sound.fromName("宫")
         XCTAssertEqual(gong.getIndex(), 0)
 
         // Test next
@@ -616,7 +616,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let shangXun = Phase.fromName("上旬")
+        let shangXun = try Phase.fromName("上旬")
         XCTAssertEqual(shangXun.getIndex(), 0)
 
         // Test next
@@ -639,7 +639,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let qiuYinJie = Phenology.fromName("蚯蚓结")
+        let qiuYinJie = try Phenology.fromName("蚯蚓结")
         XCTAssertEqual(qiuYinJie.getIndex(), 0)
 
         // Test next
@@ -669,7 +669,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let chuHou = ThreePhenology.fromName("初候")
+        let chuHou = try ThreePhenology.fromName("初候")
         XCTAssertEqual(chuHou.getIndex(), 0)
 
         // Test next
@@ -693,7 +693,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let yi = PhaseDay.fromName("一")
+        let yi = try PhaseDay.fromName("一")
         XCTAssertEqual(yi.getIndex(), 0)
 
         // Test next
@@ -716,7 +716,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let jia = TenDay.fromName("甲")
+        let jia = try TenDay.fromName("甲")
         XCTAssertEqual(jia.getIndex(), 0)
 
         // Test next
@@ -743,7 +743,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let changSheng = Terrain.fromName("长生")
+        let changSheng = try Terrain.fromName("长生")
         XCTAssertEqual(changSheng.getIndex(), 0)
 
         // Test next
@@ -781,7 +781,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let haiZhongJin = NaYin.fromName("海中金")
+        let haiZhongJin = try NaYin.fromName("海中金")
         XCTAssertEqual(haiZhongJin.getIndex(), 0)
 
         // Test next
@@ -816,7 +816,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let jiaZi = Sixty.fromName("甲子")
+        let jiaZi = try Sixty.fromName("甲子")
         XCTAssertEqual(jiaZi.getIndex(), 0)
 
         // Test next
@@ -856,7 +856,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let yi = Ten.fromName("一")
+        let yi = try Ten.fromName("一")
         XCTAssertEqual(yi.getIndex(), 0)
 
         // Test next
@@ -880,7 +880,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let chuYi = Twenty.fromName("初一")
+        let chuYi = try Twenty.fromName("初一")
         XCTAssertEqual(chuYi.getIndex(), 0)
 
         // Test next
@@ -903,7 +903,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let nian = GodType.fromName("年")
+        let nian = try GodType.fromName("年")
         XCTAssertEqual(nian.getIndex(), 0)
 
         // Test next
@@ -1182,7 +1182,7 @@ final class Tyme4SwiftTests: XCTestCase {
 
     func testSixtyCycleDay() throws {
         // Test a specific date
-        let day = SixtyCycleDay.fromYmd(2024, 2, 10)
+        let day = try SixtyCycleDay.fromYmd(2024, 2, 10)
         XCTAssertNotNil(day.getSixtyCycle())
         XCTAssertNotNil(day.getHeavenStem())
         XCTAssertNotNil(day.getEarthBranch())
@@ -1195,14 +1195,14 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertNotNil(nextDay)
 
         // Test fromSolarDay
-        let solarDay = SolarDay.fromYmd(2024, 2, 10)
+        let solarDay = try SolarDay.fromYmd(2024, 2, 10)
         let day2 = SixtyCycleDay.fromSolarDay(solarDay)
         XCTAssertEqual(day.getName(), day2.getName())
     }
 
     func testSixtyCycleHour() throws {
         // Test a specific time
-        let hour = SixtyCycleHour.fromYmdHms(2024, 2, 10, 12, 0, 0)
+        let hour = try SixtyCycleHour.fromYmdHms(2024, 2, 10, 12, 0, 0)
         XCTAssertNotNil(hour.getSixtyCycle())
         XCTAssertNotNil(hour.getHeavenStem())
         XCTAssertNotNil(hour.getEarthBranch())
@@ -1213,7 +1213,7 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual(hourIndex, 6) // 12:00 is 午时 (index 6)
 
         // Test 子时 (23:00-01:00)
-        let ziHour = SixtyCycleHour.fromYmdHms(2024, 2, 10, 0, 0, 0)
+        let ziHour = try SixtyCycleHour.fromYmdHms(2024, 2, 10, 0, 0, 0)
         XCTAssertEqual(ziHour.getIndexInDay(), 0)
 
         // Test next
@@ -1233,7 +1233,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let chuFu = Dog.fromName("初伏")
+        let chuFu = try Dog.fromName("初伏")
         XCTAssertEqual(chuFu.getIndex(), 0)
 
         // Test next
@@ -1267,7 +1267,7 @@ final class Tyme4SwiftTests: XCTestCase {
         }
 
         // Test fromName
-        let yiJiu = Nine.fromName("一九")
+        let yiJiu = try Nine.fromName("一九")
         XCTAssertEqual(yiJiu.getIndex(), 0)
 
         // Test next
@@ -1531,7 +1531,7 @@ final class Tyme4SwiftTests: XCTestCase {
 
     func testChildLimitDefault() throws {
         // Verify ChildLimit creation and structural correctness
-        let cl1 = ChildLimit.fromSolarTime(SolarTime.fromYmdHms(2022, 3, 9, 20, 51, 0), .male)
+        let cl1 = ChildLimit.fromSolarTime(try SolarTime.fromYmdHms(2022, 3, 9, 20, 51, 0), .male)
         XCTAssertGreaterThanOrEqual(cl1.getYearCount(), 0)
         XCTAssertGreaterThanOrEqual(cl1.getMonthCount(), 0)
         XCTAssertGreaterThanOrEqual(cl1.getDayCount(), 0)
@@ -1540,19 +1540,19 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertTrue(cl1.getEndTime().isAfter(cl1.getStartTime()))
 
         // Female, Yang year = backward
-        let cl2 = ChildLimit.fromSolarTime(SolarTime.fromYmdHms(2022, 3, 9, 20, 51, 0), .female)
+        let cl2 = ChildLimit.fromSolarTime(try SolarTime.fromYmdHms(2022, 3, 9, 20, 51, 0), .female)
         XCTAssertFalse(cl2.isForward())
         XCTAssertTrue(cl2.getEndTime().isAfter(cl2.getStartTime()))
 
         // Verify different providers give different results
-        let cl3 = ChildLimit.fromSolarTime(SolarTime.fromYmdHms(1986, 5, 29, 13, 37, 0), .male)
+        let cl3 = ChildLimit.fromSolarTime(try SolarTime.fromYmdHms(1986, 5, 29, 13, 37, 0), .male)
         XCTAssertGreaterThanOrEqual(cl3.getYearCount(), 0)
         XCTAssertTrue(cl3.getEndTime().isAfter(cl3.getStartTime()))
     }
 
     func testChildLimitChina95() throws {
         ChildLimit.provider = China95ChildLimitProvider()
-        let cl = ChildLimit.fromSolarTime(SolarTime.fromYmdHms(1986, 5, 29, 13, 37, 0), .male)
+        let cl = ChildLimit.fromSolarTime(try SolarTime.fromYmdHms(1986, 5, 29, 13, 37, 0), .male)
         // China95 uses minute-based calculation, verify non-negative results
         XCTAssertGreaterThanOrEqual(cl.getYearCount(), 0)
         XCTAssertGreaterThanOrEqual(cl.getMonthCount(), 0)
@@ -1564,7 +1564,7 @@ final class Tyme4SwiftTests: XCTestCase {
 
     func testChildLimitLunarSect1() throws {
         ChildLimit.provider = LunarSect1ChildLimitProvider()
-        let cl = ChildLimit.fromSolarTime(SolarTime.fromYmdHms(1994, 10, 17, 1, 0, 0), .male)
+        let cl = ChildLimit.fromSolarTime(try SolarTime.fromYmdHms(1994, 10, 17, 1, 0, 0), .male)
         // LunarSect1 uses day/hour-based calculation
         XCTAssertGreaterThanOrEqual(cl.getYearCount(), 0)
         XCTAssertEqual(cl.getHourCount(), 0) // LunarSect1 always has 0 hours
@@ -1575,7 +1575,7 @@ final class Tyme4SwiftTests: XCTestCase {
 
     func testChildLimitLunarSect2() throws {
         ChildLimit.provider = LunarSect2ChildLimitProvider()
-        let cl = ChildLimit.fromSolarTime(SolarTime.fromYmdHms(1986, 5, 29, 13, 37, 0), .male)
+        let cl = ChildLimit.fromSolarTime(try SolarTime.fromYmdHms(1986, 5, 29, 13, 37, 0), .male)
         // LunarSect2 uses minute-based calculation with hour component
         XCTAssertGreaterThanOrEqual(cl.getYearCount(), 0)
         XCTAssertGreaterThanOrEqual(cl.getMonthCount(), 0)
@@ -1586,7 +1586,7 @@ final class Tyme4SwiftTests: XCTestCase {
 
     func testChildLimitProviderSwitch() throws {
         // Verify provider switching works
-        let birthTime = SolarTime.fromYmdHms(1986, 5, 29, 13, 37, 0)
+        let birthTime = try SolarTime.fromYmdHms(1986, 5, 29, 13, 37, 0)
 
         ChildLimit.provider = DefaultChildLimitProvider()
         let defaultResult = ChildLimit.fromSolarTime(birthTime, .male)
@@ -1629,7 +1629,7 @@ final class Tyme4SwiftTests: XCTestCase {
 
     func testSolarDayGetTerm() throws {
         // Verify getTerm returns a valid solar term
-        let sd = SolarDay.fromYmd(2022, 3, 9)
+        let sd = try SolarDay.fromYmd(2022, 3, 9)
         let term = sd.getTerm()
         XCTAssertNotNil(term)
         // March 9 is after 惊蛰 (~March 5) and before 春分 (~March 20)
@@ -1638,16 +1638,16 @@ final class Tyme4SwiftTests: XCTestCase {
     }
 
     func testSolarTimeSubtract() throws {
-        let t1 = SolarTime.fromYmdHms(2024, 1, 1, 12, 0, 0)
-        let t2 = SolarTime.fromYmdHms(2024, 1, 1, 10, 0, 0)
+        let t1 = try SolarTime.fromYmdHms(2024, 1, 1, 12, 0, 0)
+        let t2 = try SolarTime.fromYmdHms(2024, 1, 1, 10, 0, 0)
         XCTAssertEqual(t1.subtract(t2), 7200) // 2 hours = 7200 seconds
 
-        let t3 = SolarTime.fromYmdHms(2024, 1, 2, 0, 0, 0)
+        let t3 = try SolarTime.fromYmdHms(2024, 1, 2, 0, 0, 0)
         XCTAssertEqual(t3.subtract(t1), 43200) // 12 hours
     }
 
     func testSolarTimeTerm() throws {
-        let t1 = SolarTime.fromYmdHms(2024, 3, 20, 12, 0, 0)
+        let t1 = try SolarTime.fromYmdHms(2024, 3, 20, 12, 0, 0)
         let term = t1.getTerm()
         XCTAssertNotNil(term)
     }
@@ -1667,9 +1667,9 @@ final class Tyme4SwiftTests: XCTestCase {
 
     func testThreePillars() throws {
         // Test basic creation with SixtyCycle objects
-        let year = SixtyCycle.fromName("甲戌")
-        let month = SixtyCycle.fromName("甲戌")
-        let day = SixtyCycle.fromName("甲戌")
+        let year = try SixtyCycle.fromName("甲戌")
+        let month = try SixtyCycle.fromName("甲戌")
+        let day = try SixtyCycle.fromName("甲戌")
         let threePillars = ThreePillars(year: year, month: month, day: day)
 
         XCTAssertEqual(threePillars.getName(), "甲戌 甲戌 甲戌")
@@ -1687,7 +1687,7 @@ final class Tyme4SwiftTests: XCTestCase {
 
     func testThreePillarsFromSolarDay() throws {
         // Aligned with tyme4j: SolarDay(1034, 10, 2) → ThreePillars = "甲戌 甲戌 甲戌"
-        let solarDay = SolarDay.fromYmd(1034, 10, 2)
+        let solarDay = try SolarDay.fromYmd(1034, 10, 2)
         let threePillars = solarDay.getSixtyCycleDay().getThreePillars()
         XCTAssertEqual(threePillars.getName(), "甲戌 甲戌 甲戌")
     }
@@ -1695,7 +1695,7 @@ final class Tyme4SwiftTests: XCTestCase {
     func testThreePillarsFromMultipleDates() throws {
         // Test additional dates to verify getThreePillars consistency
         // 2024-02-10 should produce a valid ThreePillars
-        let day1 = SolarDay.fromYmd(2024, 2, 10).getSixtyCycleDay()
+        let day1 = try SolarDay.fromYmd(2024, 2, 10).getSixtyCycleDay()
         let tp1 = day1.getThreePillars()
         XCTAssertFalse(tp1.getName().isEmpty)
         XCTAssertEqual(tp1.getYear().getName().count, 2)
@@ -1707,7 +1707,7 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual(parts.count, 3)
 
         // Two consecutive days should have different day pillars but same year/month pillars (usually)
-        let day2 = SolarDay.fromYmd(2024, 2, 11).getSixtyCycleDay()
+        let day2 = try SolarDay.fromYmd(2024, 2, 11).getSixtyCycleDay()
         let tp2 = day2.getThreePillars()
         XCTAssertNotEqual(tp1.getDay().getName(), tp2.getDay().getName())
     }
@@ -1726,21 +1726,21 @@ final class Tyme4SwiftTests: XCTestCase {
     // MARK: - Fetus Day/Month Tests
 
     func testFetusDay() throws {
-        XCTAssertEqual("厨灶炉 外正南", SolarDay.fromYmd(2021, 11, 13).getLunarDay().getFetusDay().getName())
-        XCTAssertEqual("碓磨厕 外东南", SolarDay.fromYmd(2021, 11, 12).getLunarDay().getFetusDay().getName())
-        XCTAssertEqual("仓库炉 外西南", SolarDay.fromYmd(2011, 11, 12).getLunarDay().getFetusDay().getName())
+        XCTAssertEqual("厨灶炉 外正南", try SolarDay.fromYmd(2021, 11, 13).getLunarDay().getFetusDay().getName())
+        XCTAssertEqual("碓磨厕 外东南", try SolarDay.fromYmd(2021, 11, 12).getLunarDay().getFetusDay().getName())
+        XCTAssertEqual("仓库炉 外西南", try SolarDay.fromYmd(2011, 11, 12).getLunarDay().getFetusDay().getName())
     }
 
     func testFetusDayFromSixtyCycleDay() throws {
-        let scd = SixtyCycleDay.fromYmd(2021, 11, 13)
+        let scd = try SixtyCycleDay.fromYmd(2021, 11, 13)
         let fd = FetusDay.fromSixtyCycleDay(scd)
         XCTAssertEqual("碓磨厕 外东南", fd.getName())
     }
 
     func testFetusMonth() throws {
-        let m1 = LunarMonth.fromYm(2021, 11)
+        let m1 = try LunarMonth.fromYm(2021, 11)
         XCTAssertEqual("占灶炉", m1.getFetus()!.getName())
-        let m2 = LunarMonth.fromYm(2021, 1)
+        let m2 = try LunarMonth.fromYm(2021, 1)
         XCTAssertEqual("占房床", m2.getFetus()!.getName())
     }
 
@@ -1774,8 +1774,8 @@ final class Tyme4SwiftTests: XCTestCase {
     }
 
     func testMinorRenFromName() throws {
-        XCTAssertEqual(0, MinorRen.fromName("大安").getIndex())
-        XCTAssertEqual(3, MinorRen.fromName("赤口").getIndex())
+        XCTAssertEqual(0, try MinorRen.fromName("大安").getIndex())
+        XCTAssertEqual(3, try MinorRen.fromName("赤口").getIndex())
     }
 
     func testMinorRenLuck() throws {
@@ -1822,18 +1822,18 @@ final class Tyme4SwiftTests: XCTestCase {
     }
 
     func testGetLunarDayBoundaryDates() throws {
-        let d1 = SolarDay.fromYmd(1, 2, 12)
+        let d1 = try SolarDay.fromYmd(1, 2, 12)
         XCTAssertTrue(d1.getLunarDay().getDay() >= 1 && d1.getLunarDay().getDay() <= 30)
 
-        let d2 = SolarDay.fromYmd(100, 1, 1)
+        let d2 = try SolarDay.fromYmd(100, 1, 1)
         XCTAssertTrue(d2.getLunarDay().getDay() >= 1 && d2.getLunarDay().getDay() <= 30)
 
         // 2024-02-10 is lunar new year
-        XCTAssertEqual("初一", SolarDay.fromYmd(2024, 2, 10).getLunarDay().getName())
+        XCTAssertEqual("初一", try SolarDay.fromYmd(2024, 2, 10).getLunarDay().getName())
     }
 
     func testGetLunarDayLeapMonth() throws {
-        let d = SolarDay.fromYmd(2023, 4, 20)
+        let d = try SolarDay.fromYmd(2023, 4, 20)
         XCTAssertTrue(d.getLunarDay().getDay() >= 1 && d.getLunarDay().getDay() <= 30)
     }
 
@@ -1848,13 +1848,13 @@ final class Tyme4SwiftTests: XCTestCase {
     }
 
     func testElementFromName() throws {
-        XCTAssertEqual("木", Element.fromName("木").getName())
-        XCTAssertEqual("金", Element.fromName("金").getName())
-        XCTAssertEqual("水", Element.fromName("水").getName())
+        XCTAssertEqual("木", try Element.fromName("木").getName())
+        XCTAssertEqual("金", try Element.fromName("金").getName())
+        XCTAssertEqual("水", try Element.fromName("水").getName())
     }
 
     func testElementCycle() throws {
-        let wood = Element.fromName("木")
+        let wood = try Element.fromName("木")
         XCTAssertEqual("火", wood.next(1).getName())
         XCTAssertEqual("土", wood.next(2).getName())
         XCTAssertEqual("金", wood.next(3).getName())
@@ -1882,7 +1882,7 @@ final class Tyme4SwiftTests: XCTestCase {
     /// Test God lookup functionality
     func testGodLookup() throws {
         // Test God lookup for a known date (2024-01-01)
-        let day = SixtyCycleDay(year: 2024, month: 1, day: 1)
+        let day = try SixtyCycleDay(year: 2024, month: 1, day: 1)
         let gods = day.getGods()
 
         // Verify gods list is not empty
@@ -1899,7 +1899,7 @@ final class Tyme4SwiftTests: XCTestCase {
 
     /// Test day recommends (auspicious activities)
     func testDayRecommends() throws {
-        let day = SixtyCycleDay(year: 2024, month: 1, day: 1)
+        let day = try SixtyCycleDay(year: 2024, month: 1, day: 1)
         let recommends = day.getRecommends()
 
         // Verify all returned Taboo objects are marked as auspicious
@@ -1912,7 +1912,7 @@ final class Tyme4SwiftTests: XCTestCase {
 
     /// Test day avoids (inauspicious activities)
     func testDayAvoids() throws {
-        let day = SixtyCycleDay(year: 2024, month: 1, day: 1)
+        let day = try SixtyCycleDay(year: 2024, month: 1, day: 1)
         let avoids = day.getAvoids()
 
         // Verify all returned Taboo objects are marked as inauspicious
@@ -1926,7 +1926,7 @@ final class Tyme4SwiftTests: XCTestCase {
     /// Regression test for Issue #42: God/Taboo lookup data integrity
     func testGodTabooDataIntegrity() throws {
         // Test specific date from Issue #42
-        let day = SixtyCycleDay(year: 2024, month: 12, day: 1)
+        let day = try SixtyCycleDay(year: 2024, month: 12, day: 1)
         let gods = day.getGods()
         XCTAssertTrue(gods.count > 0, "Gods list should not be empty for 2024-12-01")
         let recommends = day.getRecommends()
@@ -1940,7 +1940,7 @@ final class Tyme4SwiftTests: XCTestCase {
         let daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         for m in 1...12 {
             for d in 1...daysInMonth[m - 1] {
-                let day = SixtyCycleDay(year: 2024, month: m, day: d)
+                let day = try SixtyCycleDay(year: 2024, month: m, day: d)
                 let _ = day.getGods()
                 let _ = day.getRecommends()
                 let _ = day.getAvoids()
@@ -1973,8 +1973,8 @@ final class Tyme4SwiftTests: XCTestCase {
 
     // MARK: - RabByungElement Tests
 
-    func testRabByungElement() {
-        let e = RabByungElement(index: 3) // 金→铁
+    func testRabByungElement() throws {
+        let e = try RabByungElement(index: 3) // 金→铁
         XCTAssertEqual(e.getName(), "铁")
         XCTAssertEqual(e.getIndex(), 3)
         XCTAssertEqual(e.getReinforce().getName(), "水")  // 铁生水
@@ -1982,12 +1982,12 @@ final class Tyme4SwiftTests: XCTestCase {
         XCTAssertEqual(e.getReinforced().getName(), "土") // 土生铁
         XCTAssertEqual(e.getRestrained().getName(), "火") // 火克铁
 
-        let e2 = RabByungElement.fromName("铁")
+        let e2 = try RabByungElement.fromName("铁")
         XCTAssertEqual(e2.getIndex(), 3)
         XCTAssertEqual(e2.getName(), "铁")
 
         // Test cycle
-        let wood = RabByungElement.fromName("木")
+        let wood = try RabByungElement.fromName("木")
         XCTAssertEqual(wood.next(1).getName(), "火")
         XCTAssertEqual(wood.next(2).getName(), "土")
         XCTAssertEqual(wood.next(3).getName(), "铁")

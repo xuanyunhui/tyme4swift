@@ -15,13 +15,13 @@ public final class Terrain: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Terrain name (e.g., "长生", "沐浴", etc.)
-    public convenience init(name: String) {
-        self.init(names: Terrain.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Terrain.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Terrain from index
@@ -34,8 +34,8 @@ public final class Terrain: LoopTyme {
     /// Get Terrain from name
     /// - Parameter name: Terrain name (e.g., "长生", "沐浴", etc.)
     /// - Returns: Terrain instance
-    public static func fromName(_ name: String) -> Terrain {
-        return Terrain(name: name)
+    public static func fromName(_ name: String) throws -> Terrain {
+        return try Terrain(name: name)
     }
 
     /// Get next terrain

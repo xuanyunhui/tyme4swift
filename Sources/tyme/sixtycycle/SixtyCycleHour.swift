@@ -42,8 +42,8 @@ public final class SixtyCycleHour: AbstractCulture {
     ///   - hour: The hour
     ///   - minute: The minute
     ///   - second: The second
-    public convenience init(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) {
-        self.init(solarTime: SolarTime.fromYmdHms(year, month, day, hour, minute, second))
+    public convenience init(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) throws {
+        self.init(solarTime: try SolarTime.fromYmdHms(year, month, day, hour, minute, second))
     }
 
     /// Get SolarTime
@@ -104,7 +104,7 @@ public final class SixtyCycleHour: AbstractCulture {
             d = d.next(-1)
         }
 
-        return SixtyCycleHour(solarTime: SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), h, solarTime.getMinute(), solarTime.getSecond()))
+        return SixtyCycleHour(solarTime: try! SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), h, solarTime.getMinute(), solarTime.getSecond()))
     }
 
     /// Create from SolarTime
@@ -123,7 +123,7 @@ public final class SixtyCycleHour: AbstractCulture {
     ///   - minute: The minute
     ///   - second: The second
     /// - Returns: SixtyCycleHour instance
-    public static func fromYmdHms(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int, _ second: Int) -> SixtyCycleHour {
-        return SixtyCycleHour(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
+    public static func fromYmdHms(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int, _ second: Int) throws -> SixtyCycleHour {
+        return try SixtyCycleHour(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
     }
 }

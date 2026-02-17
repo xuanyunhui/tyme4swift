@@ -10,20 +10,20 @@ public final class Element: LoopTyme {
         self.init(names: Element.NAMES, index: index)
     }
 
-    public convenience init(name: String) {
-        self.init(names: Element.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Element.NAMES, name: name)
     }
 
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     public static func fromIndex(_ index: Int) -> Element {
         Element(index: index)
     }
 
-    public static func fromName(_ name: String) -> Element {
-        Element(name: name)
+    public static func fromName(_ name: String) throws -> Element {
+        try Element(name: name)
     }
 
     public func stepsTo(_ targetIndex: Int) -> Int {

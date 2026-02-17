@@ -14,13 +14,13 @@ public final class Animal: LoopTyme {
 
     /// Initialize with name
     /// - Parameter name: Animal name (e.g., "蛟", "龙", etc.)
-    public convenience init(name: String) {
-        self.init(names: Animal.NAMES, name: name)
+    public convenience init(name: String) throws {
+        try self.init(names: Animal.NAMES, name: name)
     }
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+        try super.init(names: names, index: index)
     }
 
     /// Get Animal from index
@@ -33,8 +33,8 @@ public final class Animal: LoopTyme {
     /// Get Animal from name
     /// - Parameter name: Animal name (e.g., "蛟", "龙", etc.)
     /// - Returns: Animal instance
-    public static func fromName(_ name: String) -> Animal {
-        return Animal(name: name)
+    public static func fromName(_ name: String) throws -> Animal {
+        return try Animal(name: name)
     }
 
     /// Get next animal
