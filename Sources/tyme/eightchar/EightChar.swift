@@ -154,10 +154,17 @@ public final class EightChar: AbstractCulture {
 
 // MARK: - Equatable
 
-extension EightChar: Equatable {
+extension EightChar: Equatable, Hashable {
     public static func == (lhs: EightChar, rhs: EightChar) -> Bool {
         lhs.year == rhs.year && lhs.month == rhs.month &&
         lhs.day == rhs.day && lhs.hour == rhs.hour
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(year)
+        hasher.combine(month)
+        hasher.combine(day)
+        hasher.combine(hour)
     }
 }
 
