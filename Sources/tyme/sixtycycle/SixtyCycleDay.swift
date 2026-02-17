@@ -1,19 +1,32 @@
 import Foundation
 
-/// 日柱 (SixtyCycle Day)
-/// Represents a day in the SixtyCycle system
+/// 干支日（立春换年，节令换月）
 public final class SixtyCycleDay: AbstractCulture {
+    /// 公历日
     public let solarDay: SolarDay
+
+    /// 干支月
+    public let sixtyCycleMonth: SixtyCycleMonth
+
+    /// 日柱
     public let sixtyCycle: SixtyCycle
 
-    /// Initialize with SolarDay
-    /// - Parameter solarDay: The solar day
+    /// Initialize with SolarDay (computes month from solar term)
     public init(solarDay: SolarDay) {
+        let term = solarDay.term
+        let termIndex = term.index
+        let offset = termIndex < 3 ? (termIndex == 0 ? -2 : -1) : (termIndex - 3) / 2
         self.solarDay = solarDay
-        let offset = Int(solarDay.julianDay.value + 0.5) + 49
-        var index = offset % 60
-        if index < 0 { index += 60 }
-        self.sixtyCycle = SixtyCycle.fromIndex(index)
+        self.sixtyCycleMonth = SixtyCycleYear.fromYear(term.year).firstMonth.next(offset)
+        self.sixtyCycle = SixtyCycle.fromIndex(solarDay.subtract(try! SolarDay.fromYmd(2000, 1, 7)))
+        super.init()
+    }
+
+    /// Internal initializer with explicit month (used by SixtyCycleHour)
+    init(solarDay: SolarDay, month: SixtyCycleMonth, day: SixtyCycle) {
+        self.solarDay = solarDay
+        self.sixtyCycleMonth = month
+        self.sixtyCycle = day
         super.init()
     }
 
@@ -22,61 +35,107 @@ public final class SixtyCycleDay: AbstractCulture {
         self.init(solarDay: try SolarDay(year: year, month: month, day: day))
     }
 
+    /// 年柱
+    public var yearPillar: SixtyCycle { sixtyCycleMonth.yearPillar }
+
+    /// 月柱
+    public var monthPillar: SixtyCycle { sixtyCycleMonth.sixtyCycle }
+
     public var heavenStem: HeavenStem { sixtyCycle.heavenStem }
     public var earthBranch: EarthBranch { sixtyCycle.earthBranch }
     public var naYin: NaYin { NaYin.fromSixtyCycle(sixtyCycle.index) }
+
+    /// 建除十二值神
     public var duty: Duty {
-        let monthBranchIndex = (solarDay.month + 1) % 12
-        let dayBranchIndex = sixtyCycle.earthBranch.index
-        var dutyIndex = (dayBranchIndex - monthBranchIndex) % 12
-        if dutyIndex < 0 { dutyIndex += 12 }
-        return Duty.fromIndex(dutyIndex)
+        Duty.fromIndex(sixtyCycle.earthBranch.index - monthPillar.earthBranch.index)
     }
-    public var twentyEightStar: TwentyEightStar {
-        let offset = Int(solarDay.julianDay.value + 0.5) + 11
-        var index = offset % 28
-        if index < 0 { index += 28 }
-        return TwentyEightStar.fromIndex(index)
-    }
-    public var threePillars: ThreePillars {
-        let term = findPrevailingTerm()
-        let termIndex = term.index
-        let termYear = term.year
 
-        let offset: Int
-        if termIndex < 3 {
-            offset = termIndex == 0 ? -2 : -1
-        } else {
-            offset = (termIndex - 3) / 2
+    /// 黄道黑道十二神
+    public var twelveStar: TwelveStar {
+        TwelveStar.fromIndex(sixtyCycle.earthBranch.index + (8 - monthPillar.earthBranch.index % 6) * 2)
+    }
+
+    /// 九星
+    public var nineStar: NineStar {
+        let dongZhi = SolarTerm.fromIndex(solarDay.year, 0)
+        let dongZhiSolar = dongZhi.solarDay
+        let xiaZhiSolar = dongZhi.next(12).solarDay
+        let dongZhiSolar2 = dongZhi.next(24).solarDay
+        let dongZhiIndex = dongZhiSolar.lunarDay.sixtyCycle.index
+        let xiaZhiIndex = xiaZhiSolar.lunarDay.sixtyCycle.index
+        let dongZhiIndex2 = dongZhiSolar2.lunarDay.sixtyCycle.index
+        let solarShunBai = dongZhiSolar.next(dongZhiIndex > 29 ? 60 - dongZhiIndex : -dongZhiIndex)
+        let solarShunBai2 = dongZhiSolar2.next(dongZhiIndex2 > 29 ? 60 - dongZhiIndex2 : -dongZhiIndex2)
+        let solarNiZi = xiaZhiSolar.next(xiaZhiIndex > 29 ? 60 - xiaZhiIndex : -xiaZhiIndex)
+        var offset = 0
+        if !solarDay.isBefore(solarShunBai) && solarDay.isBefore(solarNiZi) {
+            offset = solarDay.subtract(solarShunBai)
+        } else if !solarDay.isBefore(solarNiZi) && solarDay.isBefore(solarShunBai2) {
+            offset = 8 - solarDay.subtract(solarNiZi)
+        } else if !solarDay.isBefore(solarShunBai2) {
+            offset = solarDay.subtract(solarShunBai2)
+        } else if solarDay.isBefore(solarShunBai) {
+            offset = 8 + solarShunBai.subtract(solarDay)
         }
-
-        let cycleYear = offset < 0 ? termYear - 1 : termYear
-        let yearSixtyCycle = SixtyCycle.fromIndex(cycleYear - 4)
-
-        let yearHeavenStemIndex = yearSixtyCycle.heavenStem.index
-        let firstMonthHeavenStemIndex = (yearHeavenStemIndex + 1) * 2
-        let normalizedOffset = offset < 0 ? offset + 12 : offset
-        let monthHeavenStemIndex = (firstMonthHeavenStemIndex + normalizedOffset) % 10
-        let monthEarthBranchIndex = (2 + normalizedOffset) % 12
-        let monthName = HeavenStem.NAMES[monthHeavenStemIndex] + EarthBranch.NAMES[monthEarthBranchIndex]
-        let monthSixtyCycle = try! SixtyCycle.fromName(monthName)
-
-        return ThreePillars(year: yearSixtyCycle, month: monthSixtyCycle, day: sixtyCycle)
+        return NineStar.fromIndex(offset)
     }
+
+    /// 太岁方位
+    public var jupiterDirection: Direction {
+        let idx = sixtyCycle.index
+        return idx % 12 < 6 ? Element.fromIndex(idx / 12).direction : sixtyCycleMonth.sixtyCycleYear.jupiterDirection
+    }
+
+    /// 逐日胎神
+    public var fetusDay: FetusDay {
+        FetusDay.fromSixtyCycleDay(self)
+    }
+
+    /// 二十八宿
+    public var twentyEightStar: TwentyEightStar {
+        TwentyEightStar.fromIndex([10, 18, 26, 6, 14, 22, 2][solarDay.week.index]).next(-7 * sixtyCycle.earthBranch.index)
+    }
+
+    /// 三柱
+    public var threePillars: ThreePillars {
+        ThreePillars(year: yearPillar, month: monthPillar, day: sixtyCycle)
+    }
+
+    /// 神煞列表
     public var gods: [God] {
-        GodLookup.getDayGods(month: threePillars.month, day: sixtyCycle)
+        GodLookup.getDayGods(month: monthPillar, day: sixtyCycle)
     }
+
+    /// 宜
     public var recommends: [Taboo] {
-        TabooLookup.getDayRecommends(month: threePillars.month, day: sixtyCycle)
+        TabooLookup.getDayRecommends(month: monthPillar, day: sixtyCycle)
     }
+
+    /// 忌
     public var avoids: [Taboo] {
-        TabooLookup.getDayAvoids(month: threePillars.month, day: sixtyCycle)
+        TabooLookup.getDayAvoids(month: monthPillar, day: sixtyCycle)
+    }
+
+    /// 干支时辰列表
+    public var hours: [SixtyCycleHour] {
+        var l: [SixtyCycleHour] = []
+        let d = solarDay.next(-1)
+        var h = SixtyCycleHour.fromSolarTime(try! SolarTime.fromYmdHms(d.year, d.month, d.day, 23, 0, 0))
+        l.append(h)
+        for _ in 0..<11 {
+            h = h.next(7200)
+            l.append(h)
+        }
+        return l
     }
 
     /// Get name
-    /// - Returns: SixtyCycle name
     public override func getName() -> String {
-        return sixtyCycle.getName()
+        return "\(sixtyCycle)日"
+    }
+
+    public override var description: String {
+        "\(sixtyCycleMonth)\(getName())"
     }
 
     /// Get next SixtyCycleDay
@@ -94,24 +153,17 @@ public final class SixtyCycleDay: AbstractCulture {
         return try SixtyCycleDay(year: year, month: month, day: day)
     }
 
-    private func findPrevailingTerm() -> SolarTerm {
-        var y = solarDay.year
-        var i = solarDay.month * 2
-        if i == 24 {
-            y += 1
-            i = 0
-        }
-        var term = SolarTerm.fromIndex(y, i + 1)
-        var termDay = term.solarDay
-        while solarDay.isBefore(termDay) {
-            term = term.next(-1)
-            termDay = term.solarDay
-        }
-        return term
-    }
-
     @available(*, deprecated, renamed: "solarDay")
     public func getSolarDay() -> SolarDay { solarDay }
+
+    @available(*, deprecated, renamed: "sixtyCycleMonth")
+    public func getSixtyCycleMonth() -> SixtyCycleMonth { sixtyCycleMonth }
+
+    @available(*, deprecated, renamed: "yearPillar")
+    public func getYear() -> SixtyCycle { yearPillar }
+
+    @available(*, deprecated, renamed: "monthPillar")
+    public func getMonth() -> SixtyCycle { monthPillar }
 
     @available(*, deprecated, renamed: "sixtyCycle")
     public func getSixtyCycle() -> SixtyCycle { sixtyCycle }
@@ -128,6 +180,18 @@ public final class SixtyCycleDay: AbstractCulture {
     @available(*, deprecated, renamed: "duty")
     public func getDuty() -> Duty { duty }
 
+    @available(*, deprecated, renamed: "twelveStar")
+    public func getTwelveStar() -> TwelveStar { twelveStar }
+
+    @available(*, deprecated, renamed: "nineStar")
+    public func getNineStar() -> NineStar { nineStar }
+
+    @available(*, deprecated, renamed: "jupiterDirection")
+    public func getJupiterDirection() -> Direction { jupiterDirection }
+
+    @available(*, deprecated, renamed: "fetusDay")
+    public func getFetusDay() -> FetusDay { fetusDay }
+
     @available(*, deprecated, renamed: "twentyEightStar")
     public func getTwentyEightStar() -> TwentyEightStar { twentyEightStar }
 
@@ -142,4 +206,7 @@ public final class SixtyCycleDay: AbstractCulture {
 
     @available(*, deprecated, renamed: "avoids")
     public func getAvoids() -> [Taboo] { avoids }
+
+    @available(*, deprecated, renamed: "hours")
+    public func getHours() -> [SixtyCycleHour] { hours }
 }

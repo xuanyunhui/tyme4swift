@@ -535,26 +535,26 @@ import Testing
         #expect(element.getName() == "金")
     }
     @Test func testPhase() throws {
-        // Test all three phases
-        let expectedNames = ["上旬", "中旬", "下旬"]
-        for i in 0..<3 {
-            let phase = Phase.fromIndex(i)
+        // Test all eight lunar phases
+        let expectedNames = ["新月", "蛾眉月", "上弦月", "盈凸月", "满月", "亏凸月", "下弦月", "残月"]
+        for i in 0..<8 {
+            let phase = Phase.fromIndex(2024, 1, i)
             #expect(phase.getName() == expectedNames[i])
             #expect(phase.index == i)
         }
 
         // Test fromName
-        let shangXun = try Phase.fromName("上旬")
-        #expect(shangXun.index == 0)
+        let xinYue = try Phase.fromName(2024, 1, "新月")
+        #expect(xinYue.index == 0)
 
         // Test next
-        let zhongXun = shangXun.next(1)
-        #expect(zhongXun.getName() == "中旬")
+        let eMeiYue = xinYue.next(1)
+        #expect(eMeiYue.getName() == "蛾眉月")
 
         // Test wrap around
-        let xiaXun = Phase.fromIndex(2)
-        let nextShangXun = xiaXun.next(1)
-        #expect(nextShangXun.getName() == "上旬")
+        let canYue = Phase.fromIndex(2024, 1, 7)
+        let nextXinYue = canYue.next(1)
+        #expect(nextXinYue.getName() == "新月")
     }
     @Test func testPhenology() throws {
         // Test first few phenologies
@@ -608,27 +608,14 @@ import Testing
         #expect(nextChuHou.getName() == "初候")
     }
     @Test func testPhaseDay() throws {
-        // Test all five phase days
-        let expectedNames = ["一", "二", "三", "四", "五"]
-        for i in 0..<5 {
-            let phaseDay = PhaseDay.fromIndex(i)
-            #expect(phaseDay.getName() == expectedNames[i])
-            #expect(phaseDay.index == i)
-            #expect(phaseDay.dayNumber == i + 1)
-        }
+        // Test PhaseDay with AbstractCultureDay pattern
+        let phase = Phase.fromIndex(2024, 1, 0)
+        let phaseDay = PhaseDay(phase: phase, dayIndex: 0)
+        #expect(phaseDay.phase.getName() == "新月")
+        #expect(phaseDay.dayIndex == 0)
 
-        // Test fromName
-        let yi = try PhaseDay.fromName("一")
-        #expect(yi.index == 0)
-
-        // Test next
-        let er = yi.next(1)
-        #expect(er.getName() == "二")
-
-        // Test wrap around
-        let wu = PhaseDay.fromIndex(4)
-        let nextYi = wu.next(1)
-        #expect(nextYi.getName() == "一")
+        let phaseDay2 = PhaseDay(phase: phase, dayIndex: 3)
+        #expect(phaseDay2.dayIndex == 3)
     }
     @Test func testTenDay() throws {
         // Test all ten days
