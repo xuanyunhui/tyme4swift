@@ -116,6 +116,27 @@ struct Phase6FestivalTests {
         #expect(desc.contains("春节"))
     }
 
+    @Test func testLunarFestivalFromYmd_Term_Qingming() {
+        // 清明节 is TERM type (solar term index 7 = 清明)
+        let qingming = SolarTerm.fromIndex(2024, 7)
+        let solarDay = qingming.solarDay
+        let lunarDay = try! solarDay.lunarDay
+        let festival = LunarFestival.fromYmd(lunarDay.year, lunarDay.month, lunarDay.day)
+        #expect(festival != nil)
+        #expect(festival?.festivalName == "清明节")
+        #expect(festival?.type == .term)
+    }
+
+    @Test func testLunarFestivalFromYmd_Eve() {
+        // 除夕 is the last day of lunar year — lunar 2023/12/30 (if 30 days) or 12/29
+        let nextNewYear = try! LunarDay.fromYmd(2024, 1, 1)
+        let eveDay = nextNewYear.next(-1)
+        let festival = LunarFestival.fromYmd(eveDay.year, eveDay.month, eveDay.day)
+        #expect(festival != nil)
+        #expect(festival?.festivalName == "除夕")
+        #expect(festival?.type == .eve)
+    }
+
     // MARK: - SolarFestival Tests
 
     @Test func testSolarFestivalNames() {
@@ -298,6 +319,17 @@ struct Phase6FestivalTests {
         #expect(holiday != nil)
         let desc = holiday?.description ?? ""
         #expect(desc.contains("班"))
+    }
+
+    @Test func testLegalHolidayNextCrossYear() {
+        // 2024-10-12 is the last holiday record of 2024, next(1) should go to 2025
+        let lastHoliday2024 = LegalHoliday.fromYmd(2024, 10, 12)
+        #expect(lastHoliday2024 != nil)
+        let next = lastHoliday2024?.next(1)
+        #expect(next != nil)
+        #expect(next?.solarDay.year == 2025)
+        #expect(next?.solarDay.month == 1)
+        #expect(next?.solarDay.day == 1)
     }
 
     @Test func testLegalHolidayNationalDay2024() {
