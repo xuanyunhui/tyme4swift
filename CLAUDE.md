@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 swift build          # Build the package
-swift test           # Run all tests (105 XCTest cases)
+swift test           # Run all tests (109 XCTest cases)
 swift test --filter Tyme4SwiftTests/testSolarDay   # Run a single test
 ```
 
@@ -69,7 +69,7 @@ Culture (protocol) → getName()
 
 ### Tests
 
-Single test file at `Tests/tymeTests/Tyme4SwiftTests.swift` containing all 105 XCTest cases. Tests are organized by `testXxx()` methods covering each subsystem.
+Single test file at `Tests/tymeTests/Tyme4SwiftTests.swift` containing all 109 XCTest cases. Tests are organized by `testXxx()` methods covering each subsystem.
 When rebasing branches, this single test file is the most common source of merge conflicts — new tests are appended at the end.
 
 **Acceptance tests:** Issue #14 (SolarDay overflow) and #19 (Element.NAMES order) have dedicated regression tests added via PR #23.
