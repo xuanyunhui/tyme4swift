@@ -25,7 +25,7 @@ public final class Sound: LoopTyme {
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        try super.init(names: names, index: index)
+        super.init(names: names, index: index)
     }
 
     /// Get Sound from index
@@ -58,6 +58,6 @@ public final class Sound: LoopTyme {
     /// Get Element instance
     /// - Returns: Element instance
     public func getElement() -> Element {
-        return try! Element.fromName(Sound.NAMES[index])
+        return try! Element.fromName(Sound.WU_XING[index])
     }
 }

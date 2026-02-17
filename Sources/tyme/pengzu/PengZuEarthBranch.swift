@@ -38,7 +38,7 @@ public final class PengZuEarthBranch: LoopTyme {
 
     /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
-        try super.init(names: names, index: index)
+        super.init(names: names, index: index)
     }
 
     /// Create from name
@@ -59,6 +59,6 @@ public final class PengZuEarthBranch: LoopTyme {
     /// - Parameter n: Number of steps to advance
     /// - Returns: Next PengZuEarthBranch instance
     public override func next(_ n: Int) -> PengZuEarthBranch {
-        return try! PengZuEarthBranch(nextIndex(n))
+        return PengZuEarthBranch(nextIndex(n))
     }
 }

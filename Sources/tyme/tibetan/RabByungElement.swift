@@ -13,7 +13,7 @@ public final class RabByungElement: AbstractCulture {
     /// - Parameter index: Element index (0-4)
     public init(index: Int) throws {
         self.element = Element.fromIndex(index)
-        try super.init()
+        super.init()
     }
 
     /// Initialize with name
@@ -22,7 +22,7 @@ public final class RabByungElement: AbstractCulture {
         // Convert 铁 to 金 for internal Element
         let elementName = name.replacingOccurrences(of: "铁", with: "金")
         self.element = try! Element.fromName(elementName)
-        try super.init()
+        super.init()
     }
 
     /// Create from index

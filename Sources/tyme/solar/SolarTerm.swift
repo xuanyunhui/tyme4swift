@@ -9,7 +9,7 @@ public final class SolarTerm: LoopTyme {
     public required init(names: [String], index: Int) {
         self.year = 2000
         self.cursoryJulianDay = 0
-        try super.init(names: names, index: index)
+        super.init(names: names, index: index)
     }
 
     public init(year: Int, index: Int) throws {
@@ -18,7 +18,7 @@ public final class SolarTerm: LoopTyme {
         let normalizedIndex = ((index % size) + size) % size
         self.year = normalizedYear
         self.cursoryJulianDay = 0
-        try super.init(names: SolarTerm.NAMES, index: normalizedIndex)
+        super.init(names: SolarTerm.NAMES, index: normalizedIndex)
         initByYear(normalizedYear, normalizedIndex)
     }
 
