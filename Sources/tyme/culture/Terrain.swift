@@ -45,21 +45,16 @@ public final class Terrain: LoopTyme {
         return Terrain.fromIndex(nextIndex(n))
     }
 
-    /// Check if this is a prosperous stage (旺相)
-    /// - Returns: true if 长生, 冠带, 临官, 帝旺
-    public func isProsperous() -> Bool {
-        return index == 0 || index == 2 || index == 3 || index == 4
-    }
+    public var prosperous: Bool { index == 0 || index == 2 || index == 3 || index == 4 }
+    public var declining: Bool { index >= 5 && index <= 9 }
+    public var nurturing: Bool { index == 1 || index == 10 || index == 11 }
 
-    /// Check if this is a declining stage (衰败)
-    /// - Returns: true if 衰, 病, 死, 墓, 绝
-    public func isDeclining() -> Bool {
-        return index >= 5 && index <= 9
-    }
+    @available(*, deprecated, renamed: "prosperous")
+    public func isProsperous() -> Bool { prosperous }
 
-    /// Check if this is a nurturing stage (养育)
-    /// - Returns: true if 胎, 养, 沐浴
-    public func isNurturing() -> Bool {
-        return index == 1 || index == 10 || index == 11
-    }
+    @available(*, deprecated, renamed: "declining")
+    public func isDeclining() -> Bool { declining }
+
+    @available(*, deprecated, renamed: "nurturing")
+    public func isNurturing() -> Bool { nurturing }
 }

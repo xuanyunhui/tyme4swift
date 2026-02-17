@@ -11,16 +11,15 @@ public final class DogDay: AbstractCultureDay {
         super.init(culture: dog, dayIndex: dayIndex)
     }
 
-    /// Get dog period
-    /// - Returns: Dog instance
-    public func getDog() -> Dog {
-        return culture as! Dog
-    }
+    public var dog: Dog { culture as! Dog }
+
+    @available(*, deprecated, renamed: "dog")
+    public func getDog() -> Dog { dog }
 
     /// Get name
     /// - Returns: Dog day name (e.g., "初伏第1天")
     public override func getName() -> String {
-        return "\(getDog().getName())第\(getDayIndex() + 1)天"
+        return "\(dog.getName())第\(dayIndex + 1)天"
     }
 
     /// Create from dog period and day index

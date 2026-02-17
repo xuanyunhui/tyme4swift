@@ -8,17 +8,17 @@ import Testing
         let yearBranch = EarthBranch.fromIndex(0) // 子
         let monthBranch = EarthBranch.fromIndex(2) // 寅
         let lifePalace = LifePalace.fromYearMonth(yearBranch, monthBranch)
-        _ = lifePalace.getSixtyCycle()
-        _ = lifePalace.getHeavenStem()
-        _ = lifePalace.getEarthBranch()
+        _ = lifePalace.sixtyCycle
+        _ = lifePalace.heavenStem
+        _ = lifePalace.earthBranch
     }
     @Test func testBodyPalace() throws {
         let yearBranch = EarthBranch.fromIndex(0) // 子
         let hourBranch = EarthBranch.fromIndex(6) // 午
         let bodyPalace = BodyPalace.fromYearHour(yearBranch, hourBranch)
-        _ = bodyPalace.getSixtyCycle()
-        _ = bodyPalace.getHeavenStem()
-        _ = bodyPalace.getEarthBranch()
+        _ = bodyPalace.sixtyCycle
+        _ = bodyPalace.heavenStem
+        _ = bodyPalace.earthBranch
     }
     @Test func testDefaultEightCharProvider() throws {
         let provider = DefaultEightCharProvider()

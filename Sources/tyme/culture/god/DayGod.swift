@@ -53,23 +53,18 @@ public final class DayGod: AbstractCulture {
         return dayGodName
     }
 
-    /// Check if auspicious
-    /// - Returns: true if auspicious
-    public func getIsAuspicious() -> Bool {
-        return isAuspicious
-    }
+    public var auspicious: Bool { isAuspicious }
+    public var inauspicious: Bool { !isAuspicious }
+    public var luck: Luck { Luck.fromIndex(isAuspicious ? 0 : 1) }
 
-    /// Check if inauspicious
-    /// - Returns: true if inauspicious
-    public func getIsInauspicious() -> Bool {
-        return !isAuspicious
-    }
+    @available(*, deprecated, renamed: "auspicious")
+    public func getIsAuspicious() -> Bool { auspicious }
 
-    /// Get luck
-    /// - Returns: Luck instance
-    public func getLuck() -> Luck {
-        return Luck.fromIndex(isAuspicious ? 0 : 1)
-    }
+    @available(*, deprecated, renamed: "inauspicious")
+    public func getIsInauspicious() -> Bool { inauspicious }
+
+    @available(*, deprecated, renamed: "luck")
+    public func getLuck() -> Luck { luck }
 
     /// Create auspicious day god
     /// - Parameter name: Day god name

@@ -4,7 +4,7 @@ import Foundation
 /// Auspicious and inauspicious activities for a day
 public final class Taboo: AbstractCulture {
     private let tabooName: String
-    private let luck: Luck
+    public let luck: Luck
 
     /// Initialize with name and luck
     /// - Parameters:
@@ -22,21 +22,17 @@ public final class Taboo: AbstractCulture {
         return tabooName
     }
 
-    /// Get luck
-    /// - Returns: Luck instance
-    public func getLuck() -> Luck {
-        return luck
-    }
+    public var auspicious: Bool { luck.auspicious }
+    public var inauspicious: Bool { luck.inauspicious }
 
-    /// Check if auspicious (宜)
-    public func isAuspicious() -> Bool {
-        return luck.isAuspicious()
-    }
+    @available(*, deprecated, renamed: "luck")
+    public func getLuck() -> Luck { luck }
 
-    /// Check if inauspicious (忌)
-    public func isInauspicious() -> Bool {
-        return luck.isInauspicious()
-    }
+    @available(*, deprecated, renamed: "auspicious")
+    public func isAuspicious() -> Bool { auspicious }
+
+    @available(*, deprecated, renamed: "inauspicious")
+    public func isInauspicious() -> Bool { inauspicious }
 
     /// Create auspicious taboo
     /// - Parameter name: Taboo name

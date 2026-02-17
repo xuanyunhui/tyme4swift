@@ -37,8 +37,8 @@ public final class Element: LoopTyme {
         Element.fromIndex(nextIndex(n))
     }
     
-    // Properties
-    public func getYinYang() -> String {
-        Element.YIN_YANG[index]
-    }
+    public var yinYang: String { Element.YIN_YANG[index] }
+
+    @available(*, deprecated, renamed: "yinYang")
+    public func getYinYang() -> String { yinYang }
 }

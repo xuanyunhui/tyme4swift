@@ -23,23 +23,22 @@ public final class YinNobleGod: AbstractCulture {
         return YinNobleGod.DIRECTIONS[heavenStemIndex]
     }
 
-    /// Get direction
-    /// - Returns: Direction instance
-    public func getDirection() -> Direction {
-        return try! Direction.fromName(getName())
-    }
+    public var direction: Direction { try! Direction.fromName(getName()) }
+
+    @available(*, deprecated, renamed: "direction")
+    public func getDirection() -> Direction { direction }
 
     /// Create from heaven stem
     /// - Parameter heavenStem: Heaven stem
     /// - Returns: YinNobleGod instance
     public static func fromHeavenStem(_ heavenStem: HeavenStem) -> YinNobleGod {
-        return YinNobleGod(heavenStemIndex: heavenStem.getIndex())
+        return YinNobleGod(heavenStemIndex: heavenStem.index)
     }
 
     /// Create from day SixtyCycle
     /// - Parameter daySixtyCycle: Day SixtyCycle
     /// - Returns: YinNobleGod instance
     public static func fromDaySixtyCycle(_ daySixtyCycle: SixtyCycle) -> YinNobleGod {
-        return YinNobleGod(heavenStemIndex: daySixtyCycle.getHeavenStem().getIndex())
+        return YinNobleGod(heavenStemIndex: daySixtyCycle.heavenStem.index)
     }
 }

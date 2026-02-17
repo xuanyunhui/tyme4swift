@@ -9,28 +9,25 @@ public final class HourGod: AbstractCulture {
         "天乙", "天官", "福星", "天德", "月德"
     ]
 
-    private let hourGodIndex: Int
+    public let index: Int
 
     /// Initialize with index
     /// - Parameter index: Hour god index (0-9)
     public init(index: Int) {
         var i = index % 10
         if i < 0 { i += 10 }
-        self.hourGodIndex = i
+        self.index = i
         super.init()
     }
 
     /// Get name
     /// - Returns: Hour god name
     public override func getName() -> String {
-        return HourGod.NAMES[hourGodIndex]
+        return HourGod.NAMES[index]
     }
 
-    /// Get index
-    /// - Returns: Hour god index
-    public func getIndex() -> Int {
-        return hourGodIndex
-    }
+    @available(*, deprecated, renamed: "index")
+    public func getIndex() -> Int { index }
 
     /// Create from index
     /// - Parameter index: Hour god index

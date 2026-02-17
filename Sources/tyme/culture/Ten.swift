@@ -44,9 +44,8 @@ public final class Ten: LoopTyme {
         return Ten.fromIndex(nextIndex(n))
     }
 
-    /// Get day number (1-10)
-    /// - Returns: Day number
-    public func getDayNumber() -> Int {
-        return index + 1
-    }
+    public var dayNumber: Int { index + 1 }
+
+    @available(*, deprecated, renamed: "dayNumber")
+    public func getDayNumber() -> Int { dayNumber }
 }

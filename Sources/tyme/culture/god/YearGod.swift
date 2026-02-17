@@ -10,28 +10,25 @@ public final class YearGod: AbstractCulture {
         "吊客", "病符"
     ]
 
-    private let yearGodIndex: Int
+    public let index: Int
 
     /// Initialize with index
     /// - Parameter index: Year god index (0-11)
     public init(index: Int) {
         var i = index % 12
         if i < 0 { i += 12 }
-        self.yearGodIndex = i
+        self.index = i
         super.init()
     }
 
     /// Get name
     /// - Returns: Year god name
     public override func getName() -> String {
-        return YearGod.NAMES[yearGodIndex]
+        return YearGod.NAMES[index]
     }
 
-    /// Get index
-    /// - Returns: Year god index
-    public func getIndex() -> Int {
-        return yearGodIndex
-    }
+    @available(*, deprecated, renamed: "index")
+    public func getIndex() -> Int { index }
 
     /// Create from index
     /// - Parameter index: Year god index
@@ -46,7 +43,7 @@ public final class YearGod: AbstractCulture {
     public static func fromEarthBranch(_ earthBranch: EarthBranch) -> [YearGod] {
         var gods: [YearGod] = []
         for i in 0..<12 {
-            gods.append(YearGod(index: (earthBranch.getIndex() + i) % 12))
+            gods.append(YearGod(index: (earthBranch.index + i) % 12))
         }
         return gods
     }

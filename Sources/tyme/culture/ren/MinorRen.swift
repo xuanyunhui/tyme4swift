@@ -29,13 +29,12 @@ public final class MinorRen: LoopTyme {
         MinorRen.fromIndex(nextIndex(n))
     }
 
-    /// 吉凶
-    public func getLuck() -> Luck {
-        Luck.fromIndex(index % 2)
-    }
+    public var luck: Luck { Luck.fromIndex(index % 2) }
+    public var element: Element { Element.fromIndex([0, 4, 1, 3, 0, 2][index]) }
 
-    /// 五行
-    public func getElement() -> Element {
-        Element.fromIndex([0, 4, 1, 3, 0, 2][index])
-    }
+    @available(*, deprecated, renamed: "luck")
+    public func getLuck() -> Luck { luck }
+
+    @available(*, deprecated, renamed: "element")
+    public func getElement() -> Element { element }
 }

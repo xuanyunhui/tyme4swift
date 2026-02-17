@@ -4,8 +4,8 @@ import Foundation
 /// Represents various deities and spirits in Chinese calendar
 /// Used for determining auspicious and inauspicious activities
 public final class God: AbstractCulture {
-    private let godType: GodType
-    private let luck: Luck
+    public let godType: GodType
+    public let luck: Luck
     private let godName: String
 
     /// Initialize with type, luck, and name
@@ -26,27 +26,18 @@ public final class God: AbstractCulture {
         return godName
     }
 
-    /// Get god type
-    /// - Returns: GodType instance
-    public func getGodType() -> GodType {
-        return godType
-    }
+    public var auspicious: Bool { luck.auspicious }
+    public var inauspicious: Bool { luck.inauspicious }
 
-    /// Get luck
-    /// - Returns: Luck instance
-    public func getLuck() -> Luck {
-        return luck
-    }
+    @available(*, deprecated, renamed: "godType")
+    public func getGodType() -> GodType { godType }
 
-    /// Check if auspicious
-    /// - Returns: true if 吉
-    public func isAuspicious() -> Bool {
-        return luck.isAuspicious()
-    }
+    @available(*, deprecated, renamed: "luck")
+    public func getLuck() -> Luck { luck }
 
-    /// Check if inauspicious
-    /// - Returns: true if 凶
-    public func isInauspicious() -> Bool {
-        return luck.isInauspicious()
-    }
+    @available(*, deprecated, renamed: "auspicious")
+    public func isAuspicious() -> Bool { auspicious }
+
+    @available(*, deprecated, renamed: "inauspicious")
+    public func isInauspicious() -> Bool { inauspicious }
 }

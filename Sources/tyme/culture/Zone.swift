@@ -44,15 +44,12 @@ public final class Zone: LoopTyme {
         return Zone.fromIndex(nextIndex(n))
     }
 
-    /// Get direction
-    /// - Returns: Direction instance
-    public func getDirection() -> Direction {
-        return try! Direction.fromName(getName())
-    }
+    public var direction: Direction { try! Direction.fromName(getName()) }
+    public var beast: Beast { Beast.fromIndex(index) }
 
-    /// Get beast (神兽)
-    /// - Returns: Beast instance
-    public func getBeast() -> Beast {
-        return Beast.fromIndex(index)
-    }
+    @available(*, deprecated, renamed: "direction")
+    public func getDirection() -> Direction { direction }
+
+    @available(*, deprecated, renamed: "beast")
+    public func getBeast() -> Beast { beast }
 }

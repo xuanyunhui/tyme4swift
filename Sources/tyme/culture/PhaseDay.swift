@@ -45,9 +45,8 @@ public final class PhaseDay: LoopTyme {
         return PhaseDay.fromIndex(nextIndex(n))
     }
 
-    /// Get day number (1-5)
-    /// - Returns: Day number
-    public func getDayNumber() -> Int {
-        return index + 1
-    }
+    public var dayNumber: Int { index + 1 }
+
+    @available(*, deprecated, renamed: "dayNumber")
+    public func getDayNumber() -> Int { dayNumber }
 }

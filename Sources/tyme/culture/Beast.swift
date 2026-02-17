@@ -44,9 +44,8 @@ public final class Beast: LoopTyme {
         return Beast.fromIndex(nextIndex(n))
     }
 
-    /// Get zone (宫)
-    /// - Returns: Zone instance
-    public func getZone() -> Zone {
-        return Zone.fromIndex(index)
-    }
+    public var zone: Zone { Zone.fromIndex(index) }
+
+    @available(*, deprecated, renamed: "zone")
+    public func getZone() -> Zone { zone }
 }

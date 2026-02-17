@@ -36,7 +36,7 @@ public final class Fetus: AbstractCulture {
         "房内西", "房内北", "房内北", "房内北", "房内北"
     ]
 
-    private let sixtyCycleIndex: Int
+    public let sixtyCycleIndex: Int
 
     /// Initialize with SixtyCycle index
     /// - Parameter sixtyCycleIndex: SixtyCycle index (0-59)
@@ -47,35 +47,29 @@ public final class Fetus: AbstractCulture {
         super.init()
     }
 
+    public var position: String { Fetus.POSITIONS[sixtyCycleIndex] }
+    public var direction: String { Fetus.DIRECTIONS[sixtyCycleIndex] }
+
     /// Get name (position + direction)
     /// - Returns: Fetus god name
     public override func getName() -> String {
-        return "\(getPosition())\(getDirection())"
+        return "\(position)\(direction)"
     }
 
-    /// Get position
-    /// - Returns: Position name
-    public func getPosition() -> String {
-        return Fetus.POSITIONS[sixtyCycleIndex]
-    }
+    @available(*, deprecated, renamed: "position")
+    public func getPosition() -> String { position }
 
-    /// Get direction
-    /// - Returns: Direction name
-    public func getDirection() -> String {
-        return Fetus.DIRECTIONS[sixtyCycleIndex]
-    }
+    @available(*, deprecated, renamed: "direction")
+    public func getDirection() -> String { direction }
 
-    /// Get SixtyCycle index
-    /// - Returns: SixtyCycle index
-    public func getSixtyCycleIndex() -> Int {
-        return sixtyCycleIndex
-    }
+    @available(*, deprecated, renamed: "sixtyCycleIndex")
+    public func getSixtyCycleIndex() -> Int { sixtyCycleIndex }
 
     /// Create from SixtyCycle
     /// - Parameter sixtyCycle: SixtyCycle instance
     /// - Returns: Fetus instance
     public static func fromSixtyCycle(_ sixtyCycle: SixtyCycle) -> Fetus {
-        return Fetus(sixtyCycleIndex: sixtyCycle.getIndex())
+        return Fetus(sixtyCycleIndex: sixtyCycle.index)
     }
 
     /// Create from SixtyCycle index
