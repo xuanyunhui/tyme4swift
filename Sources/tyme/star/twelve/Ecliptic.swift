@@ -44,21 +44,14 @@ public final class Ecliptic: LoopTyme {
         return Ecliptic.fromIndex(nextIndex(n))
     }
 
-    /// Get luck (吉凶)
-    /// - Returns: Luck instance (黄道=吉, 黑道=凶)
-    public func getLuck() -> Luck {
-        return Luck.fromIndex(index)
-    }
+    public var luck: Luck { Luck.fromIndex(index) }
 
     /// Check if auspicious (黄道)
-    /// - Returns: true if 黄道
-    public func isAuspicious() -> Bool {
-        return index == 0
-    }
+    public func isAuspicious() -> Bool { index == 0 }
 
     /// Check if inauspicious (黑道)
-    /// - Returns: true if 黑道
-    public func isInauspicious() -> Bool {
-        return index == 1
-    }
+    public func isInauspicious() -> Bool { index == 1 }
+
+    @available(*, deprecated, renamed: "luck")
+    public func getLuck() -> Luck { luck }
 }

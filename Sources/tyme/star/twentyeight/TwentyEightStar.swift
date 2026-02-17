@@ -52,45 +52,30 @@ public final class TwentyEightStar: LoopTyme {
         return TwentyEightStar.fromIndex(nextIndex(n))
     }
 
-    /// Get SevenStar (七曜)
-    /// - Returns: SevenStar instance
-    public func getSevenStar() -> SevenStar {
-        return SevenStar.fromIndex(index % 7 + 4)
-    }
-
-    /// Get Land (九野)
-    /// - Returns: Land instance
-    public func getLand() -> Land {
-        return Land.fromIndex(TwentyEightStar.LAND_INDICES[index])
-    }
-
-    /// Get Zone (宫)
-    /// - Returns: Zone instance
-    public func getZone() -> Zone {
-        return Zone.fromIndex(index / 7)
-    }
-
-    /// Get Animal (动物)
-    /// - Returns: Animal instance
-    public func getAnimal() -> Animal {
-        return Animal.fromIndex(index)
-    }
-
-    /// Get Luck (吉凶)
-    /// - Returns: Luck instance
-    public func getLuck() -> Luck {
-        return Luck.fromIndex(TwentyEightStar.LUCK_INDICES[index])
-    }
+    public var sevenStar: SevenStar { SevenStar.fromIndex(index % 7 + 4) }
+    public var land: Land { Land.fromIndex(TwentyEightStar.LAND_INDICES[index]) }
+    public var zone: Zone { Zone.fromIndex(index / 7) }
+    public var animal: Animal { Animal.fromIndex(index) }
+    public var luck: Luck { Luck.fromIndex(TwentyEightStar.LUCK_INDICES[index]) }
 
     /// Check if auspicious
-    /// - Returns: true if 吉
-    public func isAuspicious() -> Bool {
-        return TwentyEightStar.LUCK_INDICES[index] == 0
-    }
+    public func isAuspicious() -> Bool { TwentyEightStar.LUCK_INDICES[index] == 0 }
 
     /// Check if inauspicious
-    /// - Returns: true if 凶
-    public func isInauspicious() -> Bool {
-        return TwentyEightStar.LUCK_INDICES[index] == 1
-    }
+    public func isInauspicious() -> Bool { TwentyEightStar.LUCK_INDICES[index] == 1 }
+
+    @available(*, deprecated, renamed: "sevenStar")
+    public func getSevenStar() -> SevenStar { sevenStar }
+
+    @available(*, deprecated, renamed: "land")
+    public func getLand() -> Land { land }
+
+    @available(*, deprecated, renamed: "zone")
+    public func getZone() -> Zone { zone }
+
+    @available(*, deprecated, renamed: "animal")
+    public func getAnimal() -> Animal { animal }
+
+    @available(*, deprecated, renamed: "luck")
+    public func getLuck() -> Luck { luck }
 }

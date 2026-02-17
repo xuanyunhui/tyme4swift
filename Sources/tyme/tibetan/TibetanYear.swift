@@ -6,9 +6,9 @@ public final class TibetanYear: AbstractCulture {
     /// The first RabByung cycle started in 1027 CE
     public static let FIRST_RABBYUNG_YEAR = 1027
 
-    private let year: Int
-    private let rabByungCycle: Int
-    private let rabByungIndex: Int
+    public let year: Int
+    public let rabByungCycle: Int
+    public let rabByungIndex: Int
 
     /// Initialize with year
     /// - Parameter year: The year in Gregorian calendar
@@ -31,53 +31,23 @@ public final class TibetanYear: AbstractCulture {
         super.init()
     }
 
-    /// Get year
-    /// - Returns: Year value
-    public func getYear() -> Int {
-        return year
-    }
+    public var rabByung: RabByung { RabByung.fromIndex(rabByungIndex) }
 
-    /// Get RabByung cycle number
-    /// - Returns: Cycle number (1-based)
-    public func getRabByungCycle() -> Int {
-        return rabByungCycle
-    }
+    public var element: String { rabByung.element }
 
-    /// Get RabByung index within cycle
-    /// - Returns: Index (0-59)
-    public func getRabByungIndex() -> Int {
-        return rabByungIndex
-    }
-
-    /// Get RabByung
-    /// - Returns: RabByung instance
-    public func getRabByung() -> RabByung {
-        return RabByung.fromIndex(rabByungIndex)
-    }
+    public var animal: String { rabByung.animal }
 
     /// Get name
     /// - Returns: Tibetan year name (e.g., "第17绕迥火兔年")
     public override func getName() -> String {
-        return "第\(rabByungCycle)绕迥\(getRabByung().getName())年"
-    }
-
-    /// Get element (五行)
-    /// - Returns: Element name
-    public func getElement() -> String {
-        return getRabByung().getElement()
-    }
-
-    /// Get animal (生肖)
-    /// - Returns: Animal name
-    public func getAnimal() -> String {
-        return getRabByung().getAnimal()
+        return "第\(rabByungCycle)绕迥\(rabByung.getName())年"
     }
 
     /// Get next Tibetan year
     /// - Parameter n: Number of years to advance
     /// - Returns: Next TibetanYear instance
     public func next(_ n: Int) -> TibetanYear {
-        return try! TibetanYear(year: year + n)
+        return TibetanYear(year: year + n)
     }
 
     /// Create from year
@@ -86,4 +56,22 @@ public final class TibetanYear: AbstractCulture {
     public static func fromYear(_ year: Int) -> TibetanYear {
         return TibetanYear(year: year)
     }
+
+    @available(*, deprecated, renamed: "year")
+    public func getYear() -> Int { year }
+
+    @available(*, deprecated, renamed: "rabByungCycle")
+    public func getRabByungCycle() -> Int { rabByungCycle }
+
+    @available(*, deprecated, renamed: "rabByungIndex")
+    public func getRabByungIndex() -> Int { rabByungIndex }
+
+    @available(*, deprecated, renamed: "rabByung")
+    public func getRabByung() -> RabByung { rabByung }
+
+    @available(*, deprecated, renamed: "element")
+    public func getElement() -> String { element }
+
+    @available(*, deprecated, renamed: "animal")
+    public func getAnimal() -> String { animal }
 }

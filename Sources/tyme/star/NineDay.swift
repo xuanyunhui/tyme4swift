@@ -73,27 +73,20 @@ public final class NineDay: LoopTyme {
 
     // MARK: - Properties
 
-    /// Get palace number
-    /// - Returns: Palace number (1-9)
-    public func getNumber() -> Int {
-        return NineDay.NUMBERS[index]
-    }
+    public var number: Int { NineDay.NUMBERS[index] }
+    public var direction: String { NineDay.DIRECTIONS[index] }
+    public var wuXing: String { NineDay.WU_XING[index] }
+    public var nineStar: NineStar { NineStar.fromIndex(index) }
 
-    /// Get direction
-    /// - Returns: Direction name
-    public func getDirection() -> String {
-        return NineDay.DIRECTIONS[index]
-    }
+    @available(*, deprecated, renamed: "number")
+    public func getNumber() -> Int { number }
 
-    /// Get WuXing (五行)
-    /// - Returns: Element (金, 木, 水, 火, 土)
-    public func getWuXing() -> String {
-        return NineDay.WU_XING[index]
-    }
+    @available(*, deprecated, renamed: "direction")
+    public func getDirection() -> String { direction }
 
-    /// Get corresponding NineStar
-    /// - Returns: NineStar instance
-    public func getNineStar() -> NineStar {
-        return NineStar.fromIndex(index)
-    }
+    @available(*, deprecated, renamed: "wuXing")
+    public func getWuXing() -> String { wuXing }
+
+    @available(*, deprecated, renamed: "nineStar")
+    public func getNineStar() -> NineStar { nineStar }
 }

@@ -45,35 +45,22 @@ public final class RabByung: LoopTyme {
     }
 
     /// Get RabByung from index
-    /// - Parameter index: RabByung index (0-59)
-    /// - Returns: RabByung instance
-    public static func fromIndex(_ index: Int) -> RabByung {
-        return RabByung(index: index)
-    }
+    public static func fromIndex(_ index: Int) -> RabByung { RabByung(index: index) }
 
     /// Get RabByung from name
-    /// - Parameter name: RabByung name (e.g., "火兔", "土龙", etc.)
-    /// - Returns: RabByung instance
-    public static func fromName(_ name: String) throws -> RabByung {
-        return try RabByung(name: name)
-    }
+    public static func fromName(_ name: String) throws -> RabByung { try RabByung(name: name) }
 
-    /// Get next RabByung
-    /// - Parameter n: Number of steps to advance
-    /// - Returns: Next RabByung instance
-    public override func next(_ n: Int) -> RabByung {
-        return RabByung.fromIndex(nextIndex(n))
-    }
+    public override func next(_ n: Int) -> RabByung { RabByung.fromIndex(nextIndex(n)) }
 
-    /// Get element (五行)
-    /// - Returns: Element name
-    public func getElement() -> String {
-        return RabByung.ELEMENTS[(index / 2) % 5]
-    }
+    /// The element (五行)
+    public var element: String { RabByung.ELEMENTS[(index / 2) % 5] }
 
-    /// Get animal (生肖)
-    /// - Returns: Animal name
-    public func getAnimal() -> String {
-        return RabByung.ANIMALS[index % 12]
-    }
+    /// The animal (生肖)
+    public var animal: String { RabByung.ANIMALS[index % 12] }
+
+    @available(*, deprecated, renamed: "element")
+    public func getElement() -> String { element }
+
+    @available(*, deprecated, renamed: "animal")
+    public func getAnimal() -> String { animal }
 }

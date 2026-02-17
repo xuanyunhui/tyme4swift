@@ -46,9 +46,8 @@ public final class SevenStar: LoopTyme {
         return SevenStar.fromIndex(nextIndex(n))
     }
 
-    /// Get corresponding Week day
-    /// - Returns: Week instance
-    public func getWeek() -> Week {
-        return Week.fromIndex(index)
-    }
+    public var week: Week { Week.fromIndex(index) }
+
+    @available(*, deprecated, renamed: "week")
+    public func getWeek() -> Week { week }
 }

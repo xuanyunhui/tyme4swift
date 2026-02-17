@@ -81,45 +81,30 @@ public final class Dipper: LoopTyme {
 
     // MARK: - Properties
 
-    /// Get alternative name
-    /// - Returns: Alternative name (e.g., "贪狼")
-    public func getAlternativeName() -> String {
-        return Dipper.ALTERNATIVE_NAMES[index]
-    }
-
-    /// Get western name
-    /// - Returns: Western name (e.g., "Dubhe")
-    public func getWesternName() -> String {
-        return Dipper.WESTERN_NAMES[index]
-    }
-
-    /// Get position (斗魁 or 斗柄)
-    /// - Returns: Position description
-    public func getPosition() -> String {
-        return Dipper.POSITIONS[index]
-    }
+    public var alternativeName: String { Dipper.ALTERNATIVE_NAMES[index] }
+    public var westernName: String { Dipper.WESTERN_NAMES[index] }
+    public var position: String { Dipper.POSITIONS[index] }
+    public var brightnessRank: Int { Dipper.BRIGHTNESS_RANK[index] }
+    public var number: Int { index + 1 }
 
     /// Check if this star is part of the bowl (斗魁)
-    /// - Returns: true if part of bowl
-    public func isBowl() -> Bool {
-        return Dipper.POSITIONS[index] == "斗魁"
-    }
+    public func isBowl() -> Bool { Dipper.POSITIONS[index] == "斗魁" }
 
     /// Check if this star is part of the handle (斗柄)
-    /// - Returns: true if part of handle
-    public func isHandle() -> Bool {
-        return Dipper.POSITIONS[index] == "斗柄"
-    }
+    public func isHandle() -> Bool { Dipper.POSITIONS[index] == "斗柄" }
 
-    /// Get brightness ranking (1 = brightest)
-    /// - Returns: Brightness rank
-    public func getBrightnessRank() -> Int {
-        return Dipper.BRIGHTNESS_RANK[index]
-    }
+    @available(*, deprecated, renamed: "alternativeName")
+    public func getAlternativeName() -> String { alternativeName }
 
-    /// Get star number (序号)
-    /// - Returns: Star number (1-7)
-    public func getNumber() -> Int {
-        return index + 1
-    }
+    @available(*, deprecated, renamed: "westernName")
+    public func getWesternName() -> String { westernName }
+
+    @available(*, deprecated, renamed: "position")
+    public func getPosition() -> String { position }
+
+    @available(*, deprecated, renamed: "brightnessRank")
+    public func getBrightnessRank() -> Int { brightnessRank }
+
+    @available(*, deprecated, renamed: "number")
+    public func getNumber() -> Int { number }
 }

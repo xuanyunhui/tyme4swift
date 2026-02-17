@@ -9,9 +9,9 @@ public final class TibetanMonth: AbstractCulture {
         "具醉月", "具贤月", "天降月", "持众月", "庄严月", "满意月"
     ]
 
-    private let year: Int
-    private let month: Int
-    private let isLeap: Bool
+    public let year: Int
+    public let month: Int
+    public let isLeap: Bool
 
     /// Initialize with year and month
     /// - Parameters:
@@ -24,41 +24,15 @@ public final class TibetanMonth: AbstractCulture {
         super.init()
     }
 
-    /// Get year
-    /// - Returns: Year value
-    public func getYear() -> Int {
-        return year
-    }
+    public var monthWithLeap: Int { isLeap ? -month : month }
 
-    /// Get month
-    /// - Returns: Month value (1-12)
-    public func getMonth() -> Int {
-        return month
-    }
-
-    /// Check if leap month
-    /// - Returns: true if leap month
-    public func isLeapMonth() -> Bool {
-        return isLeap
-    }
-
-    /// Get month with leap indicator
-    /// - Returns: Month value (negative for leap)
-    public func getMonthWithLeap() -> Int {
-        return isLeap ? -month : month
-    }
+    public var tibetanYear: TibetanYear { TibetanYear.fromYear(year) }
 
     /// Get name
     /// - Returns: Month name
     public override func getName() -> String {
         let prefix = isLeap ? "闰" : ""
         return prefix + TibetanMonth.NAMES[month - 1]
-    }
-
-    /// Get Tibetan year
-    /// - Returns: TibetanYear instance
-    public func getTibetanYear() -> TibetanYear {
-        return TibetanYear.fromYear(year)
     }
 
     /// Get next Tibetan month
@@ -86,4 +60,19 @@ public final class TibetanMonth: AbstractCulture {
     public static func fromYm(_ year: Int, _ month: Int) -> TibetanMonth {
         return TibetanMonth(year: year, month: month)
     }
+
+    @available(*, deprecated, renamed: "year")
+    public func getYear() -> Int { year }
+
+    @available(*, deprecated, renamed: "month")
+    public func getMonth() -> Int { month }
+
+    @available(*, deprecated, renamed: "isLeap")
+    public func isLeapMonth() -> Bool { isLeap }
+
+    @available(*, deprecated, renamed: "monthWithLeap")
+    public func getMonthWithLeap() -> Int { monthWithLeap }
+
+    @available(*, deprecated, renamed: "tibetanYear")
+    public func getTibetanYear() -> TibetanYear { tibetanYear }
 }

@@ -49,21 +49,14 @@ public final class TwelveStar: LoopTyme {
         return TwelveStar.fromIndex(nextIndex(n))
     }
 
-    /// Get ecliptic (黄道黑道)
-    /// - Returns: Ecliptic instance
-    public func getEcliptic() -> Ecliptic {
-        return Ecliptic.fromIndex(TwelveStar.ECLIPTIC_INDICES[index])
-    }
+    public var ecliptic: Ecliptic { Ecliptic.fromIndex(TwelveStar.ECLIPTIC_INDICES[index]) }
 
     /// Check if auspicious (黄道)
-    /// - Returns: true if 黄道
-    public func isAuspicious() -> Bool {
-        return TwelveStar.ECLIPTIC_INDICES[index] == 0
-    }
+    public func isAuspicious() -> Bool { TwelveStar.ECLIPTIC_INDICES[index] == 0 }
 
     /// Check if inauspicious (黑道)
-    /// - Returns: true if 黑道
-    public func isInauspicious() -> Bool {
-        return TwelveStar.ECLIPTIC_INDICES[index] == 1
-    }
+    public func isInauspicious() -> Bool { TwelveStar.ECLIPTIC_INDICES[index] == 1 }
+
+    @available(*, deprecated, renamed: "ecliptic")
+    public func getEcliptic() -> Ecliptic { ecliptic }
 }
