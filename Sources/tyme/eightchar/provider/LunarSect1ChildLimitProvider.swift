@@ -5,19 +5,19 @@ public final class LunarSect1ChildLimitProvider: ChildLimitProvider {
     public init() {}
 
     public func getInfo(birthTime: SolarTime, term: SolarTerm) -> ChildLimitInfo {
-        let termTime = term.getJulianDay().getSolarTime()
+        let termTime = term.julianDay.solarTime
         var end = termTime
         var start = birthTime
         if birthTime.isAfter(termTime) {
             end = birthTime
             start = termTime
         }
-        let endTimeZhiIndex = end.getHour() == 23 ? 11 : (end.getHour() + 1) / 2
-        let startTimeZhiIndex = start.getHour() == 23 ? 11 : (start.getHour() + 1) / 2
+        let endTimeZhiIndex = end.hour == 23 ? 11 : (end.hour + 1) / 2
+        let startTimeZhiIndex = start.hour == 23 ? 11 : (start.hour + 1) / 2
         // 时辰差
         var hourDiff = endTimeZhiIndex - startTimeZhiIndex
         // 天数差
-        var dayDiff = end.getSolarDay().subtract(start.getSolarDay())
+        var dayDiff = end.solarDay.subtract(start.solarDay)
         if hourDiff < 0 {
             hourDiff += 12
             dayDiff -= 1

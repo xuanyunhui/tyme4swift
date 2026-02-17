@@ -12,10 +12,10 @@ public final class EightChar {
     public let hourStem: HeavenStem
     public let hourBranch: EarthBranch
     
-    private let solarYear: Int
-    private let solarMonth: Int
-    private let solarDay: Int
-    private let solarHour: Int
+    public let solarYear: Int
+    public let solarMonth: Int
+    public let solarDay: Int
+    public let solarHour: Int
     
     /// 初始化八字
     /// - Parameters:
@@ -48,31 +48,28 @@ public final class EightChar {
         
         // Hour stem and branch (based on day stem and hour)
         let hourIndex = (hour + 1) / 2
-        self.hourStem = HeavenStem.fromIndex((yearStem.getIndex() * 2 + hourIndex) % 10)
+        self.hourStem = HeavenStem.fromIndex((yearStem.index * 2 + hourIndex) % 10)
         self.hourBranch = EarthBranch.fromIndex(hourIndex % 12)
     }
     
     // MARK: - Properties
     
-    public func getYearZodiac() -> String {
-        yearBranch.getZodiac()
-    }
-    
-    public func getSolarYear() -> Int {
-        solarYear
-    }
-    
-    public func getSolarMonth() -> Int {
-        solarMonth
-    }
-    
-    public func getSolarDay() -> Int {
-        solarDay
-    }
-    
-    public func getSolarHour() -> Int {
-        solarHour
-    }
+    public var yearZodiac: String { yearBranch.zodiac }
+
+    @available(*, deprecated, renamed: "yearZodiac")
+    public func getYearZodiac() -> String { yearZodiac }
+
+    @available(*, deprecated, renamed: "solarYear")
+    public func getSolarYear() -> Int { solarYear }
+
+    @available(*, deprecated, renamed: "solarMonth")
+    public func getSolarMonth() -> Int { solarMonth }
+
+    @available(*, deprecated, renamed: "solarDay")
+    public func getSolarDay() -> Int { solarDay }
+
+    @available(*, deprecated, renamed: "solarHour")
+    public func getSolarHour() -> Int { solarHour }
     
     public func getYearStemName() -> String {
         yearStem.getName()

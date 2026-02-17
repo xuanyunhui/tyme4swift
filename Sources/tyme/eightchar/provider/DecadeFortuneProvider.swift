@@ -30,18 +30,17 @@ public struct DecadeFortuneInfo {
         self.endAge = endAge
     }
 
+    public var heavenStem: HeavenStem { sixtyCycle.heavenStem }
+    public var earthBranch: EarthBranch { sixtyCycle.earthBranch }
+
     /// Get name
     public func getName() -> String {
         return sixtyCycle.getName()
     }
 
-    /// Get heaven stem
-    public func getHeavenStem() -> HeavenStem {
-        return sixtyCycle.getHeavenStem()
-    }
+    @available(*, deprecated, renamed: "heavenStem")
+    public func getHeavenStem() -> HeavenStem { heavenStem }
 
-    /// Get earth branch
-    public func getEarthBranch() -> EarthBranch {
-        return sixtyCycle.getEarthBranch()
-    }
+    @available(*, deprecated, renamed: "earthBranch")
+    public func getEarthBranch() -> EarthBranch { earthBranch }
 }

@@ -9,8 +9,8 @@ public final class LunarEightCharProvider: EightCharProvider {
     public func getYearSixtyCycle(year: Int, month: Int, day: Int) -> SixtyCycle {
         // Get lunar day from solar day
         let solarDay = try! SolarDay.fromYmd(year, month, day)
-        let lunarDay = solarDay.getLunarDay()
-        let lunarYear = lunarDay.getLunarMonth().getLunarYear().getYear()
+        let lunarDay = solarDay.lunarDay
+        let lunarYear = lunarDay.lunarMonth.lunarYear.year
 
         // Year 4 is 甲子 (index 0)
         var index = (lunarYear - 4) % 60
@@ -22,15 +22,15 @@ public final class LunarEightCharProvider: EightCharProvider {
     public func getMonthSixtyCycle(year: Int, month: Int, day: Int) -> SixtyCycle {
         // Get lunar day from solar day
         let solarDay = try! SolarDay.fromYmd(year, month, day)
-        let lunarDay = solarDay.getLunarDay()
-        let lunarMonth = lunarDay.getLunarMonth()
+        let lunarDay = solarDay.lunarDay
+        let lunarMonth = lunarDay.lunarMonth
 
         // Get year stem
         let yearSixtyCycle = getYearSixtyCycle(year: year, month: month, day: day)
-        let yearStemIndex = yearSixtyCycle.getHeavenStem().getIndex()
+        let yearStemIndex = yearSixtyCycle.heavenStem.index
 
         // Month branch: 寅月(1月)=2, 卯月(2月)=3, etc.
-        let monthBranchIndex = (lunarMonth.getMonth() + 1) % 12
+        let monthBranchIndex = (lunarMonth.month + 1) % 12
 
         // Month stem = (year stem % 5) * 2 + month branch
         let monthStemIndex = ((yearStemIndex % 5) * 2 + monthBranchIndex) % 10
@@ -48,8 +48,8 @@ public final class LunarEightCharProvider: EightCharProvider {
     /// Get day pillar SixtyCycle
     public func getDaySixtyCycle(year: Int, month: Int, day: Int) -> SixtyCycle {
         let solarDay = try! SolarDay.fromYmd(year, month, day)
-        let jd = solarDay.getJulianDay()
-        let offset = Int(jd.getDay() + 0.5) + 49
+        let jd = solarDay.julianDay
+        let offset = Int(jd.value + 0.5) + 49
         var index = offset % 60
         if index < 0 { index += 60 }
         return SixtyCycle.fromIndex(index)
@@ -66,7 +66,7 @@ public final class LunarEightCharProvider: EightCharProvider {
         if hour >= 23 {
             daySixtyCycle = daySixtyCycle.next(1)
         }
-        let dayStemIndex = daySixtyCycle.getHeavenStem().getIndex()
+        let dayStemIndex = daySixtyCycle.heavenStem.index
 
         // Hour stem = (day stem % 5) * 2 + hour index
         let hourStemIndex = ((dayStemIndex % 5) * 2 + hourIndex) % 10
