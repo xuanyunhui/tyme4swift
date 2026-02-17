@@ -14,6 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.3"),
+        .package(url: "https://github.com/google/swift-benchmark", from: "0.1.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -24,6 +25,15 @@ let package = Package(
         .testTarget(
             name: "tymeTests",
             dependencies: ["tyme"]
+        ),
+        .executableTarget(
+            name: "TymeBenchmarks",
+            dependencies: [
+                "tyme",
+                .product(name: "Benchmark", package: "swift-benchmark")
+            ],
+            path: "Benchmarks",
+            swiftSettings: [.swiftLanguageMode(.v5)]
         ),
     ]
 )
