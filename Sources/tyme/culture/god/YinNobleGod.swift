@@ -23,10 +23,13 @@ public final class YinNobleGod: AbstractCulture {
         return YinNobleGod.DIRECTIONS[heavenStemIndex]
     }
 
-    public var direction: Direction { try! Direction.fromName(getName().replacingOccurrences(of: "正", with: "")) }
+    /// The direction derived from this god's position.
+    /// DIRECTIONS values containing "正" prefix (e.g. "正西") are mapped to
+    /// standard Direction.NAMES (e.g. "西") by stripping the prefix.
+    public var direction: Direction { get throws { try Direction.fromName(getName().replacingOccurrences(of: "正", with: "")) } }
 
     @available(*, deprecated, renamed: "direction")
-    public func getDirection() -> Direction { direction }
+    public func getDirection() throws -> Direction { try direction }
 
     /// Create from heaven stem
     /// - Parameter heavenStem: Heaven stem

@@ -129,21 +129,21 @@ import Testing
         let heavenStem = HeavenStem.fromIndex(0) // 甲
         let fortuneGod = FortuneGod.fromHeavenStem(heavenStem)
         #expect(fortuneGod.getName() == "东南")
-        _ = fortuneGod.direction
+        _ = try fortuneGod.direction
     }
     @Test func testYangNobleGod() throws {
         // Test yang noble god directions
         let heavenStem = HeavenStem.fromIndex(0) // 甲
         let yangNobleGod = YangNobleGod.fromHeavenStem(heavenStem)
         #expect(yangNobleGod.getName() == "西南")
-        _ = yangNobleGod.direction
+        _ = try yangNobleGod.direction
     }
     @Test func testYinNobleGod() throws {
         // Test yin noble god directions
         let heavenStem = HeavenStem.fromIndex(0) // 甲
         let yinNobleGod = YinNobleGod.fromHeavenStem(heavenStem)
         #expect(yinNobleGod.getName() == "东北")
-        _ = yinNobleGod.direction
+        _ = try yinNobleGod.direction
     }
     @Test func testGodLookup() throws {
         // Test God lookup for a known date (2024-01-01)
@@ -183,12 +183,28 @@ import Testing
             #expect(!taboo.getName().isEmpty)
         }
     }
-    @Test func testGodDirectionAllIndices() {
+    @Test func testGodDirectionAllIndices() throws {
         for i in 0..<10 {
             let hs = HeavenStem.fromIndex(i)
-            _ = YangNobleGod.fromHeavenStem(hs).direction
-            _ = YinNobleGod.fromHeavenStem(hs).direction
-            _ = FortuneGod.fromHeavenStem(hs).direction
+            _ = try YangNobleGod.fromHeavenStem(hs).direction
+            _ = try YinNobleGod.fromHeavenStem(hs).direction
+            _ = try FortuneGod.fromHeavenStem(hs).direction
         }
+
+        // YangNobleGod "正"-prefix indices: 2(正西→西), 5(正北→北), 7(正东→东), 8(正南→南)
+        #expect(try YangNobleGod.fromHeavenStem(HeavenStem.fromIndex(2)).direction.getName() == "西")
+        #expect(try YangNobleGod.fromHeavenStem(HeavenStem.fromIndex(5)).direction.getName() == "北")
+        #expect(try YangNobleGod.fromHeavenStem(HeavenStem.fromIndex(7)).direction.getName() == "东")
+        #expect(try YangNobleGod.fromHeavenStem(HeavenStem.fromIndex(8)).direction.getName() == "南")
+
+        // YinNobleGod "正"-prefix indices: 3(正西→西), 4(正北→北), 6(正东→东), 9(正南→南)
+        #expect(try YinNobleGod.fromHeavenStem(HeavenStem.fromIndex(3)).direction.getName() == "西")
+        #expect(try YinNobleGod.fromHeavenStem(HeavenStem.fromIndex(4)).direction.getName() == "北")
+        #expect(try YinNobleGod.fromHeavenStem(HeavenStem.fromIndex(6)).direction.getName() == "东")
+        #expect(try YinNobleGod.fromHeavenStem(HeavenStem.fromIndex(9)).direction.getName() == "南")
+
+        // FortuneGod "正"-prefix indices: 2(正北→北), 7(正北→北)
+        #expect(try FortuneGod.fromHeavenStem(HeavenStem.fromIndex(2)).direction.getName() == "北")
+        #expect(try FortuneGod.fromHeavenStem(HeavenStem.fromIndex(7)).direction.getName() == "北")
     }
 }
