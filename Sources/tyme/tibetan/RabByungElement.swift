@@ -21,7 +21,7 @@ public final class RabByungElement: AbstractCulture {
     public init(name: String) throws {
         // Convert 铁 to 金 for internal Element
         let elementName = name.replacingOccurrences(of: "铁", with: "金")
-        self.element = try! Element.fromName(elementName)
+        self.element = try Element.fromName(elementName)
         super.init()
     }
 

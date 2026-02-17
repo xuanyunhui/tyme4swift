@@ -23,7 +23,7 @@ public final class YangNobleGod: AbstractCulture {
         return YangNobleGod.DIRECTIONS[heavenStemIndex]
     }
 
-    public var direction: Direction { try! Direction.fromName(getName()) }
+    public var direction: Direction { try! Direction.fromName(getName().replacingOccurrences(of: "正", with: "")) }
 
     @available(*, deprecated, renamed: "direction")
     public func getDirection() -> Direction { direction }
