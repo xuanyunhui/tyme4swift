@@ -1,19 +1,21 @@
 import Foundation
 
-/// 六十甲子 (Sixty Cycle)
-/// Extended attributes for the 60 SixtyCycle combinations
+/// 元（60年=1元）
+///
+/// Represents the three "Yuan" (元) periods: 上元 (Upper Yuan), 中元 (Middle Yuan), 下元 (Lower Yuan).
+/// One Yuan spans 60 years, and three Yuan form one complete cycle.
 public final class Sixty: LoopTyme {
-    /// Sixty names (六十甲子名称) - same as SixtyCycle
-    public static let NAMES = SixtyCycle.NAMES
+    /// Sixty names (三元名称)
+    public static let NAMES = ["上元", "中元", "下元"]
 
     /// Initialize with index
-    /// - Parameter index: Sixty index (0-59)
+    /// - Parameter index: Sixty index (0-2)
     public convenience init(index: Int) {
         self.init(names: Sixty.NAMES, index: index)
     }
 
     /// Initialize with name
-    /// - Parameter name: Sixty name (e.g., "甲子", "乙丑", etc.)
+    /// - Parameter name: Sixty name ("上元", "中元", or "下元")
     public convenience init(name: String) throws {
         try self.init(names: Sixty.NAMES, name: name)
     }
@@ -24,40 +26,23 @@ public final class Sixty: LoopTyme {
     }
 
     /// Get Sixty from index
-    /// - Parameter index: Sixty index (0-59)
+    /// - Parameter index: Sixty index (0-2)
     /// - Returns: Sixty instance
     public static func fromIndex(_ index: Int) -> Sixty {
         return Sixty(index: index)
     }
 
     /// Get Sixty from name
-    /// - Parameter name: Sixty name (e.g., "甲子", "乙丑", etc.)
+    /// - Parameter name: Sixty name ("上元", "中元", or "下元")
     /// - Returns: Sixty instance
     public static func fromName(_ name: String) throws -> Sixty {
         return try Sixty(name: name)
     }
 
-    /// Get next sixty
+    /// Get next Sixty
     /// - Parameter n: Number of steps to advance
     /// - Returns: Next Sixty instance
     public override func next(_ n: Int) -> Sixty {
         return Sixty.fromIndex(nextIndex(n))
     }
-
-    public var sixtyCycle: SixtyCycle { SixtyCycle.fromIndex(index) }
-    public var naYin: NaYin { NaYin.fromSixtyCycle(index) }
-    public var heavenStem: HeavenStem { HeavenStem.fromIndex(index % 10) }
-    public var earthBranch: EarthBranch { EarthBranch.fromIndex(index % 12) }
-
-    @available(*, deprecated, renamed: "sixtyCycle")
-    public func getSixtyCycle() -> SixtyCycle { sixtyCycle }
-
-    @available(*, deprecated, renamed: "naYin")
-    public func getNaYin() -> NaYin { naYin }
-
-    @available(*, deprecated, renamed: "heavenStem")
-    public func getHeavenStem() -> HeavenStem { heavenStem }
-
-    @available(*, deprecated, renamed: "earthBranch")
-    public func getEarthBranch() -> EarthBranch { earthBranch }
 }

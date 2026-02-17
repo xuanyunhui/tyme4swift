@@ -507,9 +507,9 @@ import Testing
         #expect(nextAries.getName() == "白羊")
     }
     @Test func testSound() throws {
-        // Test all five sounds
-        let expectedNames = ["宫", "商", "角", "徵", "羽"]
-        let expectedWuXing = ["土", "金", "木", "火", "水"]
+        // Test first few NaYin sounds (纳音, 30 sounds)
+        let expectedNames = ["海中金", "炉中火", "大林木", "路旁土", "剑锋金"]
+        let expectedWuXing = ["金", "火", "木", "土", "金"]
         for i in 0..<5 {
             let sound = Sound.fromIndex(i)
             #expect(sound.getName() == expectedNames[i])
@@ -518,21 +518,21 @@ import Testing
         }
 
         // Test fromName
-        let gong = try Sound.fromName("宫")
-        #expect(gong.index == 0)
+        let haiZhongJin = try Sound.fromName("海中金")
+        #expect(haiZhongJin.index == 0)
 
         // Test next
-        let shang = gong.next(1)
-        #expect(shang.getName() == "商")
+        let luZhongHuo = haiZhongJin.next(1)
+        #expect(luZhongHuo.getName() == "炉中火")
 
-        // Test wrap around
-        let yu = Sound.fromIndex(4)
-        let nextGong = yu.next(1)
-        #expect(nextGong.getName() == "宫")
+        // Test wrap around (30 Sound)
+        let daHaiShui = Sound.fromIndex(29)
+        let nextHaiZhongJin = daHaiShui.next(1)
+        #expect(nextHaiZhongJin.getName() == "海中金")
 
         // Test element
-        let element = gong.element
-        #expect(element.getName() == "土")
+        let element = haiZhongJin.element
+        #expect(element.getName() == "金")
     }
     @Test func testPhase() throws {
         // Test all three phases
@@ -728,88 +728,78 @@ import Testing
         #expect(element.getName() == "金")
     }
     @Test func testSixty() throws {
-        // Test first few Sixty
-        let expectedNames = ["甲子", "乙丑", "丙寅", "丁卯", "戊辰"]
-        for i in 0..<5 {
+        // Test all three Yuan (三元)
+        let expectedNames = ["上元", "中元", "下元"]
+        for i in 0..<3 {
             let sixty = Sixty.fromIndex(i)
             #expect(sixty.getName() == expectedNames[i])
             #expect(sixty.index == i)
         }
 
         // Test fromName
-        let jiaZi = try Sixty.fromName("甲子")
-        #expect(jiaZi.index == 0)
+        let shangYuan = try Sixty.fromName("上元")
+        #expect(shangYuan.index == 0)
 
         // Test next
-        let yiChou = jiaZi.next(1)
-        #expect(yiChou.getName() == "乙丑")
+        let zhongYuan = shangYuan.next(1)
+        #expect(zhongYuan.getName() == "中元")
 
-        // Test wrap around (60 Sixty)
-        let guiHai = Sixty.fromIndex(59)
-        let nextJiaZi = guiHai.next(1)
-        #expect(nextJiaZi.getName() == "甲子")
-
-        // Test sixtyCycle
-        let sixtyCycle = jiaZi.sixtyCycle
-        #expect(sixtyCycle.getName() == "甲子")
-
-        // Test naYin
-        let naYin = jiaZi.naYin
-        #expect(naYin.getName() == "海中金")
-
-        // Test heavenStem
-        let heavenStem = jiaZi.heavenStem
-        #expect(heavenStem.getName() == "甲")
-
-        // Test earthBranch
-        let earthBranch = jiaZi.earthBranch
-        #expect(earthBranch.getName() == "子")
+        // Test wrap around (3 Sixty)
+        let xiaYuan = Sixty.fromIndex(2)
+        let nextShangYuan = xiaYuan.next(1)
+        #expect(nextShangYuan.getName() == "上元")
     }
     @Test func testTen() throws {
-        // Test all ten
-        let expectedNames = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"]
-        for i in 0..<10 {
+        // Test all six Xun (六旬)
+        let expectedNames = ["甲子", "甲戌", "甲申", "甲午", "甲辰", "甲寅"]
+        for i in 0..<6 {
             let ten = Ten.fromIndex(i)
             #expect(ten.getName() == expectedNames[i])
             #expect(ten.index == i)
-            #expect(ten.dayNumber == i + 1)
         }
 
         // Test fromName
-        let yi = try Ten.fromName("一")
-        #expect(yi.index == 0)
+        let jiaZi = try Ten.fromName("甲子")
+        #expect(jiaZi.index == 0)
 
         // Test next
-        let er = yi.next(1)
-        #expect(er.getName() == "二")
+        let jiaXu = jiaZi.next(1)
+        #expect(jiaXu.getName() == "甲戌")
 
-        // Test wrap around
-        let shi = Ten.fromIndex(9)
-        let nextYi = shi.next(1)
-        #expect(nextYi.getName() == "一")
+        // Test wrap around (6 Ten)
+        let jiaYin = Ten.fromIndex(5)
+        let nextJiaZi = jiaYin.next(1)
+        #expect(nextJiaZi.getName() == "甲子")
     }
     @Test func testTwenty() throws {
-        // Test first few twenty
-        let expectedNames = ["初一", "初二", "初三", "初四", "初五"]
-        for i in 0..<5 {
+        // Test all nine Yun (九运)
+        let expectedNames = ["一运", "二运", "三运", "四运", "五运", "六运", "七运", "八运", "九运"]
+        for i in 0..<9 {
             let twenty = Twenty.fromIndex(i)
             #expect(twenty.getName() == expectedNames[i])
             #expect(twenty.index == i)
-            #expect(twenty.dayNumber == i + 1)
         }
 
         // Test fromName
-        let chuYi = try Twenty.fromName("初一")
-        #expect(chuYi.index == 0)
+        let yiYun = try Twenty.fromName("一运")
+        #expect(yiYun.index == 0)
 
         // Test next
-        let chuEr = chuYi.next(1)
-        #expect(chuEr.getName() == "初二")
+        let erYun = yiYun.next(1)
+        #expect(erYun.getName() == "二运")
 
-        // Test wrap around (20 Twenty)
-        let erShi = Twenty.fromIndex(19)
-        let nextChuYi = erShi.next(1)
-        #expect(nextChuYi.getName() == "初一")
+        // Test wrap around (9 Twenty)
+        let jiuYun = Twenty.fromIndex(8)
+        let nextYiYun = jiuYun.next(1)
+        #expect(nextYiYun.getName() == "一运")
+
+        // Test sixty (元)
+        let shangYuan = yiYun.sixty
+        #expect(shangYuan.getName() == "上元")
+        let wuYun = Twenty.fromIndex(4)
+        #expect(wuYun.sixty.getName() == "中元")
+        let jiuYun2 = Twenty.fromIndex(8)
+        #expect(jiuYun2.sixty.getName() == "下元")
     }
     @Test func testYinYang() throws {
         // Test Yang
