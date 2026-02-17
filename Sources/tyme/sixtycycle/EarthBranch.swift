@@ -2,16 +2,16 @@ import Foundation
 
 public final class EarthBranch: LoopTyme {
     public static let NAMES = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"]
-    
+
     // Zodiac mapping (生肖)
     private static let ZODIAC_NAMES = ["鼠","牛","虎","兔","龙","蛇","马","羊","猴","鸡","狗","猪"]
-    
+
     // YinYang mapping for EarthBranch (阴阳)
     private static let YIN_YANG = ["阳","阴","阳","阴","阳","阴","阳","阴","阳","阴","阳","阴"]
-    
+
     // WuXing (五行) mapping for EarthBranch
     private static let WU_XING = ["水","土","木","木","土","火","火","土","金","金","土","水"]
-    
+
     // NaYin (纳音) - 60 sounds combined with stems
     private static let NA_YIN_BRANCH = [
         "海中金", "海中金", "炉中火", "炉中火", "大林木", "大林木",
@@ -56,32 +56,82 @@ public final class EarthBranch: LoopTyme {
     public override func next(_ n: Int) -> EarthBranch {
         EarthBranch.fromIndex(nextIndex(n))
     }
-    
-    // Properties
-    public func getZodiac() -> String {
-        EarthBranch.ZODIAC_NAMES[index]
-    }
-    
-    public func getYinYang() -> String {
-        EarthBranch.YIN_YANG[index]
-    }
-    
-    public func getWuXing() -> String {
-        EarthBranch.WU_XING[index]
-    }
-    
+
+    public var zodiac: String { EarthBranch.ZODIAC_NAMES[index] }
+    public var yinYang: String { EarthBranch.YIN_YANG[index] }
+    public var wuXing: String { EarthBranch.WU_XING[index] }
+
     public func getNaYin(_ stemIndex: Int = 0) -> String {
         let naYinIndex = (stemIndex * 12 + index) % 60
         return EarthBranch.NA_YIN_BRANCH[naYinIndex]
     }
-    
+
     public func getFlourish() -> String {
         let flourishStages = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]
         return flourishStages[index]
     }
-    
+
     public func getDecline() -> String {
         let declineStages = ["养", "长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎"]
         return declineStages[index]
     }
+
+    @available(*, deprecated, renamed: "zodiac")
+    public func getZodiac() -> String { zodiac }
+
+    @available(*, deprecated, renamed: "yinYang")
+    public func getYinYang() -> String { yinYang }
+
+    @available(*, deprecated, renamed: "wuXing")
+    public func getWuXing() -> String { wuXing }
+}
+
+/// Extension to EarthBranch for hidden stems
+extension EarthBranch {
+    /// Hidden stems data for each earth branch
+    /// Format: [main, middle, residual] - nil means no stem for that position
+    private static let HIDE_STEMS: [[Int?]] = [
+        [9, nil, nil],      // 子: 癸
+        [5, 9, 7],          // 丑: 己癸辛
+        [0, 2, 4],          // 寅: 甲丙戊
+        [1, nil, nil],      // 卯: 乙
+        [4, 1, 9],          // 辰: 戊乙癸
+        [2, 4, 6],          // 巳: 丙戊庚
+        [3, 5, nil],        // 午: 丁己
+        [5, 3, 1],          // 未: 己丁乙
+        [6, 4, 8],          // 申: 庚戊壬
+        [7, nil, nil],      // 酉: 辛
+        [4, 7, 3],          // 戌: 戊辛丁
+        [8, 0, nil]         // 亥: 壬甲
+    ]
+
+    /// Get hidden heaven stems
+    public var hideHeavenStems: [HideHeavenStem] {
+        var result: [HideHeavenStem] = []
+        let stems = EarthBranch.HIDE_STEMS[index]
+        if let mainIndex = stems[0] {
+            result.append(HideHeavenStem(heavenStem: HeavenStem.fromIndex(mainIndex), type: .main))
+        }
+        if let middleIndex = stems[1] {
+            result.append(HideHeavenStem(heavenStem: HeavenStem.fromIndex(middleIndex), type: .middle))
+        }
+        if let residualIndex = stems[2] {
+            result.append(HideHeavenStem(heavenStem: HeavenStem.fromIndex(residualIndex), type: .residual))
+        }
+        return result
+    }
+
+    /// Get main hidden heaven stem (本气)
+    public var mainHideHeavenStem: HeavenStem? {
+        if let mainIndex = EarthBranch.HIDE_STEMS[index][0] {
+            return HeavenStem.fromIndex(mainIndex)
+        }
+        return nil
+    }
+
+    @available(*, deprecated, renamed: "hideHeavenStems")
+    public func getHideHeavenStems() -> [HideHeavenStem] { hideHeavenStems }
+
+    @available(*, deprecated, renamed: "mainHideHeavenStem")
+    public func getMainHideHeavenStem() -> HeavenStem? { mainHideHeavenStem }
 }

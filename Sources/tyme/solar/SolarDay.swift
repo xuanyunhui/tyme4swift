@@ -33,7 +33,7 @@ public final class SolarDay: DayUnit, Tyme {
         return SolarTermDay(term, subtract(td))
     }
     public var term: SolarTerm { termDay.solarTerm }
-    public var sixtyCycleDay: SixtyCycleDay { try! SixtyCycleDay(solarDay: self) }
+    public var sixtyCycleDay: SixtyCycleDay { SixtyCycleDay(solarDay: self) }
     public var lunarDay: LunarDay {
         var m = try! LunarMonth.fromYm(year, month)
         var days = subtract(m.firstJulianDay.solarDay)

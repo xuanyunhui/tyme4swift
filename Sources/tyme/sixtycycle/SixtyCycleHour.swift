@@ -3,30 +3,23 @@ import Foundation
 /// 时柱 (SixtyCycle Hour)
 /// Represents an hour in the SixtyCycle system
 public final class SixtyCycleHour: AbstractCulture {
-    private let solarTime: SolarTime
-    private let sixtyCycle: SixtyCycle
+    public let solarTime: SolarTime
+    public let sixtyCycle: SixtyCycle
 
     /// Initialize with SolarTime
     /// - Parameter solarTime: The solar time
     public init(solarTime: SolarTime) {
         self.solarTime = solarTime
 
-        // Calculate hour index (0-11, where 0 is 子时 23:00-01:00)
-        let hour = solarTime.getHour()
+        let hour = solarTime.hour
         let hourIndex = (hour + 1) / 2 % 12
 
-        // Get day stem to calculate hour stem
-        var daySixtyCycle = SixtyCycleDay(solarDay: solarTime.getSolarDay()).getSixtyCycle()
-        // If hour >= 23, use next day's stem
+        var daySixtyCycle = SixtyCycleDay(solarDay: solarTime.solarDay).sixtyCycle
         if hour >= 23 {
             daySixtyCycle = daySixtyCycle.next(1)
         }
-        let dayStemIndex = daySixtyCycle.getHeavenStem().getIndex()
-
-        // Hour stem = (day stem % 5) * 2 + hour index
+        let dayStemIndex = daySixtyCycle.heavenStem.index
         let hourStemIndex = (dayStemIndex % 5) * 2 + hourIndex
-
-        // Calculate SixtyCycle index
         var index = (hourStemIndex % 10) * 12 + hourIndex
         index = index % 60
 
@@ -35,28 +28,14 @@ public final class SixtyCycleHour: AbstractCulture {
     }
 
     /// Initialize with year, month, day, hour, minute, second
-    /// - Parameters:
-    ///   - year: The year
-    ///   - month: The month
-    ///   - day: The day
-    ///   - hour: The hour
-    ///   - minute: The minute
-    ///   - second: The second
     public convenience init(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) throws {
         self.init(solarTime: try SolarTime.fromYmdHms(year, month, day, hour, minute, second))
     }
 
-    /// Get SolarTime
-    /// - Returns: SolarTime instance
-    public func getSolarTime() -> SolarTime {
-        return solarTime
-    }
-
-    /// Get SixtyCycle
-    /// - Returns: SixtyCycle instance
-    public func getSixtyCycle() -> SixtyCycle {
-        return sixtyCycle
-    }
+    public var heavenStem: HeavenStem { sixtyCycle.heavenStem }
+    public var earthBranch: EarthBranch { sixtyCycle.earthBranch }
+    public var naYin: NaYin { NaYin.fromSixtyCycle(sixtyCycle.index) }
+    public var indexInDay: Int { (solarTime.hour + 1) / 2 % 12 }
 
     /// Get name
     /// - Returns: SixtyCycle name
@@ -64,36 +43,10 @@ public final class SixtyCycleHour: AbstractCulture {
         return sixtyCycle.getName()
     }
 
-    /// Get HeavenStem
-    /// - Returns: HeavenStem instance
-    public func getHeavenStem() -> HeavenStem {
-        return sixtyCycle.getHeavenStem()
-    }
-
-    /// Get EarthBranch
-    /// - Returns: EarthBranch instance
-    public func getEarthBranch() -> EarthBranch {
-        return sixtyCycle.getEarthBranch()
-    }
-
-    /// Get NaYin
-    /// - Returns: NaYin instance
-    public func getNaYin() -> NaYin {
-        return NaYin.fromSixtyCycle(sixtyCycle.getIndex())
-    }
-
-    /// Get hour index in day (0-11)
-    /// - Returns: Hour index
-    public func getIndexInDay() -> Int {
-        return (solarTime.getHour() + 1) / 2 % 12
-    }
-
     /// Get next SixtyCycleHour
-    /// - Parameter n: Number of hours (2-hour periods) to advance
-    /// - Returns: Next SixtyCycleHour
     public func next(_ n: Int) -> SixtyCycleHour {
-        var h = solarTime.getHour() + n * 2
-        var d = solarTime.getSolarDay()
+        var h = solarTime.hour + n * 2
+        var d = solarTime.solarDay
 
         while h >= 24 {
             h -= 24
@@ -104,26 +57,34 @@ public final class SixtyCycleHour: AbstractCulture {
             d = d.next(-1)
         }
 
-        return SixtyCycleHour(solarTime: try! SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), h, solarTime.getMinute(), solarTime.getSecond()))
+        return SixtyCycleHour(solarTime: try! SolarTime.fromYmdHms(d.year, d.month, d.day, h, solarTime.minute, solarTime.second))
     }
 
     /// Create from SolarTime
-    /// - Parameter solarTime: The solar time
-    /// - Returns: SixtyCycleHour instance
     public static func fromSolarTime(_ solarTime: SolarTime) -> SixtyCycleHour {
         return SixtyCycleHour(solarTime: solarTime)
     }
 
     /// Create from year, month, day, hour, minute, second
-    /// - Parameters:
-    ///   - year: The year
-    ///   - month: The month
-    ///   - day: The day
-    ///   - hour: The hour
-    ///   - minute: The minute
-    ///   - second: The second
-    /// - Returns: SixtyCycleHour instance
     public static func fromYmdHms(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int, _ second: Int) throws -> SixtyCycleHour {
         return try SixtyCycleHour(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
     }
+
+    @available(*, deprecated, renamed: "solarTime")
+    public func getSolarTime() -> SolarTime { solarTime }
+
+    @available(*, deprecated, renamed: "sixtyCycle")
+    public func getSixtyCycle() -> SixtyCycle { sixtyCycle }
+
+    @available(*, deprecated, renamed: "heavenStem")
+    public func getHeavenStem() -> HeavenStem { heavenStem }
+
+    @available(*, deprecated, renamed: "earthBranch")
+    public func getEarthBranch() -> EarthBranch { earthBranch }
+
+    @available(*, deprecated, renamed: "naYin")
+    public func getNaYin() -> NaYin { naYin }
+
+    @available(*, deprecated, renamed: "indexInDay")
+    public func getIndexInDay() -> Int { indexInDay }
 }

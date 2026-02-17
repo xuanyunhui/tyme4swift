@@ -15,13 +15,19 @@ public final class SixtyCycle: LoopTyme {
     public static func fromName(_ name: String) throws -> SixtyCycle {
         try SixtyCycle(name: name) }
 
-    public func getHeavenStem() -> HeavenStem {
+    public var heavenStem: HeavenStem {
         HeavenStem.fromIndex(index % HeavenStem.NAMES.count)
     }
 
-    public func getEarthBranch() -> EarthBranch {
+    public var earthBranch: EarthBranch {
         EarthBranch.fromIndex(index % EarthBranch.NAMES.count)
     }
 
     public override func next(_ n: Int) -> SixtyCycle { SixtyCycle.fromIndex(nextIndex(n)) }
+
+    @available(*, deprecated, renamed: "heavenStem")
+    public func getHeavenStem() -> HeavenStem { heavenStem }
+
+    @available(*, deprecated, renamed: "earthBranch")
+    public func getEarthBranch() -> EarthBranch { earthBranch }
 }

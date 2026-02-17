@@ -12,16 +12,13 @@ public final class HideHeavenStemDay: AbstractCultureDay {
     }
 
     /// Get hidden heaven stem
-    /// - Returns: HideHeavenStem instance
-    public func getHideHeavenStem() -> HideHeavenStem {
-        return culture as! HideHeavenStem
-    }
+    public var hideHeavenStem: HideHeavenStem { culture as! HideHeavenStem }
 
     /// Get name
     /// - Returns: Heaven stem name + element name (e.g., "癸水")
     public override func getName() -> String {
-        let heavenStem = getHideHeavenStem().getHeavenStem()
-        return heavenStem.getName() + heavenStem.getWuXing()
+        let hs = hideHeavenStem.heavenStem
+        return hs.getName() + hs.wuXing
     }
 
     /// String description
@@ -29,4 +26,7 @@ public final class HideHeavenStemDay: AbstractCultureDay {
     public override var description: String {
         return "\(getName())第\(dayIndex + 1)天"
     }
+
+    @available(*, deprecated, renamed: "hideHeavenStem")
+    public func getHideHeavenStem() -> HideHeavenStem { hideHeavenStem }
 }
