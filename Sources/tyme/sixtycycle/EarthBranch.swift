@@ -1,5 +1,26 @@
 import Foundation
 
+/// An Earthly Branch (地支 Dìzhī) in the Chinese sexagenary cycle.
+///
+/// The 12 Earthly Branches form the other component of the sexagenary cycle.
+/// Each branch is associated with a Chinese zodiac animal (生肖 Shēngxiào),
+/// a Yin-Yang polarity, and one of the Five Elements.
+///
+/// ## The 12 Branches (partial)
+///
+/// | Index | Name | Zodiac | Element |
+/// |-------|------|--------|---------|
+/// | 0 | 子 (Zǐ) | 鼠 Rat | 水 Water |
+/// | 1 | 丑 (Chǒu) | 牛 Ox | 土 Earth |
+/// | ... | ... | ... | ... |
+///
+/// ## Usage
+///
+/// ```swift
+/// let branch = EarthBranch.fromIndex(0)  // 子
+/// let zodiac = branch.zodiac             // 鼠 (Rat)
+/// let stems = branch.hideHeavenStems     // Hidden stems (藏干 Cánggān)
+/// ```
 public final class EarthBranch: LoopTyme {
     public static let NAMES = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"]
 
@@ -57,6 +78,7 @@ public final class EarthBranch: LoopTyme {
         EarthBranch.fromIndex(nextIndex(n))
     }
 
+    /// The Chinese zodiac animal (生肖 Shēngxiào) for this branch.
     public var zodiac: String { EarthBranch.ZODIAC_NAMES[index] }
     public var yinYang: String { EarthBranch.YIN_YANG[index] }
     public var wuXing: String { EarthBranch.WU_XING[index] }
@@ -106,6 +128,7 @@ extension EarthBranch {
     ]
 
     /// Get hidden heaven stems
+    /// The hidden Heavenly Stems (藏干 Cánggān) within this branch.
     public var hideHeavenStems: [HideHeavenStem] {
         var result: [HideHeavenStem] = []
         let stems = EarthBranch.HIDE_STEMS[index]
@@ -121,7 +144,7 @@ extension EarthBranch {
         return result
     }
 
-    /// Get main hidden heaven stem (本气)
+    /// The main hidden stem (本气 Běnqì) of this branch.
     public var mainHideHeavenStem: HeavenStem? {
         if let mainIndex = EarthBranch.HIDE_STEMS[index][0] {
             return HeavenStem.fromIndex(mainIndex)

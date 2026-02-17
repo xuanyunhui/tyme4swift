@@ -1,8 +1,21 @@
 import Foundation
 
+/// A day in the Chinese lunar calendar (农历 Nónglì).
+///
+/// `LunarDay` represents a specific date in the traditional Chinese lunisolar calendar.
+/// Lunar months can be regular or leap (闰月 Rùnyuè), indicated by a negative month value.
+///
+/// ## Usage
+///
+/// ```swift
+/// let day = try LunarDay(year: 2024, month: 1, day: 15)   // Regular month
+/// let leap = try LunarDay(year: 2023, month: -2, day: 15)  // Leap month 2
+/// let solarDay = day.solarDay                               // Convert to solar
+/// ```
 public final class LunarDay: DayUnit, Tyme {
     public static let NAMES = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
 
+    /// Whether this day falls in a leap month (闰月 Rùnyuè).
     public let leap: Bool
 
     public static func validate(year: Int, month: Int, day: Int) throws {
@@ -17,7 +30,7 @@ public final class LunarDay: DayUnit, Tyme {
         try super.init(year: year, month: abs(month), day: day)
     }
 
-    /// Returns signed month (negative if leap month)
+    /// The month number, negative if leap month. E.g., -4 means leap month 4.
     public var monthWithLeap: Int { leap ? -month : month }
 
     public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) throws -> LunarDay {
@@ -43,12 +56,14 @@ public final class LunarDay: DayUnit, Tyme {
     }
 
     public var week: Week { solarDay.week }
+    /// The sexagenary cycle for this lunar day (日干支 Rì Gānzhī).
     public var sixtyCycle: SixtyCycle {
         let offset = Int(lunarMonth.firstJulianDay.next(day - 12).value)
         let stem = HeavenStem.fromIndex(offset).getName()
         let branch = EarthBranch.fromIndex(offset).getName()
         return try! SixtyCycle.fromName(stem + branch)
     }
+    /// The corresponding Gregorian calendar date.
     public var solarDay: SolarDay {
         lunarMonth.firstJulianDay.next(day - 1).solarDay
     }
