@@ -3,13 +3,13 @@ import Foundation
 public final class LunarMonth: MonthUnit, Tyme {
     public static let NAMES = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
 
-    private let leap: Bool
+    public let leap: Bool
 
     public static func validate(year: Int, month: Int) throws {
         if month == 0 || month > 12 || month < -12 {
             throw TymeError.invalidMonth(month)
         }
-        if month < 0 && -month != (try! try! LunarYear.fromYear(year)).getLeapMonth() {
+        if month < 0 && -month != (try! try! LunarYear.fromYear(year)).leapMonth {
             throw TymeError.invalidMonth(month)
         }
     }
@@ -24,102 +24,114 @@ public final class LunarMonth: MonthUnit, Tyme {
         try LunarMonth(year: year, month: month)
     }
 
-    public func getLunarYear() -> LunarYear { try! LunarYear.fromYear(getYear()) }
+    public var lunarYear: LunarYear { try! LunarYear.fromYear(year) }
+    public var monthWithLeap: Int { leap ? -month : month }
+    public var indexInYear: Int {
+        var index = month - 1
+        if leap {
+            index += 1
+        } else {
+            let lm = lunarYear.leapMonth
+            if lm > 0 && month > lm { index += 1 }
+        }
+        return index
+    }
+    public var season: LunarSeason { LunarSeason.fromIndex(month - 1) }
+    public var firstJulianDay: JulianDay {
+        JulianDay.fromJulianDay(JulianDay.J2000 + ShouXingUtil.calcShuo(newMoon))
+    }
+    public var dayCount: Int {
+        let w = newMoon
+        return Int(ShouXingUtil.calcShuo(w + 29.5306) - ShouXingUtil.calcShuo(w))
+    }
+    public var days: [LunarDay] {
+        let size = dayCount
+        let m = monthWithLeap
+        return (1...size).map { try! LunarDay.fromYmd(year, m, $0) }
+    }
+    public var firstDay: LunarDay { try! LunarDay.fromYmd(year, monthWithLeap, 1) }
+    public var fetus: FetusMonth? { FetusMonth.fromLunarMonth(self) }
 
-    public func getMonthWithLeap() -> Int { leap ? -getMonth() : try! getMonth() }
-
-    private func getNewMoon() -> Double {
-        let dongZhiJd = SolarTerm.fromIndex(getYear(), 0).getCursoryJulianDay()
+    private var newMoon: Double {
+        let dongZhiJd = SolarTerm.fromIndex(year, 0).cursoryJulianDay
         var w = ShouXingUtil.calcShuo(dongZhiJd)
         if w > dongZhiJd { w -= 29.53 }
 
         var offset = 2
-        if getYear() > 8 && getYear() < 24 {
+        if year > 8 && year < 24 {
             offset = 1
-        } else if getYear() > -1, let prevYear = try? LunarYear.fromYear(getYear() - 1), prevYear.getLeapMonth() > 10 && getYear() != 239 && getYear() != 240 {
+        } else if year > -1, let prevYear = try? LunarYear.fromYear(year - 1), prevYear.leapMonth > 10 && year != 239 && year != 240 {
             offset = 3
         }
-        return w + 29.5306 * Double(offset + getIndexInYear())
+        return w + 29.5306 * Double(offset + indexInYear)
     }
-
-    public func getDayCount() -> Int {
-        let w = getNewMoon()
-        return Int(ShouXingUtil.calcShuo(w + 29.5306) - ShouXingUtil.calcShuo(w))
-    }
-
-    public func getIndexInYear() -> Int {
-        var index = try! getMonth() - 1
-        if leap {
-            index += 1
-        } else {
-            let leapMonth = try! LunarYear.fromYear(getYear()).getLeapMonth()
-            if leapMonth > 0 && getMonth() > leapMonth { index += 1 }
-        }
-        return index
-    }
-
-    public func getSeason() -> LunarSeason {
-        LunarSeason.fromIndex(getMonth() - 1)
-    }
-
-    public func getFirstJulianDay() -> JulianDay {
-        JulianDay.fromJulianDay(JulianDay.J2000 + ShouXingUtil.calcShuo(getNewMoon()))
-    }
-
-    public func isLeap() -> Bool { leap }
 
     public func getWeekCount(_ start: Int) -> Int {
-        let firstWeekIndex = indexOf(getFirstJulianDay().getWeek().getIndex() - start, 7)
-        return Int(ceil((Double(firstWeekIndex + getDayCount())) / 7.0))
+        let firstWeekIndex = indexOf(firstJulianDay.week.index - start, 7)
+        return Int(ceil((Double(firstWeekIndex + dayCount)) / 7.0))
     }
 
-    public func getName() -> String {
-        (leap ? "闰" : "") + LunarMonth.NAMES[getMonth() - 1]
-    }
+    public func getName() -> String { (leap ? "闰" : "") + LunarMonth.NAMES[month - 1] }
 
     public func next(_ n: Int) -> LunarMonth {
-        if n == 0 { return try! LunarMonth(year: getYear(), month: getMonthWithLeap()) }
-        var m = getIndexInYear() + 1 + n
-        var y = getLunarYear()
+        if n == 0 { return try! LunarMonth(year: year, month: monthWithLeap) }
+        var m = indexInYear + 1 + n
+        var y = lunarYear
         if n > 0 {
-            var monthCount = y.getMonthCount()
-            while m > monthCount {
-                m -= monthCount
+            var mc = y.monthCount
+            while m > mc {
+                m -= mc
                 y = y.next(1)
-                monthCount = y.getMonthCount()
+                mc = y.monthCount
             }
         } else {
             while m <= 0 {
                 y = y.next(-1)
-                m += y.getMonthCount()
+                m += y.monthCount
             }
         }
         var isLeap = false
-        let leapMonth = y.getLeapMonth()
-        if leapMonth > 0 {
-            if m == leapMonth + 1 { isLeap = true }
-            if m > leapMonth { m -= 1 }
+        let lm = y.leapMonth
+        if lm > 0 {
+            if m == lm + 1 { isLeap = true }
+            if m > lm { m -= 1 }
         }
-        return try! LunarMonth(year: y.getYear(), month: isLeap ? -m : m)
-    }
-
-    public func getDays() -> [LunarDay] {
-        let size = getDayCount()
-        let m = getMonthWithLeap()
-        return (1...size).map { try! LunarDay.fromYmd(getYear(), m, $0) }
-    }
-
-    public func getFirstDay() -> LunarDay {
-        try! LunarDay.fromYmd(getYear(), getMonthWithLeap(), 1)
+        return try! LunarMonth(year: y.year, month: isLeap ? -m : m)
     }
 
     public func getWeeks(_ start: Int) -> [LunarWeek] {
         let size = getWeekCount(start)
-        let m = getMonthWithLeap()
-        return (0..<size).map { try! LunarWeek.fromYm(getYear(), m, $0, start) }
+        let m = monthWithLeap
+        return (0..<size).map { try! LunarWeek.fromYm(year, m, $0, start) }
     }
 
-    public func getFetus() -> FetusMonth? {
-        FetusMonth.fromLunarMonth(self)
-    }
+    @available(*, deprecated, renamed: "lunarYear")
+    public func getLunarYear() -> LunarYear { lunarYear }
+
+    @available(*, deprecated, renamed: "monthWithLeap")
+    public func getMonthWithLeap() -> Int { monthWithLeap }
+
+    @available(*, deprecated, renamed: "indexInYear")
+    public func getIndexInYear() -> Int { indexInYear }
+
+    @available(*, deprecated, renamed: "season")
+    public func getSeason() -> LunarSeason { season }
+
+    @available(*, deprecated, renamed: "firstJulianDay")
+    public func getFirstJulianDay() -> JulianDay { firstJulianDay }
+
+    @available(*, deprecated, renamed: "dayCount")
+    public func getDayCount() -> Int { dayCount }
+
+    @available(*, deprecated, renamed: "days")
+    public func getDays() -> [LunarDay] { days }
+
+    @available(*, deprecated, renamed: "firstDay")
+    public func getFirstDay() -> LunarDay { firstDay }
+
+    @available(*, deprecated, renamed: "fetus")
+    public func getFetus() -> FetusMonth? { fetus }
+
+    @available(*, deprecated, renamed: "leap")
+    public func isLeap() -> Bool { leap }
 }
