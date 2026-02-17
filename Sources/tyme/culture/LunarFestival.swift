@@ -135,7 +135,8 @@ public final class LunarFestival: AbstractTyme {
         let i = index + n
         let targetYear = (year * size + i) / size
         let targetIndex = ((i % size) + size) % size
-        return LunarFestival.fromIndex(targetYear, targetIndex)!
+        guard let result = LunarFestival.fromIndex(targetYear, targetIndex) else { return self }
+        return result
     }
 
     public override var description: String {

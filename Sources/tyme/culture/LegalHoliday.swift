@@ -23,7 +23,7 @@ public final class LegalHoliday: AbstractTyme {
     init(year: Int, month: Int, day: Int, data: String) {
         let d = try! SolarDay.fromYmd(year, month, day)
         self.solarDay = d
-        // data is 12 chars: YYYYMMDD + work(1) + nameIdx(1) + sign(1) + offset(2)
+        // data is 13 chars: YYYYMMDD(8) + work(1) + nameIdx(1) + sign(1) + offset(2) = 13
         let startIdx = data.startIndex
         let workChar = data[data.index(startIdx, offsetBy: 8)]
         self.isWork = workChar == "0"

@@ -85,7 +85,8 @@ public final class SolarFestival: AbstractTyme {
         let i = index + n
         let targetYear = (year * size + i) / size
         let targetIndex = ((i % size) + size) % size
-        return SolarFestival.fromIndex(targetYear, targetIndex)!
+        guard let result = SolarFestival.fromIndex(targetYear, targetIndex) else { return self }
+        return result
     }
 
     public override var description: String {
