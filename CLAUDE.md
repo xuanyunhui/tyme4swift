@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 swift build          # Build the package
-swift test           # Run all tests (109 XCTest cases)
-swift test --filter Tyme4SwiftTests/testSolarDay   # Run a single test
+swift test           # Run all tests (114 XCTest cases across 10 files)
+swift test --filter SolarTests/testSolarDay   # Run a single test
 ```
 
 No linter or formatter is configured. No external dependencies.
@@ -62,17 +62,28 @@ Culture (protocol) → getName()
 
 ### Key Design Decisions
 
-- **Factory methods over failable initializers**: Classes use `fromYmd()`, `fromIndex()`, `fromName()` static factories. Some return optionals, some `fatalError` on invalid input.
+- **Throwing initializers with TymeError**: Classes use `fromYmd()`, `fromIndex()`, `fromName()` static factories. Invalid input throws `TymeError` (defined in `core/TymeError.swift`) with cases like `.invalidName`, `.invalidYear`, `.invalidDay`, etc.
+- **Equatable/Hashable**: `LoopTyme` conforms to `Equatable` and `Hashable` based on `type(of:)` + `index` — different subclass types with same index are NOT equal.
 - **Provider protocol pattern**: EightChar calculations are pluggable via `EightCharProvider`, `ChildLimitProvider`, `DecadeFortuneProvider` protocols with default implementations.
 - **`public final` for concrete classes, `open` for base classes**: Base classes (AbstractCulture, AbstractTyme, LoopTyme, AbstractCultureDay) and unit classes are `open` for subclassing; concrete implementations (HeavenStem, SolarDay, Element, etc.) are `public final`.
 - **Reference implementation alignment**: Algorithm logic should match [tyme4j](https://github.com/6tail/tyme4j). When in doubt, consult the Java source.
 
 ### Tests
 
-Single test file at `Tests/tymeTests/Tyme4SwiftTests.swift` containing all 109 XCTest cases. Tests are organized by `testXxx()` methods covering each subsystem.
-When rebasing branches, this single test file is the most common source of merge conflicts — new tests are appended at the end.
+114 XCTest cases split across 10 module-based files in `Tests/tymeTests/`:
 
-**Acceptance tests:** Issue #14 (SolarDay overflow) and #19 (Element.NAMES order) have dedicated regression tests added via PR #23.
+| File | Tests | Coverage |
+|------|-------|----------|
+| `SolarTests.swift` | 5 | Solar calendar |
+| `LunarTests.swift` | 2 | Lunar calendar |
+| `SixtyCycleTests.swift` | 10 | Sexagenary cycles |
+| `EightCharTests.swift` | 14 | Bazi system |
+| `CultureTests.swift` | 49 | Cultural types |
+| `GodTests.swift` | 15 | God/taboo system |
+| `FetusTests.swift` | 7 | Fetus system |
+| `JulianDayTests.swift` | 1 | Julian day |
+| `RegressionTests.swift` | 9 | Regression protection |
+| `EquatableHashableTests.swift` | 2 | Protocol conformance |
 
 ## Alignment Status
 
@@ -89,10 +100,10 @@ Tracked via GitHub Issues. Phase 1 (complete), Phase 2 (#30-#33), Phase 3 (#34).
 
 **Phase 1 (complete):** CI infrastructure — PR #35 (ci.yml + coverage), PR #36 (publish.yml fix + CONTRIBUTING.md fix)
 
-**Phase 2 (planned):**
-- [#30](https://github.com/xuanyunhui/tyme4swift/issues/30) God/Taboo lookup for SixtyCycleDay (P0)
-- [#31](https://github.com/xuanyunhui/tyme4swift/issues/31) Missing classes: HideHeavenStemDay, RabByungElement, PhenologyDay
-- [#32](https://github.com/xuanyunhui/tyme4swift/issues/32) Replace fatalError with TymeError throws
-- [#33](https://github.com/xuanyunhui/tyme4swift/issues/33) Split test file + Equatable/Hashable
+**Phase 2 (complete):**
+- [#30](https://github.com/xuanyunhui/tyme4swift/issues/30) God/Taboo lookup for SixtyCycleDay — PR #37
+- [#31](https://github.com/xuanyunhui/tyme4swift/issues/31) Missing classes: HideHeavenStemDay, RabByungElement, PhenologyDay — PR #45
+- [#32](https://github.com/xuanyunhui/tyme4swift/issues/32) Replace fatalError with TymeError throws — PR #46
+- [#33](https://github.com/xuanyunhui/tyme4swift/issues/33) Split test file + Equatable/Hashable — PR #47, #48
 
 **Phase 3 (long-term):** [#34](https://github.com/xuanyunhui/tyme4swift/issues/34) Swift ecosystem integration (computed properties, Codable, DocC, Swift Testing, multi-platform CI)
