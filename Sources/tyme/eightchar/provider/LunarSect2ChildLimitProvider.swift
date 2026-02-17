@@ -6,7 +6,7 @@ public final class LunarSect2ChildLimitProvider: ChildLimitProvider {
 
     public func getInfo(birthTime: SolarTime, term: SolarTerm) -> ChildLimitInfo {
         // 出生时刻和节令时刻相差的分钟数
-        var minutes = abs(term.getJulianDay().getSolarTime().subtract(birthTime)) / 60
+        var minutes = abs(term.julianDay.solarTime.subtract(birthTime)) / 60
         let year = minutes / 4320
         minutes %= 4320
         let month = minutes / 360

@@ -6,7 +6,7 @@ public final class DefaultChildLimitProvider: ChildLimitProvider {
 
     public func getInfo(birthTime: SolarTime, term: SolarTerm) -> ChildLimitInfo {
         // 出生时刻和节令时刻相差的秒数
-        var seconds = abs(term.getJulianDay().getSolarTime().subtract(birthTime))
+        var seconds = abs(term.julianDay.solarTime.subtract(birthTime))
         // 3天=259200秒=1年
         let year = seconds / 259200
         seconds %= 259200

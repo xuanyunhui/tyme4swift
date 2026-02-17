@@ -9,7 +9,7 @@ public final class DefaultDecadeFortuneProvider: DecadeFortuneProvider {
         let yearSixtyCycle = provider.getYearSixtyCycle(year: year, month: month, day: day)
         let monthSixtyCycle = provider.getMonthSixtyCycle(year: year, month: month, day: day)
 
-        let yearStemIndex = yearSixtyCycle.getHeavenStem().getIndex()
+        let yearStemIndex = yearSixtyCycle.heavenStem.index
         let isYangYear = yearStemIndex % 2 == 0
         let isMale = gender.isMale
         let isForward = (isYangYear && isMale) || (!isYangYear && !isMale)
@@ -17,7 +17,7 @@ public final class DefaultDecadeFortuneProvider: DecadeFortuneProvider {
         // Use ChildLimit to get start age
         let birthTime = try! SolarTime.fromYmdHms(year, month, day, hour, 0, 0)
         let childLimit = ChildLimit(birthTime: birthTime, gender: gender)
-        let startAge = childLimit.getYearCount()
+        let startAge = childLimit.yearCount
 
         var fortunes: [DecadeFortuneInfo] = []
         var currentSixtyCycle = monthSixtyCycle
