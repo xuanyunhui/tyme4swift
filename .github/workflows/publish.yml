@@ -139,12 +139,12 @@ jobs:
       - name: Verify Podspec
         run: |
           # Check if podspec exists and is valid
-          if [ ! -f "tyme4swift.podspec" ]; then
-            echo "⚠️  tyme4swift.podspec not found!"
+          if [ ! -f "tyme.podspec" ]; then
+            echo "⚠️  tyme.podspec not found!"
             echo "Creating basic podspec template..."
-            cat > tyme4swift.podspec << 'PODSPEC'
+            cat > tyme.podspec << 'PODSPEC'
           Pod::Spec.new do |spec|
-            spec.name         = "tyme4swift"
+            spec.name         = "tyme"
             spec.version      = "${{ needs.verify-release.outputs.version }}"
             spec.summary      = "A powerful Chinese calendar library for iOS, macOS, tvOS, and watchOS"
             spec.description  = <<-DESC
@@ -171,12 +171,12 @@ jobs:
           fi
           
           echo "📋 Podspec content:"
-          cat tyme4swift.podspec
+          cat tyme.podspec
           
       - name: Lint Podspec
         run: |
           echo "🔍 Linting podspec..."
-          pod spec lint tyme4swift.podspec --allow-warnings || true
+          pod spec lint tyme.podspec --allow-warnings || true
           echo "✅ Podspec validation completed"
 
       - name: Setup CocoaPods credentials
@@ -199,10 +199,10 @@ jobs:
             echo "   3. Re-run this workflow"
             echo ""
             echo "For now, you can publish manually:"
-            echo "   pod trunk push tyme4swift.podspec"
+            echo "   pod trunk push tyme.podspec"
           else
             echo "🚀 Publishing to CocoaPods Trunk..."
-            pod trunk push tyme4swift.podspec --allow-warnings
+            pod trunk push tyme.podspec --allow-warnings
             echo "✅ Published to CocoaPods successfully!"
           fi
 
