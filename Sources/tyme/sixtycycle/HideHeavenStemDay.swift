@@ -18,7 +18,7 @@ public final class HideHeavenStemDay: AbstractCultureDay {
     /// - Returns: Heaven stem name + element name (e.g., "癸水")
     public override func getName() -> String {
         let hs = hideHeavenStem.heavenStem
-        return hs.getName() + hs.wuXing
+        return hs.getName() + hs.element.getName()
     }
 
     /// String description

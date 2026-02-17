@@ -86,10 +86,9 @@ import Testing
         #expect(yinHideStems[2].getName() == "戊")
         #expect(yinHideStems[2].isResidual())
 
-        // Test getMainHideHeavenStem
-        let mainStem = zi.mainHideHeavenStem
-        #expect(mainStem != nil)
-        #expect(mainStem?.getName() == "癸")
+        // Test hideHeavenStemMain
+        let mainStem = zi.hideHeavenStemMain
+        #expect(mainStem.getName() == "癸")
     }
     @Test func testSixtyCycleYear() throws {
         // Test year 2024 (甲辰年)

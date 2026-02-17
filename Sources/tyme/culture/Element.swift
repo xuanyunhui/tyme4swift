@@ -2,9 +2,6 @@ import Foundation
 
 public final class Element: LoopTyme {
     public static let NAMES = ["木","火","土","金","水"]
-    
-    // YinYang mapping (阴阳)
-    private static let YIN_YANG = ["阳","阴","阳","阴","阳"]
 
     public convenience init(index: Int) {
         self.init(names: Element.NAMES, index: index)
@@ -29,9 +26,19 @@ public final class Element: LoopTyme {
     public override func next(_ n: Int) -> Element {
         Element.fromIndex(nextIndex(n))
     }
-    
-    public var yinYang: String { Element.YIN_YANG[index] }
 
-    @available(*, deprecated, renamed: "yinYang")
-    public func getYinYang() -> String { yinYang }
+    /// 我生者
+    public var reinforce: Element { next(1) }
+
+    /// 我克者
+    public var restrain: Element { next(2) }
+
+    /// 生我者
+    public var reinforced: Element { next(-1) }
+
+    /// 克我者
+    public var restrained: Element { next(-2) }
+
+    /// 方位
+    public var direction: Direction { Direction.fromIndex([2, 8, 4, 6, 0][index]) }
 }

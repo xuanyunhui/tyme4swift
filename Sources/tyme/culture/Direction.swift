@@ -1,7 +1,8 @@
 import Foundation
 
 public final class Direction: LoopTyme {
-    public static let NAMES = ["北","东北","东","东南","南","西南","西","西北"]
+    /// 依据后天八卦排序（0坎北, 1坤西南, 2震东, 3巽东南, 4中, 5乾西北, 6兑西, 7艮东北, 8离南）
+    public static let NAMES = ["北", "西南", "东", "东南", "中", "西北", "西", "东北", "南"]
 
     public convenience init(index: Int) {
         self.init(names: Direction.NAMES, index: index)
@@ -26,9 +27,10 @@ public final class Direction: LoopTyme {
     public override func next(_ n: Int) -> Direction {
         Direction.fromIndex(nextIndex(n))
     }
-    
-    public var angle: Int { index * 45 }
 
-    @available(*, deprecated, renamed: "angle")
-    public func getAngle() -> Int { angle }
+    /// 九野
+    public var land: Land { Land.fromIndex(index) }
+
+    /// 五行
+    public var element: Element { Element.fromIndex([4, 2, 0, 0, 2, 3, 3, 2, 1][index]) }
 }

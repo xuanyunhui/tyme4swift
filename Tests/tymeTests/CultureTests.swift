@@ -1082,14 +1082,6 @@ import Testing
         #expect("水" == wood.next(4).getName())
         #expect("木" == wood.next(5).getName())
     }
-    @Test func testElementYinYang() throws {
-        // 木=阳, 火=阴, 土=阳, 金=阴, 水=阳
-        #expect("阳" == Element.fromIndex(0).yinYang) // 木
-        #expect("阴" == Element.fromIndex(1).yinYang) // 火
-        #expect("阳" == Element.fromIndex(2).yinYang) // 土
-        #expect("阴" == Element.fromIndex(3).yinYang) // 金
-        #expect("阳" == Element.fromIndex(4).yinYang) // 水
-    }
     @Test func testPhenologyDay() {
         let p = Phenology.fromIndex(0)
         let day = PhenologyDay(phenology: p, dayIndex: 2)
