@@ -1,7 +1,9 @@
 import Testing
 @testable import tyme
 
-@Suite struct EightCharTests {
+// .serialized is required because provider-switching tests modify the global
+// ChildLimit.provider and must not run in parallel with each other.
+@Suite(.serialized) struct EightCharTests {
     @Test func testLifePalace() throws {
         let yearBranch = EarthBranch.fromIndex(0) // 子
         let monthBranch = EarthBranch.fromIndex(2) // 寅
@@ -61,8 +63,8 @@ import Testing
         // China95 uses minute-based calculation, verify non-negative results
         #expect(cl.getYearCount() >= 0)
         #expect(cl.getMonthCount() >= 0)
-        #expect(cl.getHourCount() >= 0)
-        #expect(cl.getMinuteCount() >= 0)
+        #expect(cl.getHourCount() == 0) // China95 always has 0 hours
+        #expect(cl.getMinuteCount() == 0) // China95 always has 0 minutes
         #expect(cl.getEndTime().isAfter(cl.getStartTime()))
         ChildLimit.provider = DefaultChildLimitProvider()
     }
@@ -82,7 +84,7 @@ import Testing
         // LunarSect2 uses minute-based calculation with hour component
         #expect(cl.getYearCount() >= 0)
         #expect(cl.getMonthCount() >= 0)
-        #expect(cl.getMinuteCount() >= 0)
+        #expect(cl.getMinuteCount() == 0) // LunarSect2 always has 0 minutes
         #expect(cl.getEndTime().isAfter(cl.getStartTime()))
         ChildLimit.provider = DefaultChildLimitProvider()
     }
