@@ -11,16 +11,15 @@ public final class PlumRainDay: AbstractCultureDay {
         super.init(culture: plumRain, dayIndex: dayIndex)
     }
 
-    /// Get plum rain period
-    /// - Returns: PlumRain instance
-    public func getPlumRain() -> PlumRain {
-        return culture as! PlumRain
-    }
+    public var plumRain: PlumRain { culture as! PlumRain }
+
+    @available(*, deprecated, renamed: "plumRain")
+    public func getPlumRain() -> PlumRain { plumRain }
 
     /// Get name
     /// - Returns: Plum rain day name (e.g., "入梅第1天")
     public override func getName() -> String {
-        return "\(getPlumRain().getName())第\(getDayIndex() + 1)天"
+        return "\(plumRain.getName())第\(dayIndex + 1)天"
     }
 
     /// Create from plum rain and day index

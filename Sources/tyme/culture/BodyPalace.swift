@@ -3,7 +3,7 @@ import Foundation
 /// 身宫 (Body Palace)
 /// The body palace in BaZi astrology
 public final class BodyPalace: AbstractCulture {
-    private let sixtyCycle: SixtyCycle
+    public let sixtyCycle: SixtyCycle
 
     /// Initialize with SixtyCycle
     /// - Parameter sixtyCycle: The SixtyCycle of the body palace
@@ -18,23 +18,17 @@ public final class BodyPalace: AbstractCulture {
         return sixtyCycle.getName()
     }
 
-    /// Get SixtyCycle
-    /// - Returns: SixtyCycle instance
-    public func getSixtyCycle() -> SixtyCycle {
-        return sixtyCycle
-    }
+    public var heavenStem: HeavenStem { sixtyCycle.heavenStem }
+    public var earthBranch: EarthBranch { sixtyCycle.earthBranch }
 
-    /// Get HeavenStem
-    /// - Returns: HeavenStem instance
-    public func getHeavenStem() -> HeavenStem {
-        return sixtyCycle.getHeavenStem()
-    }
+    @available(*, deprecated, renamed: "sixtyCycle")
+    public func getSixtyCycle() -> SixtyCycle { sixtyCycle }
 
-    /// Get EarthBranch
-    /// - Returns: EarthBranch instance
-    public func getEarthBranch() -> EarthBranch {
-        return sixtyCycle.getEarthBranch()
-    }
+    @available(*, deprecated, renamed: "heavenStem")
+    public func getHeavenStem() -> HeavenStem { heavenStem }
+
+    @available(*, deprecated, renamed: "earthBranch")
+    public func getEarthBranch() -> EarthBranch { earthBranch }
 
     /// Create from year and hour
     /// - Parameters:
@@ -43,7 +37,7 @@ public final class BodyPalace: AbstractCulture {
     /// - Returns: BodyPalace instance
     public static func fromYearHour(_ yearBranch: EarthBranch, _ hourBranch: EarthBranch) -> BodyPalace {
         // Body palace calculation: year branch + hour branch - 2
-        var branchIndex = yearBranch.getIndex() + hourBranch.getIndex() - 2
+        var branchIndex = yearBranch.index + hourBranch.index - 2
         while branchIndex < 0 { branchIndex += 12 }
         branchIndex = branchIndex % 12
 

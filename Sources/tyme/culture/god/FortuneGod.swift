@@ -23,23 +23,22 @@ public final class FortuneGod: AbstractCulture {
         return FortuneGod.DIRECTIONS[heavenStemIndex]
     }
 
-    /// Get direction
-    /// - Returns: Direction instance
-    public func getDirection() -> Direction {
-        return try! Direction.fromName(getName())
-    }
+    public var direction: Direction { try! Direction.fromName(getName()) }
+
+    @available(*, deprecated, renamed: "direction")
+    public func getDirection() -> Direction { direction }
 
     /// Create from heaven stem
     /// - Parameter heavenStem: Heaven stem
     /// - Returns: FortuneGod instance
     public static func fromHeavenStem(_ heavenStem: HeavenStem) -> FortuneGod {
-        return FortuneGod(heavenStemIndex: heavenStem.getIndex())
+        return FortuneGod(heavenStemIndex: heavenStem.index)
     }
 
     /// Create from day SixtyCycle
     /// - Parameter daySixtyCycle: Day SixtyCycle
     /// - Returns: FortuneGod instance
     public static func fromDaySixtyCycle(_ daySixtyCycle: SixtyCycle) -> FortuneGod {
-        return FortuneGod(heavenStemIndex: daySixtyCycle.getHeavenStem().getIndex())
+        return FortuneGod(heavenStemIndex: daySixtyCycle.heavenStem.index)
     }
 }

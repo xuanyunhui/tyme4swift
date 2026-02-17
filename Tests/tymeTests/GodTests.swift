@@ -31,26 +31,26 @@ import Testing
         let god = God(type: godType, luck: luck, name: "天德")
 
         #expect(god.getName() == "天德")
-        #expect(god.getGodType().getName() == "日")
-        #expect(god.getLuck().getName() == "吉")
-        #expect(god.isAuspicious())
-        #expect(!god.isInauspicious())
+        #expect(god.godType.getName() == "日")
+        #expect(god.luck.getName() == "吉")
+        #expect(god.auspicious)
+        #expect(!god.inauspicious)
 
         // Test inauspicious god
         let badLuck = Luck.fromIndex(1) // 凶
         let badGod = God(type: godType, luck: badLuck, name: "天刑")
-        #expect(!badGod.isAuspicious())
-        #expect(badGod.isInauspicious())
+        #expect(!badGod.auspicious)
+        #expect(badGod.inauspicious)
     }
     @Test func testDayTaboo() throws {
         let dayTaboo = DayTaboo(auspicious: ["祭祀", "祈福"], inauspicious: ["动土", "破土"])
-        #expect(dayTaboo.getAuspicious().count == 2)
-        #expect(dayTaboo.getInauspicious().count == 2)
+        #expect(dayTaboo.auspicious.count == 2)
+        #expect(dayTaboo.inauspicious.count == 2)
         #expect(dayTaboo.isAuspicious("祭祀"))
         #expect(dayTaboo.isInauspicious("动土"))
         #expect(!dayTaboo.isAuspicious("动土"))
 
-        let taboos = dayTaboo.getTaboos()
+        let taboos = dayTaboo.taboos
         #expect(taboos.count == 4)
     }
     @Test func testYearGod() throws {
@@ -59,7 +59,7 @@ import Testing
         for i in 0..<12 {
             let yearGod = YearGod.fromIndex(i)
             #expect(yearGod.getName() == expectedNames[i])
-            #expect(yearGod.getIndex() == i)
+            #expect(yearGod.index == i)
         }
 
         // Test fromEarthBranch
@@ -73,23 +73,23 @@ import Testing
         for i in 0..<5 {
             let monthGod = MonthGod.fromIndex(i)
             #expect(monthGod.getName() == expectedNames[i])
-            #expect(monthGod.getIndex() == i)
+            #expect(monthGod.index == i)
         }
     }
     @Test func testDayGod() throws {
         // Test auspicious day god
         let auspicious = DayGod.auspicious("天德")
         #expect(auspicious.getName() == "天德")
-        #expect(auspicious.getIsAuspicious())
-        #expect(!auspicious.getIsInauspicious())
-        #expect(auspicious.getLuck().getName() == "吉")
+        #expect(auspicious.auspicious)
+        #expect(!auspicious.inauspicious)
+        #expect(auspicious.luck.getName() == "吉")
 
         // Test inauspicious day god
         let inauspicious = DayGod.inauspicious("月破")
         #expect(inauspicious.getName() == "月破")
-        #expect(!inauspicious.getIsAuspicious())
-        #expect(inauspicious.getIsInauspicious())
-        #expect(inauspicious.getLuck().getName() == "凶")
+        #expect(!inauspicious.auspicious)
+        #expect(inauspicious.inauspicious)
+        #expect(inauspicious.luck.getName() == "凶")
     }
     @Test func testHourGod() throws {
         // Test first few hour gods
@@ -97,7 +97,7 @@ import Testing
         for i in 0..<5 {
             let hourGod = HourGod.fromIndex(i)
             #expect(hourGod.getName() == expectedNames[i])
-            #expect(hourGod.getIndex() == i)
+            #expect(hourGod.index == i)
         }
     }
     @Test func testJoyGod() throws {
@@ -105,7 +105,7 @@ import Testing
         let heavenStem = HeavenStem.fromIndex(0) // 甲
         let joyGod = JoyGod.fromHeavenStem(heavenStem)
         #expect(joyGod.getName() == "东北")
-        _ = joyGod.getDirection()
+        _ = joyGod.direction
 
         // Test from SixtyCycle
         let sixtyCycle = SixtyCycle.fromIndex(0) // 甲子
@@ -117,7 +117,7 @@ import Testing
         let heavenStem = HeavenStem.fromIndex(0) // 甲
         let wealthGod = WealthGod.fromHeavenStem(heavenStem)
         #expect(wealthGod.getName() == "东南")
-        _ = wealthGod.getDirection()
+        _ = wealthGod.direction
 
         // Test from SixtyCycle
         let sixtyCycle = SixtyCycle.fromIndex(0) // 甲子
@@ -129,26 +129,26 @@ import Testing
         let heavenStem = HeavenStem.fromIndex(0) // 甲
         let fortuneGod = FortuneGod.fromHeavenStem(heavenStem)
         #expect(fortuneGod.getName() == "东南")
-        _ = fortuneGod.getDirection()
+        _ = fortuneGod.direction
     }
     @Test func testYangNobleGod() throws {
         // Test yang noble god directions
         let heavenStem = HeavenStem.fromIndex(0) // 甲
         let yangNobleGod = YangNobleGod.fromHeavenStem(heavenStem)
         #expect(yangNobleGod.getName() == "西南")
-        _ = yangNobleGod.getDirection()
+        _ = yangNobleGod.direction
     }
     @Test func testYinNobleGod() throws {
         // Test yin noble god directions
         let heavenStem = HeavenStem.fromIndex(0) // 甲
         let yinNobleGod = YinNobleGod.fromHeavenStem(heavenStem)
         #expect(yinNobleGod.getName() == "东北")
-        _ = yinNobleGod.getDirection()
+        _ = yinNobleGod.direction
     }
     @Test func testGodLookup() throws {
         // Test God lookup for a known date (2024-01-01)
         let day = try SixtyCycleDay(year: 2024, month: 1, day: 1)
-        let gods = day.getGods()
+        let gods = day.gods
 
         // Verify gods list is not empty
         #expect(!gods.isEmpty)
@@ -157,29 +157,29 @@ import Testing
         for god in gods {
             #expect(!god.getName().isEmpty)
             // Verify each god has a valid luck status (auspicious or inauspicious)
-            let isValid = god.isAuspicious() || god.isInauspicious()
+            let isValid = god.auspicious || god.inauspicious
             #expect(isValid)
         }
     }
     @Test func testDayRecommends() throws {
         let day = try SixtyCycleDay(year: 2024, month: 1, day: 1)
-        let recommends = day.getRecommends()
+        let recommends = day.recommends
 
         // Verify all returned Taboo objects are marked as auspicious
         for taboo in recommends {
-            #expect(taboo.isAuspicious())
-            #expect(!taboo.isInauspicious())
+            #expect(taboo.auspicious)
+            #expect(!taboo.inauspicious)
             #expect(!taboo.getName().isEmpty)
         }
     }
     @Test func testDayAvoids() throws {
         let day = try SixtyCycleDay(year: 2024, month: 1, day: 1)
-        let avoids = day.getAvoids()
+        let avoids = day.avoids
 
         // Verify all returned Taboo objects are marked as inauspicious
         for taboo in avoids {
-            #expect(taboo.isInauspicious())
-            #expect(!taboo.isAuspicious())
+            #expect(taboo.inauspicious)
+            #expect(!taboo.auspicious)
             #expect(!taboo.getName().isEmpty)
         }
     }

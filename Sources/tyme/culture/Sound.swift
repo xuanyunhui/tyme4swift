@@ -49,15 +49,12 @@ public final class Sound: LoopTyme {
         return Sound.fromIndex(nextIndex(n))
     }
 
-    /// Get WuXing (五行)
-    /// - Returns: Element name (金, 木, 水, 火, 土)
-    public func getWuXing() -> String {
-        return Sound.WU_XING[index]
-    }
+    public var wuXing: String { Sound.WU_XING[index] }
+    public var element: Element { try! Element.fromName(Sound.WU_XING[index]) }
 
-    /// Get Element instance
-    /// - Returns: Element instance
-    public func getElement() -> Element {
-        return try! Element.fromName(Sound.WU_XING[index])
-    }
+    @available(*, deprecated, renamed: "wuXing")
+    public func getWuXing() -> String { wuXing }
+
+    @available(*, deprecated, renamed: "element")
+    public func getElement() -> Element { element }
 }

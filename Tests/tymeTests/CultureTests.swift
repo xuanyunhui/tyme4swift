@@ -25,8 +25,8 @@ import Testing
         #expect(nextRat.getName() == "鼠")
         #expect(nextRat.index == 0)
 
-        // Test getEarthBranch
-        let ratBranch = rat.getEarthBranch()
+        // Test earthBranch
+        let ratBranch = rat.earthBranch
         #expect(ratBranch.getName() == "子")
     }
     @Test func testPengZuHeavenStem() throws {
@@ -118,24 +118,24 @@ import Testing
         let jiaZi = SixtyCycle.fromIndex(0)
         let pengZu1 = PengZu.fromSixtyCycle(jiaZi)
         #expect(pengZu1.getName() == "甲不开仓财物耗散 子不问卜自惹祸殃")
-        #expect(pengZu1.getHeavenStemTaboo() == "甲不开仓财物耗散")
-        #expect(pengZu1.getEarthBranchTaboo() == "子不问卜自惹祸殃")
+        #expect(pengZu1.heavenStemTaboo == "甲不开仓财物耗散")
+        #expect(pengZu1.earthBranchTaboo == "子不问卜自惹祸殃")
 
         // Test with SixtyCycle 乙丑
         let yiChou = SixtyCycle.fromIndex(1)
         let pengZu2 = PengZu.fromSixtyCycle(yiChou)
         #expect(pengZu2.getName() == "乙不栽植千株不长 丑不冠带主不还乡")
 
-        // Test getTaboos
-        let taboos = pengZu1.getTaboos()
+        // Test taboos
+        let taboos = pengZu1.taboos
         #expect(taboos.count == 2)
         #expect(taboos[0] == "甲不开仓财物耗散")
         #expect(taboos[1] == "子不问卜自惹祸殃")
 
-        // Test getPengZuHeavenStem and getPengZuEarthBranch
-        let heavenStem = pengZu1.getPengZuHeavenStem()
+        // Test pengZuHeavenStem and pengZuEarthBranch
+        let heavenStem = pengZu1.pengZuHeavenStem
         #expect(heavenStem.index == 0)
-        let earthBranch = pengZu1.getPengZuEarthBranch()
+        let earthBranch = pengZu1.pengZuEarthBranch
         #expect(earthBranch.index == 0)
 
         // Test with SixtyCycle 癸亥 (index 59, last one)
@@ -151,14 +151,14 @@ import Testing
         let ji = Luck.fromIndex(0)
         #expect(ji.getName() == "吉")
         #expect(ji.index == 0)
-        #expect(ji.isAuspicious())
-        #expect(!ji.isInauspicious())
+        #expect(ji.auspicious)
+        #expect(!ji.inauspicious)
 
         let xiong = Luck.fromIndex(1)
         #expect(xiong.getName() == "凶")
         #expect(xiong.index == 1)
-        #expect(!xiong.isAuspicious())
-        #expect(xiong.isInauspicious())
+        #expect(!xiong.auspicious)
+        #expect(xiong.inauspicious)
 
         // Test fromName
         let ji2 = try Luck.fromName("吉")
@@ -192,8 +192,8 @@ import Testing
         let nextSun = saturn.next(1)
         #expect(nextSun.getName() == "日")
 
-        // Test getWeek
-        let sunWeek = sun.getWeek()
+        // Test week
+        let sunWeek = sun.week
         #expect(sunWeek.getName() == "日")
     }
     @Test func testSixStar() throws {
@@ -258,10 +258,10 @@ import Testing
         let huangdao2 = try Ecliptic.fromName("黄道")
         #expect(huangdao2.index == 0)
 
-        // Test getLuck
-        let luck1 = huangdao.getLuck()
+        // Test luck
+        let luck1 = huangdao.luck
         #expect(luck1.getName() == "吉")
-        let luck2 = heidao.getLuck()
+        let luck2 = heidao.luck
         #expect(luck2.getName() == "凶")
 
         // Test next
@@ -290,14 +290,14 @@ import Testing
         let nextQinglong = gouchen.next(1)
         #expect(nextQinglong.getName() == "青龙")
 
-        // Test getEcliptic - 青龙 is 黄道
-        let ecliptic1 = qinglong.getEcliptic()
+        // Test ecliptic - 青龙 is 黄道
+        let ecliptic1 = qinglong.ecliptic
         #expect(ecliptic1.getName() == "黄道")
         #expect(qinglong.isAuspicious())
 
-        // Test getEcliptic - 天刑 is 黑道
+        // Test ecliptic - 天刑 is 黑道
         let tianxing = TwelveStar.fromIndex(2)
-        let ecliptic2 = tianxing.getEcliptic()
+        let ecliptic2 = tianxing.ecliptic
         #expect(ecliptic2.getName() == "黑道")
         #expect(tianxing.isInauspicious())
     }
@@ -323,12 +323,12 @@ import Testing
         let nextEast = south.next(1)
         #expect(nextEast.getName() == "东")
 
-        // Test getDirection
-        let direction = east.getDirection()
+        // Test direction
+        let direction = east.direction
         #expect(direction.getName() == "东")
 
-        // Test getBeast
-        let beast = east.getBeast()
+        // Test beast
+        let beast = east.beast
         #expect(beast.getName() == "青龙")
     }
     @Test func testBeast() throws {
@@ -353,8 +353,8 @@ import Testing
         let nextQinglong = zhuque.next(1)
         #expect(nextQinglong.getName() == "青龙")
 
-        // Test getZone
-        let zone = qinglong.getZone()
+        // Test zone
+        let zone = qinglong.zone
         #expect(zone.getName() == "东")
     }
     @Test func testLand() throws {
@@ -379,8 +379,8 @@ import Testing
         let nextXuantian = yantian.next(1)
         #expect(nextXuantian.getName() == "玄天")
 
-        // Test getDirection
-        let direction = xuantian.getDirection()
+        // Test direction
+        let direction = xuantian.direction
         #expect(direction.getName() == "北")
     }
     @Test func testAnimal() throws {
@@ -405,8 +405,8 @@ import Testing
         let nextJiao = yin.next(1)
         #expect(nextJiao.getName() == "蛟")
 
-        // Test getTwentyEightStar
-        let star = jiao.getTwentyEightStar()
+        // Test twentyEightStar
+        let star = jiao.twentyEightStar
         #expect(star.getName() == "角")
     }
     @Test func testTwentyEightStar() throws {
@@ -431,35 +431,35 @@ import Testing
         let nextJiao = zhen.next(1)
         #expect(nextJiao.getName() == "角")
 
-        // Test getZone - first 7 stars are in East (东)
-        let zone = jiao.getZone()
+        // Test zone - first 7 stars are in East (东)
+        let zone = jiao.zone
         #expect(zone.getName() == "东")
 
-        // Test getZone - stars 7-13 are in North (北)
+        // Test zone - stars 7-13 are in North (北)
         let dou = TwentyEightStar.fromIndex(7)
-        let northZone = dou.getZone()
+        let northZone = dou.zone
         #expect(northZone.getName() == "北")
 
-        // Test getAnimal
-        let animal = jiao.getAnimal()
+        // Test animal
+        let animal = jiao.animal
         #expect(animal.getName() == "蛟")
 
-        // Test getLand
-        let land = jiao.getLand()
+        // Test land
+        let land = jiao.land
         #expect(land.getName() == "钧天")
 
-        // Test getLuck - 角 is 吉
-        let luck = jiao.getLuck()
+        // Test luck - 角 is 吉
+        let luck = jiao.luck
         #expect(luck.getName() == "吉")
         #expect(jiao.isAuspicious())
 
-        // Test getLuck - 亢 is 凶
-        let luck2 = kang.getLuck()
+        // Test luck - 亢 is 凶
+        let luck2 = kang.luck
         #expect(luck2.getName() == "凶")
         #expect(kang.isInauspicious())
 
-        // Test getSevenStar
-        let sevenStar = jiao.getSevenStar()
+        // Test sevenStar
+        let sevenStar = jiao.sevenStar
         #expect(sevenStar.getName() == "木")
     }
     @Test func testDuty() throws {
@@ -514,7 +514,7 @@ import Testing
             let sound = Sound.fromIndex(i)
             #expect(sound.getName() == expectedNames[i])
             #expect(sound.index == i)
-            #expect(sound.getWuXing() == expectedWuXing[i])
+            #expect(sound.wuXing == expectedWuXing[i])
         }
 
         // Test fromName
@@ -530,8 +530,8 @@ import Testing
         let nextGong = yu.next(1)
         #expect(nextGong.getName() == "宫")
 
-        // Test getElement
-        let element = gong.getElement()
+        // Test element
+        let element = gong.element
         #expect(element.getName() == "土")
     }
     @Test func testPhase() throws {
@@ -578,12 +578,12 @@ import Testing
         let nextQiuYinJie = liTingChu.next(1)
         #expect(nextQiuYinJie.getName() == "蚯蚓结")
 
-        // Test getThreePhenology
-        let threePhenology = qiuYinJie.getThreePhenology()
+        // Test threePhenology
+        let threePhenology = qiuYinJie.threePhenology
         #expect(threePhenology.getName() == "初候")
 
-        // Test getSolarTermIndex
-        #expect(qiuYinJie.getSolarTermIndex() == 0)
+        // Test solarTermIndex
+        #expect(qiuYinJie.solarTermIndex == 0)
     }
     @Test func testThreePhenology() throws {
         // Test all three phenology periods
@@ -614,7 +614,7 @@ import Testing
             let phaseDay = PhaseDay.fromIndex(i)
             #expect(phaseDay.getName() == expectedNames[i])
             #expect(phaseDay.index == i)
-            #expect(phaseDay.getDayNumber() == i + 1)
+            #expect(phaseDay.dayNumber == i + 1)
         }
 
         // Test fromName
@@ -652,8 +652,8 @@ import Testing
         let nextJia = gui.next(1)
         #expect(nextJia.getName() == "甲")
 
-        // Test getHeavenStem
-        let heavenStem = jia.getHeavenStem()
+        // Test heavenStem
+        let heavenStem = jia.heavenStem
         #expect(heavenStem.getName() == "甲")
     }
     @Test func testTerrain() throws {
@@ -678,18 +678,18 @@ import Testing
         let nextChangSheng = yang.next(1)
         #expect(nextChangSheng.getName() == "长生")
 
-        // Test isProsperous
-        #expect(changSheng.isProsperous())
-        #expect(!muYu.isProsperous())
+        // Test prosperous
+        #expect(changSheng.prosperous)
+        #expect(!muYu.prosperous)
 
-        // Test isDeclining
+        // Test declining
         let shuai = Terrain.fromIndex(5)
-        #expect(shuai.isDeclining())
-        #expect(!changSheng.isDeclining())
+        #expect(shuai.declining)
+        #expect(!changSheng.declining)
 
-        // Test isNurturing
-        #expect(muYu.isNurturing())
-        #expect(!changSheng.isNurturing())
+        // Test nurturing
+        #expect(muYu.nurturing)
+        #expect(!changSheng.nurturing)
     }
     @Test func testNaYin() throws {
         // Test first few NaYin
@@ -699,7 +699,7 @@ import Testing
             let naYin = NaYin.fromIndex(i)
             #expect(naYin.getName() == expectedNames[i])
             #expect(naYin.index == i)
-            #expect(naYin.getWuXing() == expectedWuXing[i])
+            #expect(naYin.wuXing == expectedWuXing[i])
         }
 
         // Test fromName
@@ -723,8 +723,8 @@ import Testing
         let naYin2 = NaYin.fromSixtyCycle(2)
         #expect(naYin2.getName() == "炉中火")
 
-        // Test getElement
-        let element = haiZhongJin.getElement()
+        // Test element
+        let element = haiZhongJin.element
         #expect(element.getName() == "金")
     }
     @Test func testSixty() throws {
@@ -749,20 +749,20 @@ import Testing
         let nextJiaZi = guiHai.next(1)
         #expect(nextJiaZi.getName() == "甲子")
 
-        // Test getSixtyCycle
-        let sixtyCycle = jiaZi.getSixtyCycle()
+        // Test sixtyCycle
+        let sixtyCycle = jiaZi.sixtyCycle
         #expect(sixtyCycle.getName() == "甲子")
 
-        // Test getNaYin
-        let naYin = jiaZi.getNaYin()
+        // Test naYin
+        let naYin = jiaZi.naYin
         #expect(naYin.getName() == "海中金")
 
-        // Test getHeavenStem
-        let heavenStem = jiaZi.getHeavenStem()
+        // Test heavenStem
+        let heavenStem = jiaZi.heavenStem
         #expect(heavenStem.getName() == "甲")
 
-        // Test getEarthBranch
-        let earthBranch = jiaZi.getEarthBranch()
+        // Test earthBranch
+        let earthBranch = jiaZi.earthBranch
         #expect(earthBranch.getName() == "子")
     }
     @Test func testTen() throws {
@@ -772,7 +772,7 @@ import Testing
             let ten = Ten.fromIndex(i)
             #expect(ten.getName() == expectedNames[i])
             #expect(ten.index == i)
-            #expect(ten.getDayNumber() == i + 1)
+            #expect(ten.dayNumber == i + 1)
         }
 
         // Test fromName
@@ -795,7 +795,7 @@ import Testing
             let twenty = Twenty.fromIndex(i)
             #expect(twenty.getName() == expectedNames[i])
             #expect(twenty.index == i)
-            #expect(twenty.getDayNumber() == i + 1)
+            #expect(twenty.dayNumber == i + 1)
         }
 
         // Test fromName
@@ -955,8 +955,8 @@ import Testing
     @Test func testDogDay() throws {
         let dog = Dog.fromIndex(0)
         let dogDay = DogDay.fromDog(dog, 0)
-        #expect(dogDay.getDog().getName() == "初伏")
-        #expect(dogDay.getDayIndex() == 0)
+        #expect(dogDay.dog.getName() == "初伏")
+        #expect(dogDay.dayIndex == 0)
         #expect(dogDay.getName() == "初伏第1天")
 
         let dogDay2 = DogDay.fromDog(dog, 4)
@@ -987,8 +987,8 @@ import Testing
     @Test func testNineColdDay() throws {
         let nine = Nine.fromIndex(0)
         let nineDay = NineColdDay.fromNine(nine, 0)
-        #expect(nineDay.getNine().getName() == "一九")
-        #expect(nineDay.getDayIndex() == 0)
+        #expect(nineDay.nine.getName() == "一九")
+        #expect(nineDay.dayIndex == 0)
         #expect(nineDay.getName() == "一九第1天")
 
         let nineDay2 = NineColdDay.fromNine(nine, 8)
@@ -998,13 +998,13 @@ import Testing
         // Test both plum rain periods
         let ruMei = PlumRain.fromIndex(0)
         #expect(ruMei.getName() == "入梅")
-        #expect(ruMei.isEntering())
-        #expect(!ruMei.isExiting())
+        #expect(ruMei.entering)
+        #expect(!ruMei.exiting)
 
         let chuMei = PlumRain.fromIndex(1)
         #expect(chuMei.getName() == "出梅")
-        #expect(!chuMei.isEntering())
-        #expect(chuMei.isExiting())
+        #expect(!chuMei.entering)
+        #expect(chuMei.exiting)
 
         // Test next
         let next = ruMei.next(1)
@@ -1013,22 +1013,22 @@ import Testing
     @Test func testPlumRainDay() throws {
         let plumRain = PlumRain.fromIndex(0)
         let plumRainDay = PlumRainDay.fromPlumRain(plumRain, 0)
-        #expect(plumRainDay.getPlumRain().getName() == "入梅")
-        #expect(plumRainDay.getDayIndex() == 0)
+        #expect(plumRainDay.plumRain.getName() == "入梅")
+        #expect(plumRainDay.dayIndex == 0)
         #expect(plumRainDay.getName() == "入梅第1天")
     }
     @Test func testTaboo() throws {
         // Test auspicious taboo
         let auspicious = Taboo.auspicious("祭祀")
         #expect(auspicious.getName() == "祭祀")
-        #expect(auspicious.isAuspicious())
-        #expect(!auspicious.isInauspicious())
+        #expect(auspicious.auspicious)
+        #expect(!auspicious.inauspicious)
 
         // Test inauspicious taboo
         let inauspicious = Taboo.inauspicious("动土")
         #expect(inauspicious.getName() == "动土")
-        #expect(!inauspicious.isAuspicious())
-        #expect(inauspicious.isInauspicious())
+        #expect(!inauspicious.auspicious)
+        #expect(inauspicious.inauspicious)
     }
     @Test func testMinorRen() throws {
         // Test all six names
@@ -1045,22 +1045,22 @@ import Testing
     }
     @Test func testMinorRenLuck() throws {
         // Even index = 吉, Odd index = 凶
-        #expect("吉" == MinorRen.fromIndex(0).getLuck().getName()) // 大安
-        #expect("凶" == MinorRen.fromIndex(1).getLuck().getName()) // 留连
-        #expect("吉" == MinorRen.fromIndex(2).getLuck().getName()) // 速喜
-        #expect("凶" == MinorRen.fromIndex(3).getLuck().getName()) // 赤口
-        #expect("吉" == MinorRen.fromIndex(4).getLuck().getName()) // 小吉
-        #expect("凶" == MinorRen.fromIndex(5).getLuck().getName()) // 空亡
+        #expect("吉" == MinorRen.fromIndex(0).luck.getName()) // 大安
+        #expect("凶" == MinorRen.fromIndex(1).luck.getName()) // 留连
+        #expect("吉" == MinorRen.fromIndex(2).luck.getName()) // 速喜
+        #expect("凶" == MinorRen.fromIndex(3).luck.getName()) // 赤口
+        #expect("吉" == MinorRen.fromIndex(4).luck.getName()) // 小吉
+        #expect("凶" == MinorRen.fromIndex(5).luck.getName()) // 空亡
     }
     @Test func testMinorRenElement() throws {
         // Mapping: [0,4,1,3,0,2] → Element.NAMES["木","火","土","金","水"] index
         // [0,4,1,3,0,2] → [木,水,火,金,木,土]
-        #expect("木" == MinorRen.fromIndex(0).getElement().getName()) // 大安
-        #expect("水" == MinorRen.fromIndex(1).getElement().getName()) // 留连
-        #expect("火" == MinorRen.fromIndex(2).getElement().getName()) // 速喜
-        #expect("金" == MinorRen.fromIndex(3).getElement().getName()) // 赤口
-        #expect("木" == MinorRen.fromIndex(4).getElement().getName()) // 小吉
-        #expect("土" == MinorRen.fromIndex(5).getElement().getName()) // 空亡
+        #expect("木" == MinorRen.fromIndex(0).element.getName()) // 大安
+        #expect("水" == MinorRen.fromIndex(1).element.getName()) // 留连
+        #expect("火" == MinorRen.fromIndex(2).element.getName()) // 速喜
+        #expect("金" == MinorRen.fromIndex(3).element.getName()) // 赤口
+        #expect("木" == MinorRen.fromIndex(4).element.getName()) // 小吉
+        #expect("土" == MinorRen.fromIndex(5).element.getName()) // 空亡
     }
     @Test func testMinorRenNext() throws {
         let daAn = MinorRen.fromIndex(0)
@@ -1084,17 +1084,17 @@ import Testing
     }
     @Test func testElementYinYang() throws {
         // 木=阳, 火=阴, 土=阳, 金=阴, 水=阳
-        #expect("阳" == Element.fromIndex(0).getYinYang()) // 木
-        #expect("阴" == Element.fromIndex(1).getYinYang()) // 火
-        #expect("阳" == Element.fromIndex(2).getYinYang()) // 土
-        #expect("阴" == Element.fromIndex(3).getYinYang()) // 金
-        #expect("阳" == Element.fromIndex(4).getYinYang()) // 水
+        #expect("阳" == Element.fromIndex(0).yinYang) // 木
+        #expect("阴" == Element.fromIndex(1).yinYang) // 火
+        #expect("阳" == Element.fromIndex(2).yinYang) // 土
+        #expect("阴" == Element.fromIndex(3).yinYang) // 金
+        #expect("阳" == Element.fromIndex(4).yinYang) // 水
     }
     @Test func testPhenologyDay() {
         let p = Phenology.fromIndex(0)
         let day = PhenologyDay(phenology: p, dayIndex: 2)
-        #expect(day.getPhenology().getName() == "蚯蚓结")
-        #expect(day.getDayIndex() == 2)
+        #expect(day.phenology.getName() == "蚯蚓结")
+        #expect(day.dayIndex == 2)
         #expect(day.getName() == "蚯蚓结")
         #expect(day.description == "蚯蚓结第3天")
     }
@@ -1102,10 +1102,10 @@ import Testing
         let e = try RabByungElement(index: 3) // 金→铁
         #expect(e.getName() == "铁")
         #expect(e.index == 3)
-        #expect(e.getReinforce().getName() == "水")  // 铁生水
-        #expect(e.getRestrain().getName() == "木")   // 铁克木
-        #expect(e.getReinforced().getName() == "土") // 土生铁
-        #expect(e.getRestrained().getName() == "火") // 火克铁
+        #expect(e.reinforce.getName() == "水")  // 铁生水
+        #expect(e.restrain.getName() == "木")   // 铁克木
+        #expect(e.reinforced.getName() == "土") // 土生铁
+        #expect(e.restrained.getName() == "火") // 火克铁
 
         let e2 = try RabByungElement.fromName("铁")
         #expect(e2.index == 3)

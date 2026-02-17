@@ -44,9 +44,8 @@ public final class Animal: LoopTyme {
         return Animal.fromIndex(nextIndex(n))
     }
 
-    /// Get corresponding TwentyEightStar (二十八宿)
-    /// - Returns: TwentyEightStar instance
-    public func getTwentyEightStar() -> TwentyEightStar {
-        return TwentyEightStar.fromIndex(index)
-    }
+    public var twentyEightStar: TwentyEightStar { TwentyEightStar.fromIndex(index) }
+
+    @available(*, deprecated, renamed: "twentyEightStar")
+    public func getTwentyEightStar() -> TwentyEightStar { twentyEightStar }
 }

@@ -34,8 +34,8 @@ public final class Direction: LoopTyme {
         Direction.fromIndex(nextIndex(n))
     }
     
-    // Get angle in degrees (0 = North, 90 = East, 180 = South, 270 = West)
-    public func getAngle() -> Int {
-        return index * 45  // 8 directions, 45° each
-    }
+    public var angle: Int { index * 45 }
+
+    @available(*, deprecated, renamed: "angle")
+    public func getAngle() -> Int { angle }
 }

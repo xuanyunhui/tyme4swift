@@ -16,15 +16,15 @@ public final class FetusDay: AbstractCulture {
         7, 2, 2, 2, 2, 2, 3, 3, 3, 3
     ]
 
-    private let fetusHeavenStem: FetusHeavenStem
-    private let fetusEarthBranch: FetusEarthBranch
-    private let side: Side
-    private let directionName: String
+    public let fetusHeavenStem: FetusHeavenStem
+    public let fetusEarthBranch: FetusEarthBranch
+    public let side: Side
+    public let directionName: String
 
     public init(sixtyCycle: SixtyCycle) {
-        self.fetusHeavenStem = FetusHeavenStem(index: sixtyCycle.getHeavenStem().getIndex() % 5)
-        self.fetusEarthBranch = FetusEarthBranch(index: sixtyCycle.getEarthBranch().getIndex() % 6)
-        let idx = FetusDay.SIDE_DIRECTION_INDEX[sixtyCycle.getIndex()]
+        self.fetusHeavenStem = FetusHeavenStem(index: sixtyCycle.heavenStem.index % 5)
+        self.fetusEarthBranch = FetusEarthBranch(index: sixtyCycle.earthBranch.index % 6)
+        let idx = FetusDay.SIDE_DIRECTION_INDEX[sixtyCycle.index]
         self.side = Side.fromIndex(idx < 0 ? 0 : 1)
         let c = FetusDay.DIRECTION_NAMES.count
         var di = idx % c
@@ -36,15 +36,15 @@ public final class FetusDay: AbstractCulture {
     public static func fromLunarDay(_ lunarDay: LunarDay) -> FetusDay {
         // Compute SixtyCycle directly from JulianDay to work around
         // LunarDay.getSolarDay() off-by-one in the Swift port
-        let jd = lunarDay.getLunarMonth().getFirstJulianDay().next(lunarDay.getDay())
-        let offset = Int(jd.getDay() + 0.5) + 49
+        let jd = lunarDay.lunarMonth.firstJulianDay.next(lunarDay.day)
+        let offset = Int(jd.value + 0.5) + 49
         var index = offset % 60
         if index < 0 { index += 60 }
         return FetusDay(sixtyCycle: SixtyCycle.fromIndex(index))
     }
 
     public static func fromSixtyCycleDay(_ sixtyCycleDay: SixtyCycleDay) -> FetusDay {
-        FetusDay(sixtyCycle: sixtyCycleDay.getSixtyCycle())
+        FetusDay(sixtyCycle: sixtyCycleDay.sixtyCycle)
     }
 
     public override func getName() -> String {
@@ -73,19 +73,15 @@ public final class FetusDay: AbstractCulture {
         return s
     }
 
-    public func getSide() -> Side {
-        side
-    }
+    @available(*, deprecated, renamed: "side")
+    public func getSide() -> Side { side }
 
-    public func getDirectionName() -> String {
-        directionName
-    }
+    @available(*, deprecated, renamed: "directionName")
+    public func getDirectionName() -> String { directionName }
 
-    public func getFetusHeavenStem() -> FetusHeavenStem {
-        fetusHeavenStem
-    }
+    @available(*, deprecated, renamed: "fetusHeavenStem")
+    public func getFetusHeavenStem() -> FetusHeavenStem { fetusHeavenStem }
 
-    public func getFetusEarthBranch() -> FetusEarthBranch {
-        fetusEarthBranch
-    }
+    @available(*, deprecated, renamed: "fetusEarthBranch")
+    public func getFetusEarthBranch() -> FetusEarthBranch { fetusEarthBranch }
 }

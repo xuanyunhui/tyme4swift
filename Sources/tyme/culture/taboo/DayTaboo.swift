@@ -3,8 +3,8 @@ import Foundation
 /// 日宜忌 (Day Taboo)
 /// Auspicious and inauspicious activities for a specific day
 public final class DayTaboo: AbstractCulture {
-    private let auspicious: [String]
-    private let inauspicious: [String]
+    public let auspicious: [String]
+    public let inauspicious: [String]
 
     /// Initialize with auspicious and inauspicious activities
     /// - Parameters:
@@ -22,30 +22,21 @@ public final class DayTaboo: AbstractCulture {
         return "宜:\(auspicious.joined(separator: " ")) 忌:\(inauspicious.joined(separator: " "))"
     }
 
-    /// Get auspicious activities
-    /// - Returns: List of auspicious activities
-    public func getAuspicious() -> [String] {
-        return auspicious
-    }
-
-    /// Get inauspicious activities
-    /// - Returns: List of inauspicious activities
-    public func getInauspicious() -> [String] {
-        return inauspicious
-    }
-
-    /// Get all taboos
-    /// - Returns: List of Taboo instances
-    public func getTaboos() -> [Taboo] {
+    public var taboos: [Taboo] {
         var result: [Taboo] = []
-        for name in auspicious {
-            result.append(Taboo.auspicious(name))
-        }
-        for name in inauspicious {
-            result.append(Taboo.inauspicious(name))
-        }
+        for name in auspicious { result.append(Taboo.auspicious(name)) }
+        for name in inauspicious { result.append(Taboo.inauspicious(name)) }
         return result
     }
+
+    @available(*, deprecated, renamed: "auspicious")
+    public func getAuspicious() -> [String] { auspicious }
+
+    @available(*, deprecated, renamed: "inauspicious")
+    public func getInauspicious() -> [String] { inauspicious }
+
+    @available(*, deprecated, renamed: "taboos")
+    public func getTaboos() -> [Taboo] { taboos }
 
     /// Check if an activity is auspicious
     /// - Parameter activity: Activity name

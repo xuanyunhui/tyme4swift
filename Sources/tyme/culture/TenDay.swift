@@ -45,9 +45,8 @@ public final class TenDay: LoopTyme {
         return TenDay.fromIndex(nextIndex(n))
     }
 
-    /// Get corresponding HeavenStem
-    /// - Returns: HeavenStem instance
-    public func getHeavenStem() -> HeavenStem {
-        return HeavenStem.fromIndex(index)
-    }
+    public var heavenStem: HeavenStem { HeavenStem.fromIndex(index) }
+
+    @available(*, deprecated, renamed: "heavenStem")
+    public func getHeavenStem() -> HeavenStem { heavenStem }
 }

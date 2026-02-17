@@ -45,9 +45,8 @@ public final class Land: LoopTyme {
         return Land.fromIndex(nextIndex(n))
     }
 
-    /// Get direction (方位)
-    /// - Returns: Direction instance
-    public func getDirection() -> Direction {
-        return Direction.fromIndex(index)
-    }
+    public var direction: Direction { Direction.fromIndex(index) }
+
+    @available(*, deprecated, renamed: "direction")
+    public func getDirection() -> Direction { direction }
 }

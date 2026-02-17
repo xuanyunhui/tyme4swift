@@ -11,9 +11,8 @@ public final class PhenologyDay: AbstractCultureDay {
         super.init(culture: phenology, dayIndex: dayIndex)
     }
 
-    /// Get phenology
-    /// - Returns: Phenology instance
-    public func getPhenology() -> Phenology {
-        return culture as! Phenology
-    }
+    public var phenology: Phenology { culture as! Phenology }
+
+    @available(*, deprecated, renamed: "phenology")
+    public func getPhenology() -> Phenology { phenology }
 }

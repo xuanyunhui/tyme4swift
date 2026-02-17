@@ -9,28 +9,25 @@ public final class MonthGod: AbstractCulture {
         "月厌", "大耗", "小耗", "月建", "月破"
     ]
 
-    private let monthGodIndex: Int
+    public let index: Int
 
     /// Initialize with index
     /// - Parameter index: Month god index (0-9)
     public init(index: Int) {
         var i = index % 10
         if i < 0 { i += 10 }
-        self.monthGodIndex = i
+        self.index = i
         super.init()
     }
 
     /// Get name
     /// - Returns: Month god name
     public override func getName() -> String {
-        return MonthGod.NAMES[monthGodIndex]
+        return MonthGod.NAMES[index]
     }
 
-    /// Get index
-    /// - Returns: Month god index
-    public func getIndex() -> Int {
-        return monthGodIndex
-    }
+    @available(*, deprecated, renamed: "index")
+    public func getIndex() -> Int { index }
 
     /// Create from index
     /// - Parameter index: Month god index

@@ -6,26 +6,26 @@ import Testing
         // Test Fetus from SixtyCycle
         let sixtyCycle = SixtyCycle.fromIndex(0)
         let fetus = Fetus.fromSixtyCycle(sixtyCycle)
-        _ = fetus.getPosition()
-        _ = fetus.getDirection()
+        _ = fetus.position
+        _ = fetus.direction
         _ = fetus.getName()
 
         // Test fromIndex
         let fetus2 = Fetus.fromIndex(30)
-        #expect(fetus2.getSixtyCycleIndex() == 30)
+        #expect(fetus2.sixtyCycleIndex == 30)
     }
     @Test func testFetusOrigin() throws {
         // Test FetusOrigin from month pillar
         let monthPillar = SixtyCycle.fromIndex(0) // 甲子
         let fetusOrigin = FetusOrigin.fromMonthPillar(monthPillar)
-        _ = fetusOrigin.getSixtyCycle()
-        _ = fetusOrigin.getHeavenStem()
-        _ = fetusOrigin.getEarthBranch()
+        _ = fetusOrigin.sixtyCycle
+        _ = fetusOrigin.heavenStem
+        _ = fetusOrigin.earthBranch
     }
     @Test func testFetusDay() throws {
-        #expect("厨灶炉 外正南" == (try SolarDay.fromYmd(2021, 11, 13).getLunarDay().getFetusDay().getName()))
-        #expect("碓磨厕 外东南" == (try SolarDay.fromYmd(2021, 11, 12).getLunarDay().getFetusDay().getName()))
-        #expect("仓库炉 外西南" == (try SolarDay.fromYmd(2011, 11, 12).getLunarDay().getFetusDay().getName()))
+        #expect("厨灶炉 外正南" == (try SolarDay.fromYmd(2021, 11, 13).lunarDay.fetusDay.getName()))
+        #expect("碓磨厕 外东南" == (try SolarDay.fromYmd(2021, 11, 12).lunarDay.fetusDay.getName()))
+        #expect("仓库炉 外西南" == (try SolarDay.fromYmd(2011, 11, 12).lunarDay.fetusDay.getName()))
     }
     @Test func testFetusDayFromSixtyCycleDay() throws {
         let scd = try SixtyCycleDay.fromYmd(2021, 11, 13)
@@ -34,9 +34,9 @@ import Testing
     }
     @Test func testFetusMonth() throws {
         let m1 = try LunarMonth.fromYm(2021, 11)
-        #expect(m1.getFetus()!.getName() == "占灶炉")
+        #expect(m1.fetus!.getName() == "占灶炉")
         let m2 = try LunarMonth.fromYm(2021, 1)
-        #expect(m2.getFetus()!.getName() == "占房床")
+        #expect(m2.fetus!.getName() == "占房床")
     }
     @Test func testFetusHeavenStem() throws {
         #expect(FetusHeavenStem(index: 0).getName() == "门")

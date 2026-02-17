@@ -70,15 +70,12 @@ public final class Phenology: LoopTyme {
         return Phenology.fromIndex(nextIndex(n))
     }
 
-    /// Get the three-phenology period (三候)
-    /// - Returns: ThreePhenology instance (初候, 二候, 三候)
-    public func getThreePhenology() -> ThreePhenology {
-        return ThreePhenology.fromIndex(index % 3)
-    }
+    public var threePhenology: ThreePhenology { ThreePhenology.fromIndex(index % 3) }
+    public var solarTermIndex: Int { index / 3 }
 
-    /// Get the solar term index this phenology belongs to
-    /// - Returns: Solar term index (0-23)
-    public func getSolarTermIndex() -> Int {
-        return index / 3
-    }
+    @available(*, deprecated, renamed: "threePhenology")
+    public func getThreePhenology() -> ThreePhenology { threePhenology }
+
+    @available(*, deprecated, renamed: "solarTermIndex")
+    public func getSolarTermIndex() -> Int { solarTermIndex }
 }

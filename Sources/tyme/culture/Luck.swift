@@ -44,15 +44,12 @@ public final class Luck: LoopTyme {
         return Luck.fromIndex(nextIndex(n))
     }
 
-    /// Check if auspicious
-    /// - Returns: true if 吉
-    public func isAuspicious() -> Bool {
-        return index == 0
-    }
+    public var auspicious: Bool { index == 0 }
+    public var inauspicious: Bool { index == 1 }
 
-    /// Check if inauspicious
-    /// - Returns: true if 凶
-    public func isInauspicious() -> Bool {
-        return index == 1
-    }
+    @available(*, deprecated, renamed: "auspicious")
+    public func isAuspicious() -> Bool { auspicious }
+
+    @available(*, deprecated, renamed: "inauspicious")
+    public func isInauspicious() -> Bool { inauspicious }
 }

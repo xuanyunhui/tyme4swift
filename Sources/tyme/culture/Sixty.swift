@@ -44,27 +44,20 @@ public final class Sixty: LoopTyme {
         return Sixty.fromIndex(nextIndex(n))
     }
 
-    /// Get SixtyCycle
-    /// - Returns: SixtyCycle instance
-    public func getSixtyCycle() -> SixtyCycle {
-        return SixtyCycle.fromIndex(index)
-    }
+    public var sixtyCycle: SixtyCycle { SixtyCycle.fromIndex(index) }
+    public var naYin: NaYin { NaYin.fromSixtyCycle(index) }
+    public var heavenStem: HeavenStem { HeavenStem.fromIndex(index % 10) }
+    public var earthBranch: EarthBranch { EarthBranch.fromIndex(index % 12) }
 
-    /// Get NaYin
-    /// - Returns: NaYin instance
-    public func getNaYin() -> NaYin {
-        return NaYin.fromSixtyCycle(index)
-    }
+    @available(*, deprecated, renamed: "sixtyCycle")
+    public func getSixtyCycle() -> SixtyCycle { sixtyCycle }
 
-    /// Get HeavenStem
-    /// - Returns: HeavenStem instance
-    public func getHeavenStem() -> HeavenStem {
-        return HeavenStem.fromIndex(index % 10)
-    }
+    @available(*, deprecated, renamed: "naYin")
+    public func getNaYin() -> NaYin { naYin }
 
-    /// Get EarthBranch
-    /// - Returns: EarthBranch instance
-    public func getEarthBranch() -> EarthBranch {
-        return EarthBranch.fromIndex(index % 12)
-    }
+    @available(*, deprecated, renamed: "heavenStem")
+    public func getHeavenStem() -> HeavenStem { heavenStem }
+
+    @available(*, deprecated, renamed: "earthBranch")
+    public func getEarthBranch() -> EarthBranch { earthBranch }
 }

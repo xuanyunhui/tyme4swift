@@ -44,13 +44,12 @@ public final class PlumRain: LoopTyme {
         return PlumRain.fromIndex(nextIndex(n))
     }
 
-    /// Check if entering plum rain season
-    public func isEntering() -> Bool {
-        return index == 0
-    }
+    public var entering: Bool { index == 0 }
+    public var exiting: Bool { index == 1 }
 
-    /// Check if exiting plum rain season
-    public func isExiting() -> Bool {
-        return index == 1
-    }
+    @available(*, deprecated, renamed: "entering")
+    public func isEntering() -> Bool { entering }
+
+    @available(*, deprecated, renamed: "exiting")
+    public func isExiting() -> Bool { exiting }
 }

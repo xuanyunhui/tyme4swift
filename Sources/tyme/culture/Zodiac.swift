@@ -46,9 +46,8 @@ public final class Zodiac: LoopTyme {
         return Zodiac.fromIndex(nextIndex(n))
     }
 
-    /// Get corresponding earth branch
-    /// - Returns: EarthBranch corresponding to this zodiac
-    public func getEarthBranch() -> EarthBranch {
-        return EarthBranch.fromIndex(index)
-    }
+    public var earthBranch: EarthBranch { EarthBranch.fromIndex(index) }
+
+    @available(*, deprecated, renamed: "earthBranch")
+    public func getEarthBranch() -> EarthBranch { earthBranch }
 }
