@@ -54,10 +54,10 @@ public final class EightChar {
     
     // MARK: - Properties
     
-    public var yearZodiac: String { yearBranch.zodiac }
+    public var yearZodiac: Zodiac { yearBranch.zodiac }
 
     @available(*, deprecated, renamed: "yearZodiac")
-    public func getYearZodiac() -> String { yearZodiac }
+    public func getYearZodiac() -> String { yearZodiac.getName() }
 
     @available(*, deprecated, renamed: "solarYear")
     public func getSolarYear() -> Int { solarYear }
