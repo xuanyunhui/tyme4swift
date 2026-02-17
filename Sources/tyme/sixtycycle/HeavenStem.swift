@@ -1,5 +1,26 @@
 import Foundation
 
+/// A Heavenly Stem (天干 Tiāngān) in the Chinese sexagenary cycle.
+///
+/// The 10 Heavenly Stems form one component of the sexagenary cycle (六十甲子 Liùshí Jiǎzǐ).
+/// Each stem is associated with a Yin-Yang polarity (阴阳 Yīnyáng) and
+/// one of the Five Elements (五行 Wǔxíng).
+///
+/// ## The 10 Stems (partial)
+///
+/// | Index | Name | Element | Yin/Yang |
+/// |-------|------|---------|----------|
+/// | 0 | 甲 (Jiǎ) | 木 Wood | Yang |
+/// | 1 | 乙 (Yǐ) | 木 Wood | Yin |
+/// | ... | ... | ... | ... |
+///
+/// ## Usage
+///
+/// ```swift
+/// let stem = HeavenStem.fromIndex(0)  // 甲
+/// let element = stem.wuXing           // 木 (Wood)
+/// let yinYang = stem.yinYang          // 阳 (Yang)
+/// ```
 public final class HeavenStem: LoopTyme {
     public static let NAMES = ["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"]
 

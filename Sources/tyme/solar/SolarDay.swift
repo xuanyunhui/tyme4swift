@@ -1,5 +1,33 @@
 import Foundation
 
+/// A day in the Gregorian (solar) calendar.
+///
+/// `SolarDay` represents a specific date in the solar calendar system,
+/// providing conversions to the lunar calendar, sexagenary cycle, and solar terms.
+///
+/// ## Usage
+///
+/// ```swift
+/// let day = try SolarDay.fromYmd(2024, 1, 15)
+/// let lunarDay = day.lunarDay        // Convert to lunar calendar
+/// let cycle = day.sixtyCycleDay      // Get sexagenary cycle day
+/// let term = day.term                // Get solar term
+/// ```
+///
+/// ## Topics
+///
+/// ### Creating a Solar Day
+/// - ``fromYmd(_:_:_:)``
+/// - ``init(year:month:day:)``
+///
+/// ### Calendar Conversions
+/// - ``lunarDay``
+/// - ``julianDay``
+/// - ``sixtyCycleDay``
+///
+/// ### Solar Terms
+/// - ``term``
+/// - ``termDay``
 public final class SolarDay: DayUnit, Tyme {
     public override init(year: Int, month: Int, day: Int) throws {
         try SolarUtil.validateYear(year)
@@ -7,16 +35,20 @@ public final class SolarDay: DayUnit, Tyme {
         try super.init(year: year, month: month, day: day)
     }
 
+    /// Creates a solar day from year, month, and day components.
+    /// - Throws: `TymeError` if the date is invalid.
     public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) throws -> SolarDay {
         try SolarDay(year: year, month: month, day: day)
     }
 
     public func getName() -> String { String(format: "%04d-%02d-%02d", year, month, day) }
 
+    /// The Julian Day number for astronomical calculations.
     public var julianDay: JulianDay { try! JulianDay.fromYmdHms(year: year, month: month, day: day) }
     public var solarMonth: SolarMonth { try! SolarMonth(year: year, month: month) }
     public var solarYear: SolarYear { try! SolarYear(year: year) }
     public var week: Week { julianDay.week }
+    /// The solar term day (节气日 Jiéqì Rì) for this date.
     public var termDay: SolarTermDay {
         var y = year
         var i = month * 2
@@ -32,8 +64,11 @@ public final class SolarDay: DayUnit, Tyme {
         }
         return SolarTermDay(term, subtract(td))
     }
+    /// The solar term (节气 Jiéqì) at this date.
     public var term: SolarTerm { termDay.solarTerm }
+    /// The sexagenary cycle day (六十甲子日 Liùshí Jiǎzǐ Rì).
     public var sixtyCycleDay: SixtyCycleDay { SixtyCycleDay(solarDay: self) }
+    /// The corresponding day in the Chinese lunar calendar (农历 Nónglì).
     public var lunarDay: LunarDay {
         var m = try! LunarMonth.fromYm(year, month)
         var days = subtract(m.firstJulianDay.solarDay)
@@ -48,6 +83,8 @@ public final class SolarDay: DayUnit, Tyme {
         return try! LunarDay.fromYmd(m.year, m.monthWithLeap, days + 1)
     }
 
+    /// Returns the solar day offset by the given number of days.
+    /// - Parameter n: Positive to advance, negative to go back.
     public func next(_ n: Int) -> SolarDay {
         let jd = julianDay
         let target = JulianDay(jd.value + Double(n))
