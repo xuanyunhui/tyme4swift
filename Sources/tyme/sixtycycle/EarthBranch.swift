@@ -52,7 +52,7 @@ public final class EarthBranch: LoopTyme {
     public func getCombine() -> EarthBranch { EarthBranch.fromIndex(1 - index) }
 
     /// 六害
-    public func getHarm() -> EarthBranch { EarthBranch.fromIndex(19 - index) }
+    public var harm: EarthBranch { EarthBranch.fromIndex(19 - index) }
 
     /// 合化（无法合化返回 nil）
     public func combine(_ target: EarthBranch) -> Element? {
