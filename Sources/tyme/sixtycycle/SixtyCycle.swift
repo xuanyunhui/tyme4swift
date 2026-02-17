@@ -36,6 +36,27 @@ public final class SixtyCycle: LoopTyme {
         EarthBranch.fromIndex(index % EarthBranch.NAMES.count)
     }
 
+    /// 纳音 — the NaYin Sound for this sexagenary cycle element
+    public var sound: Sound {
+        Sound.fromIndex(index / 2)
+    }
+
+    /// 彭祖百忌 — Pengzu taboos for this sexagenary cycle element
+    public var pengZu: PengZu {
+        PengZu.fromSixtyCycle(self)
+    }
+
+    /// 旬 — the Ten-day period (Xun) this sexagenary element belongs to
+    public var ten: Ten {
+        Ten.fromIndex((heavenStem.index - earthBranch.index) / 2)
+    }
+
+    /// 旬空地支 — the two Empty Earth Branches (旬空) for this sexagenary element
+    public var extraEarthBranches: [EarthBranch] {
+        let first = EarthBranch.fromIndex(10 + earthBranch.index - heavenStem.index)
+        return [first, first.next(1)]
+    }
+
     public override func next(_ n: Int) -> SixtyCycle { SixtyCycle.fromIndex(nextIndex(n)) }
 
     @available(*, deprecated, renamed: "heavenStem")
@@ -43,6 +64,18 @@ public final class SixtyCycle: LoopTyme {
 
     @available(*, deprecated, renamed: "earthBranch")
     public func getEarthBranch() -> EarthBranch { earthBranch }
+
+    @available(*, deprecated, renamed: "sound")
+    public func getSound() -> Sound { sound }
+
+    @available(*, deprecated, renamed: "pengZu")
+    public func getPengZu() -> PengZu { pengZu }
+
+    @available(*, deprecated, renamed: "ten")
+    public func getTen() -> Ten { ten }
+
+    @available(*, deprecated, renamed: "extraEarthBranches")
+    public func getExtraEarthBranches() -> [EarthBranch] { extraEarthBranches }
 }
 
 extension SixtyCycle: Codable {
