@@ -5,7 +5,8 @@ public final class SolarTermDay: AbstractCultureDay {
         super.init(culture: solarTerm, dayIndex: dayIndex)
     }
 
-    public func getSolarTerm() -> SolarTerm {
-        culture as! SolarTerm
-    }
+    public var solarTerm: SolarTerm { culture as! SolarTerm }
+
+    @available(*, deprecated, renamed: "solarTerm")
+    public func getSolarTerm() -> SolarTerm { solarTerm }
 }

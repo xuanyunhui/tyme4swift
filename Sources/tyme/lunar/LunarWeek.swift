@@ -22,39 +22,48 @@ public final class LunarWeek: WeekUnit, Tyme {
         try LunarWeek(year: year, month: month, index: index, start: start)
     }
 
-    public func getLunarMonth() -> LunarMonth { try! LunarMonth.fromYm(year, month) }
+    public var lunarMonth: LunarMonth { try! LunarMonth.fromYm(year, month) }
 
     public func getName() -> String { LunarWeek.NAMES[index] }
 
     public func next(_ n: Int) -> LunarWeek {
         if n == 0 { return try! LunarWeek(year: year, month: month, index: index, start: startIndex) }
         var d = index + n
-        var m = getLunarMonth()
+        var m = lunarMonth
         if n > 0 {
             var weekCount = m.getWeekCount(startIndex)
             while d >= weekCount {
                 d -= weekCount
                 m = m.next(1)
-                if m.getFirstDay().getWeek().index != startIndex { d += 1 }
+                if m.firstDay.week.index != startIndex { d += 1 }
                 weekCount = m.getWeekCount(startIndex)
             }
         } else {
             while d < 0 {
-                if m.getFirstDay().getWeek().index != startIndex { d -= 1 }
+                if m.firstDay.week.index != startIndex { d -= 1 }
                 m = m.next(-1)
                 d += m.getWeekCount(startIndex)
             }
         }
-        return try! LunarWeek(year: m.year, month: m.getMonthWithLeap(), index: d, start: startIndex)
+        return try! LunarWeek(year: m.year, month: m.monthWithLeap, index: d, start: startIndex)
     }
 
-    public func getFirstDay() -> LunarDay {
-        let firstDay = try! LunarDay.fromYmd(year, month, 1)
-        return firstDay.next(index * 7 - indexOf(firstDay.getWeek().index - startIndex, 7))
+    public var firstDay: LunarDay {
+        let fd = try! LunarDay.fromYmd(year, month, 1)
+        return fd.next(index * 7 - indexOf(fd.week.index - startIndex, 7))
     }
 
-    public func getDays() -> [LunarDay] {
-        let d = getFirstDay()
+    public var days: [LunarDay] {
+        let d = firstDay
         return (0..<7).map { d.next($0) }
     }
+
+    @available(*, deprecated, renamed: "lunarMonth")
+    public func getLunarMonth() -> LunarMonth { lunarMonth }
+
+    @available(*, deprecated, renamed: "firstDay")
+    public func getFirstDay() -> LunarDay { firstDay }
+
+    @available(*, deprecated, renamed: "days")
+    public func getDays() -> [LunarDay] { days }
 }

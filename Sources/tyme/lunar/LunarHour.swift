@@ -15,61 +15,72 @@ public final class LunarHour: SecondUnit, Tyme {
         try LunarHour(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
     }
 
-    public func getLunarDay() -> LunarDay { try! LunarDay.fromYmd(getYear(), try! getMonth(), getDay()) }
+    public var lunarDay: LunarDay { try! LunarDay.fromYmd(year, month, day) }
+    public var indexInDay: Int { (hour + 1) / 2 }
 
-    public func getName() -> String { EarthBranch.fromIndex(getIndexInDay()).getName() + "时" }
+    public func getName() -> String { EarthBranch.fromIndex(indexInDay).getName() + "时" }
 
-    public func getIndexInDay() -> Int { (getHour() + 1) / 2 }
-
-    public func next(_ n: Int) -> LunarHour {
-        if n == 0 { return try! LunarHour.fromYmdHms(getYear(), getMonth(), getDay(), getHour(), getMinute(), getSecond()) }
-        var h = getHour() + n * 2
-        let diff = h < 0 ? -1 : 1
-        var hour = abs(h)
-        var days = hour / 24 * diff
-        hour = (hour % 24) * diff
-        if hour < 0 {
-            hour += 24
-            days -= 1
-        }
-        let d = getLunarDay().next(days)
-        return try! LunarHour.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, getMinute(), getSecond())
-    }
-
-    public func isBefore(_ target: LunarHour) -> Bool {
-        let d = getLunarDay()
-        let td = target.getLunarDay()
-        if d.getYear() != td.getYear() || d.getMonth() != td.getMonth() || d.getDay() != td.getDay() {
-            return d.isBefore(td)
-        }
-        if getHour() != target.getHour() { return getHour() < target.getHour() }
-        if getMinute() != target.getMinute() { return getMinute() < target.getMinute() }
-        return getSecond() < target.getSecond()
-    }
-
-    public func isAfter(_ target: LunarHour) -> Bool {
-        let d = getLunarDay()
-        let td = target.getLunarDay()
-        if d.getYear() != td.getYear() || d.getMonth() != td.getMonth() || d.getDay() != td.getDay() {
-            return d.isAfter(td)
-        }
-        if getHour() != target.getHour() { return getHour() > target.getHour() }
-        if getMinute() != target.getMinute() { return getMinute() > target.getMinute() }
-        return getSecond() > target.getSecond()
-    }
-
-    public func getSixtyCycle() -> SixtyCycle {
-        let earthBranchIndex = try! getIndexInDay() % 12
-        var d = getLunarDay().getSixtyCycle()
-        if getHour() >= 23 { d = d.next(1) }
-        let stemIndex = d.getHeavenStem().getIndex() % 5 * 2 + earthBranchIndex
+    public var sixtyCycle: SixtyCycle {
+        let earthBranchIndex = indexInDay % 12
+        var d = lunarDay.sixtyCycle
+        if hour >= 23 { d = d.next(1) }
+        let stemIndex = d.getHeavenStem().index % 5 * 2 + earthBranchIndex
         let stem = HeavenStem.fromIndex(stemIndex).getName()
         let branch = EarthBranch.fromIndex(earthBranchIndex).getName()
         return try! SixtyCycle.fromName(stem + branch)
     }
 
-    public func getSolarTime() -> SolarTime {
-        let d = try! getLunarDay().getSolarDay()
-        return try! SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), getHour(), getMinute(), getSecond())
+    public var solarTime: SolarTime {
+        let d = lunarDay.solarDay
+        return try! SolarTime.fromYmdHms(d.year, d.month, d.day, hour, minute, second)
     }
+
+    public func next(_ n: Int) -> LunarHour {
+        if n == 0 { return try! LunarHour.fromYmdHms(year, month, day, hour, minute, second) }
+        let h = hour + n * 2
+        let diff = h < 0 ? -1 : 1
+        var newHour = abs(h)
+        var days = newHour / 24 * diff
+        newHour = (newHour % 24) * diff
+        if newHour < 0 {
+            newHour += 24
+            days -= 1
+        }
+        let d = lunarDay.next(days)
+        return try! LunarHour.fromYmdHms(d.year, d.monthWithLeap, d.day, newHour, minute, second)
+    }
+
+    public func isBefore(_ target: LunarHour) -> Bool {
+        let d = lunarDay
+        let td = target.lunarDay
+        if d.year != td.year || d.monthWithLeap != td.monthWithLeap || d.day != td.day {
+            return d.isBefore(td)
+        }
+        if hour != target.hour { return hour < target.hour }
+        if minute != target.minute { return minute < target.minute }
+        return second < target.second
+    }
+
+    public func isAfter(_ target: LunarHour) -> Bool {
+        let d = lunarDay
+        let td = target.lunarDay
+        if d.year != td.year || d.monthWithLeap != td.monthWithLeap || d.day != td.day {
+            return d.isAfter(td)
+        }
+        if hour != target.hour { return hour > target.hour }
+        if minute != target.minute { return minute > target.minute }
+        return second > target.second
+    }
+
+    @available(*, deprecated, renamed: "lunarDay")
+    public func getLunarDay() -> LunarDay { lunarDay }
+
+    @available(*, deprecated, renamed: "indexInDay")
+    public func getIndexInDay() -> Int { indexInDay }
+
+    @available(*, deprecated, renamed: "sixtyCycle")
+    public func getSixtyCycle() -> SixtyCycle { sixtyCycle }
+
+    @available(*, deprecated, renamed: "solarTime")
+    public func getSolarTime() -> SolarTime { solarTime }
 }

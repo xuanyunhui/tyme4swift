@@ -2,7 +2,7 @@ import Foundation
 
 public final class SolarHalfYear: YearUnit, Tyme {
     public static let NAMES = ["上半年", "下半年"]
-    private let index: Int
+    public let index: Int
 
     public static func validate(year: Int, index: Int) throws {
         if index < 0 || index > 1 { throw TymeError.invalidIndex(index) }
@@ -19,22 +19,26 @@ public final class SolarHalfYear: YearUnit, Tyme {
         try SolarHalfYear(year: year, index: index)
     }
 
-    public func getSolarYear() -> SolarYear { try! SolarYear(year: getYear()) }
-
-    public func getIndex() -> Int { index }
+    public var solarYear: SolarYear { try! SolarYear(year: year) }
+    public var months: [SolarMonth] { (1...6).map { try! SolarMonth(year: year, month: index * 6 + $0) } }
+    public var seasons: [SolarSeason] { (0..<2).map { try! SolarSeason(year: year, index: index * 2 + $0) } }
 
     public func getName() -> String { SolarHalfYear.NAMES[index] }
 
     public func next(_ n: Int) -> SolarHalfYear {
         let i = index + n
-        return try! SolarHalfYear(year: (getYear() * 2 + i) / 2, index: indexOf(i, 2))
+        return try! SolarHalfYear(year: (year * 2 + i) / 2, index: indexOf(i, 2))
     }
 
-    public func getMonths() -> [SolarMonth] {
-        (1...6).map { try! SolarMonth(year: getYear(), month: index * 6 + $0) }
-    }
+    @available(*, deprecated, renamed: "solarYear")
+    public func getSolarYear() -> SolarYear { solarYear }
 
-    public func getSeasons() -> [SolarSeason] {
-        (0..<2).map { try! SolarSeason(year: getYear(), index: index * 2 + $0) }
-    }
+    @available(*, deprecated, renamed: "index")
+    public func getIndex() -> Int { index }
+
+    @available(*, deprecated, renamed: "months")
+    public func getMonths() -> [SolarMonth] { months }
+
+    @available(*, deprecated, renamed: "seasons")
+    public func getSeasons() -> [SolarSeason] { seasons }
 }

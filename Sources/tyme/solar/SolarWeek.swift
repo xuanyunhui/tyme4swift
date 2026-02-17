@@ -22,13 +22,13 @@ public final class SolarWeek: WeekUnit, Tyme {
         try SolarWeek(year: year, month: month, index: index, start: start)
     }
 
-    public func getSolarMonth() -> SolarMonth { try! SolarMonth(year: year, month: month) }
+    public var solarMonth: SolarMonth { try! SolarMonth(year: year, month: month) }
 
-    public func getIndexInYear() -> Int {
+    public var indexInYear: Int {
         var i = 0
-        let firstDay = getFirstDay()
+        let firstDay = self.firstDay
         var w = try! SolarWeek(year: year, month: 1, index: 0, start: startIndex)
-        while w.getFirstDay().getName() != firstDay.getName() {
+        while w.firstDay.getName() != firstDay.getName() {
             w = w.next(1)
             i += 1
         }
@@ -39,20 +39,20 @@ public final class SolarWeek: WeekUnit, Tyme {
 
     public func next(_ n: Int) -> SolarWeek {
         var d = index
-        var m = getSolarMonth()
+        var m = solarMonth
         if n > 0 {
             d += n
             var weekCount = m.getWeekCount(startIndex)
             while d >= weekCount {
                 d -= weekCount
                 m = m.next(1)
-                if m.getFirstDay().getWeek().index != startIndex { d += 1 }
+                if m.firstDay.week.index != startIndex { d += 1 }
                 weekCount = m.getWeekCount(startIndex)
             }
         } else if n < 0 {
             d += n
             while d < 0 {
-                if m.getFirstDay().getWeek().index != startIndex { d -= 1 }
+                if m.firstDay.week.index != startIndex { d -= 1 }
                 m = m.next(-1)
                 d += m.getWeekCount(startIndex)
             }
@@ -60,13 +60,25 @@ public final class SolarWeek: WeekUnit, Tyme {
         return try! SolarWeek(year: m.year, month: m.month, index: d, start: startIndex)
     }
 
-    public func getFirstDay() -> SolarDay {
-        let firstDay = try! SolarDay(year: year, month: month, day: 1)
-        return firstDay.next(index * 7 - indexOf(firstDay.getWeek().index - startIndex, 7))
+    public var firstDay: SolarDay {
+        let first = try! SolarDay(year: year, month: month, day: 1)
+        return first.next(index * 7 - indexOf(first.week.index - startIndex, 7))
     }
 
-    public func getDays() -> [SolarDay] {
-        let d = getFirstDay()
+    public var days: [SolarDay] {
+        let d = firstDay
         return (0..<7).map { d.next($0) }
     }
+
+    @available(*, deprecated, renamed: "solarMonth")
+    public func getSolarMonth() -> SolarMonth { solarMonth }
+
+    @available(*, deprecated, renamed: "indexInYear")
+    public func getIndexInYear() -> Int { indexInYear }
+
+    @available(*, deprecated, renamed: "firstDay")
+    public func getFirstDay() -> SolarDay { firstDay }
+
+    @available(*, deprecated, renamed: "days")
+    public func getDays() -> [SolarDay] { days }
 }

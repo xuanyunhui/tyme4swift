@@ -7,87 +7,97 @@ public final class SolarDay: DayUnit, Tyme {
         try super.init(year: year, month: month, day: day)
     }
 
-    public static func fromYmd(_ year: Int, _ month: Int, _ day: Int)  throws -> SolarDay {
+    public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) throws -> SolarDay {
         try SolarDay(year: year, month: month, day: day)
     }
 
-    public func getName() -> String {
-        String(format: "%04d-%02d-%02d", try! getYear(), getMonth(), getDay())
+    public func getName() -> String { String(format: "%04d-%02d-%02d", year, month, day) }
+
+    public var julianDay: JulianDay { try! JulianDay.fromYmdHms(year: year, month: month, day: day) }
+    public var solarMonth: SolarMonth { try! SolarMonth(year: year, month: month) }
+    public var solarYear: SolarYear { try! SolarYear(year: year) }
+    public var week: Week { julianDay.week }
+    public var termDay: SolarTermDay {
+        var y = year
+        var i = month * 2
+        if i == 24 {
+            y += 1
+            i = 0
+        }
+        var term = SolarTerm.fromIndex(y, i + 1)
+        var td = term.solarDay
+        while isBefore(td) {
+            term = term.next(-1)
+            td = term.solarDay
+        }
+        return SolarTermDay(term, subtract(td))
     }
-
-    public func getJulianDay() -> JulianDay {
-        try! JulianDay.fromYmdHms(year: try! getYear(), month: getMonth(), day: getDay())
+    public var term: SolarTerm { termDay.solarTerm }
+    public var sixtyCycleDay: SixtyCycleDay { try! SixtyCycleDay(solarDay: self) }
+    public var lunarDay: LunarDay {
+        var m = try! LunarMonth.fromYm(year, month)
+        var days = subtract(m.firstJulianDay.solarDay)
+        while days < 0 {
+            m = m.next(-1)
+            days += m.dayCount
+        }
+        while days >= m.dayCount {
+            days -= m.dayCount
+            m = m.next(1)
+        }
+        return try! LunarDay.fromYmd(m.year, m.monthWithLeap, days + 1)
     }
-
-    public func getSolarMonth() -> SolarMonth { try! SolarMonth(year: getYear(), month: getMonth()) }
-    public func getSolarYear() -> SolarYear { try! SolarYear(year: getYear()) }
-
-    public func getWeek() -> Week { try! getJulianDay().getWeek() }
 
     public func next(_ n: Int) -> SolarDay {
-        let jd = getJulianDay()
+        let jd = julianDay
         let target = JulianDay(jd.value + Double(n))
         let ymd = target.toYmdHms()
         return try! SolarDay(year: ymd.year, month: ymd.month, day: ymd.day)
     }
 
     public func isBefore(_ target: SolarDay) -> Bool {
-        if getYear() != target.getYear() { return getYear() < target.getYear() }
-        if getMonth() != target.getMonth() { return getMonth() < target.getMonth() }
-        return getDay() < target.getDay()
+        if year != target.year { return year < target.year }
+        if month != target.month { return month < target.month }
+        return day < target.day
     }
 
     public func isAfter(_ target: SolarDay) -> Bool {
-        if getYear() != target.getYear() { return getYear() > target.getYear() }
-        if getMonth() != target.getMonth() { return getMonth() > target.getMonth() }
-        return getDay() > target.getDay()
+        if year != target.year { return year > target.year }
+        if month != target.month { return month > target.month }
+        return day > target.day
     }
 
     public func subtract(_ target: SolarDay) -> Int {
-        Int(getJulianDay().subtract(target.getJulianDay()))
+        Int(julianDay.subtract(target.julianDay))
     }
 
     public func getSolarWeek(_ start: Int) -> SolarWeek {
-        let firstWeek = try! SolarDay(year: getYear(), month: getMonth(), day: 1).getWeek().next(-start).getIndex()
-        let index = Int(ceil(Double(getDay() + firstWeek) / 7.0)) - 1
-        return try! SolarWeek(year: getYear(), month: getMonth(), index: index, start: start)
+        let firstWeek = try! SolarDay(year: year, month: month, day: 1).week.next(-start).index
+        let i = Int(ceil(Double(day + firstWeek) / 7.0)) - 1
+        return try! SolarWeek(year: year, month: month, index: i, start: start)
     }
 
-    public func getTermDay() -> SolarTermDay {
-        var y = try! getYear()
-        var i = getMonth() * 2
-        if i == 24 {
-            y += 1
-            i = 0
-        }
-        var term = SolarTerm.fromIndex(y, i + 1)
-        var termDay = term.getSolarDay()
-        while isBefore(termDay) {
-            term = term.next(-1)
-            termDay = term.getSolarDay()
-        }
-        return SolarTermDay(term, subtract(termDay))
-    }
+    @available(*, deprecated, renamed: "julianDay")
+    public func getJulianDay() -> JulianDay { julianDay }
 
-    public func getTerm() -> SolarTerm {
-        try! getTermDay().getSolarTerm()
-    }
+    @available(*, deprecated, renamed: "solarMonth")
+    public func getSolarMonth() -> SolarMonth { solarMonth }
 
-    public func getSixtyCycleDay() -> SixtyCycleDay {
-        try! SixtyCycleDay(solarDay: self)
-    }
+    @available(*, deprecated, renamed: "solarYear")
+    public func getSolarYear() -> SolarYear { solarYear }
 
-    public func getLunarDay() -> LunarDay {
-        var m = try! LunarMonth.fromYm(getYear(), try! getMonth())
-        var days = subtract(m.getFirstJulianDay().getSolarDay())
-        while days < 0 {
-            m = m.next(-1)
-            days += m.getDayCount()
-        }
-        while days >= m.getDayCount() {
-            days -= m.getDayCount()
-            m = m.next(1)
-        }
-        return try! LunarDay.fromYmd(m.getYear(), m.getMonthWithLeap(), days + 1)
-    }
+    @available(*, deprecated, renamed: "week")
+    public func getWeek() -> Week { week }
+
+    @available(*, deprecated, renamed: "termDay")
+    public func getTermDay() -> SolarTermDay { termDay }
+
+    @available(*, deprecated, renamed: "term")
+    public func getTerm() -> SolarTerm { term }
+
+    @available(*, deprecated, renamed: "sixtyCycleDay")
+    public func getSixtyCycleDay() -> SixtyCycleDay { sixtyCycleDay }
+
+    @available(*, deprecated, renamed: "lunarDay")
+    public func getLunarDay() -> LunarDay { lunarDay }
 }
