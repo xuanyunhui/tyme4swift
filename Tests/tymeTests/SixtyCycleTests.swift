@@ -94,20 +94,20 @@ import Testing
         // Test year 2024 (甲辰年)
         let year2024 = SixtyCycleYear.fromYear(2024)
         #expect(year2024.year == 2024)
-        #expect(year2024.getName() == "甲辰")
+        #expect(year2024.getName() == "甲辰年")
         #expect(year2024.heavenStem.getName() == "甲")
         #expect(year2024.earthBranch.getName() == "辰")
         #expect(year2024.zodiac.getName() == "龙")
 
         // Test year 2023 (癸卯年)
         let year2023 = SixtyCycleYear.fromYear(2023)
-        #expect(year2023.getName() == "癸卯")
+        #expect(year2023.getName() == "癸卯年")
         #expect(year2023.zodiac.getName() == "兔")
 
         // Test next
         let year2025 = year2024.next(1)
         #expect(year2025.year == 2025)
-        #expect(year2025.getName() == "乙巳")
+        #expect(year2025.getName() == "乙巳年")
 
         // Test NaYin
         _ = year2024.naYin

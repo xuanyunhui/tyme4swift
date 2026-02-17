@@ -37,6 +37,12 @@ public final class LunarMonth: MonthUnit, Tyme {
         return index
     }
     public var season: LunarSeason { LunarSeason.fromIndex(month - 1) }
+    public var sixtyCycle: SixtyCycle {
+        try! SixtyCycle.fromName(
+            HeavenStem.fromIndex(lunarYear.sixtyCycle.heavenStem.index * 2 + month + 1).getName()
+            + EarthBranch.fromIndex(month + 1).getName()
+        )
+    }
     public var firstJulianDay: JulianDay {
         JulianDay.fromJulianDay(JulianDay.J2000 + ShouXingUtil.calcShuo(newMoon))
     }

@@ -21,10 +21,42 @@ public final class SixtyCycleYear: AbstractCulture {
     public var naYin: NaYin { NaYin.fromSixtyCycle(sixtyCycle.index) }
     public var zodiac: Zodiac { Zodiac.fromIndex(sixtyCycle.earthBranch.index) }
 
+    /// 运
+    public var twenty: Twenty {
+        Twenty.fromIndex(Int(floor(Double(year - 1864) / 20.0)))
+    }
+
+    /// 九星
+    public var nineStar: NineStar {
+        NineStar.fromIndex(63 + twenty.sixty.index * 3 - sixtyCycle.index)
+    }
+
+    /// 太岁方位
+    public var jupiterDirection: Direction {
+        Direction.fromIndex([0, 7, 7, 2, 3, 3, 8, 1, 1, 6, 0, 0][sixtyCycle.earthBranch.index])
+    }
+
+    /// 首月（五虎遁月）
+    public var firstMonth: SixtyCycleMonth {
+        let h = HeavenStem.fromIndex((sixtyCycle.heavenStem.index + 1) * 2)
+        return SixtyCycleMonth(year: self, month: try! SixtyCycle.fromName(h.getName() + "寅"))
+    }
+
+    /// 本年所有干支月（12个）
+    public var months: [SixtyCycleMonth] {
+        var l: [SixtyCycleMonth] = []
+        let m = firstMonth
+        l.append(m)
+        for i in 1..<12 {
+            l.append(m.next(i))
+        }
+        return l
+    }
+
     /// Get name
-    /// - Returns: SixtyCycle name
+    /// - Returns: SixtyCycle name with 年 suffix
     public override func getName() -> String {
-        return sixtyCycle.getName()
+        return "\(sixtyCycle.getName())年"
     }
 
     /// Get next SixtyCycleYear
@@ -58,4 +90,19 @@ public final class SixtyCycleYear: AbstractCulture {
 
     @available(*, deprecated, renamed: "zodiac")
     public func getZodiac() -> Zodiac { zodiac }
+
+    @available(*, deprecated, renamed: "twenty")
+    public func getTwenty() -> Twenty { twenty }
+
+    @available(*, deprecated, renamed: "nineStar")
+    public func getNineStar() -> NineStar { nineStar }
+
+    @available(*, deprecated, renamed: "jupiterDirection")
+    public func getJupiterDirection() -> Direction { jupiterDirection }
+
+    @available(*, deprecated, renamed: "firstMonth")
+    public func getFirstMonth() -> SixtyCycleMonth { firstMonth }
+
+    @available(*, deprecated, renamed: "months")
+    public func getMonths() -> [SixtyCycleMonth] { months }
 }
