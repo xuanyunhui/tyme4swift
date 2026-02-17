@@ -3,16 +3,14 @@ import Foundation
 /// 日柱 (SixtyCycle Day)
 /// Represents a day in the SixtyCycle system
 public final class SixtyCycleDay: AbstractCulture {
-    private let solarDay: SolarDay
-    private let sixtyCycle: SixtyCycle
+    public let solarDay: SolarDay
+    public let sixtyCycle: SixtyCycle
 
     /// Initialize with SolarDay
     /// - Parameter solarDay: The solar day
     public init(solarDay: SolarDay) {
         self.solarDay = solarDay
-        // Calculate SixtyCycle for day based on Julian Day
-        let jd = solarDay.getJulianDay()
-        let offset = Int(jd.getDay() + 0.5) + 49
+        let offset = Int(solarDay.julianDay.value + 0.5) + 49
         var index = offset % 60
         if index < 0 { index += 60 }
         self.sixtyCycle = SixtyCycle.fromIndex(index)
@@ -20,104 +18,31 @@ public final class SixtyCycleDay: AbstractCulture {
     }
 
     /// Initialize with year, month, day
-    /// - Parameters:
-    ///   - year: The year
-    ///   - month: The month
-    ///   - day: The day
     public convenience init(year: Int, month: Int, day: Int) throws {
-        try self.init(solarDay: try SolarDay(year: year, month: month, day: day))
+        self.init(solarDay: try SolarDay(year: year, month: month, day: day))
     }
 
-    /// Get SolarDay
-    /// - Returns: SolarDay instance
-    public func getSolarDay() -> SolarDay {
-        return solarDay
-    }
-
-    /// Get SixtyCycle
-    /// - Returns: SixtyCycle instance
-    public func getSixtyCycle() -> SixtyCycle {
-        return sixtyCycle
-    }
-
-    /// Get name
-    /// - Returns: SixtyCycle name
-    public override func getName() -> String {
-        return sixtyCycle.getName()
-    }
-
-    /// Get HeavenStem
-    /// - Returns: HeavenStem instance
-    public func getHeavenStem() -> HeavenStem {
-        return sixtyCycle.getHeavenStem()
-    }
-
-    /// Get EarthBranch
-    /// - Returns: EarthBranch instance
-    public func getEarthBranch() -> EarthBranch {
-        return sixtyCycle.getEarthBranch()
-    }
-
-    /// Get NaYin
-    /// - Returns: NaYin instance
-    public func getNaYin() -> NaYin {
-        return NaYin.fromSixtyCycle(sixtyCycle.getIndex())
-    }
-
-    /// Get Duty (建除十二值)
-    /// - Returns: Duty instance
-    public func getDuty() -> Duty {
-        // Duty is based on the relationship between month branch and day branch
-        // Month branch index: 寅月(1月) = 2, 卯月(2月) = 3, etc.
-        let month = solarDay.getMonth()
-        let monthBranchIndex = (month + 1) % 12
-        let dayBranchIndex = sixtyCycle.getEarthBranch().getIndex()
+    public var heavenStem: HeavenStem { sixtyCycle.heavenStem }
+    public var earthBranch: EarthBranch { sixtyCycle.earthBranch }
+    public var naYin: NaYin { NaYin.fromSixtyCycle(sixtyCycle.index) }
+    public var duty: Duty {
+        let monthBranchIndex = (solarDay.month + 1) % 12
+        let dayBranchIndex = sixtyCycle.earthBranch.index
         var dutyIndex = (dayBranchIndex - monthBranchIndex) % 12
         if dutyIndex < 0 { dutyIndex += 12 }
         return Duty.fromIndex(dutyIndex)
     }
-
-    /// Get TwentyEightStar (二十八宿)
-    /// - Returns: TwentyEightStar instance
-    public func getTwentyEightStar() -> TwentyEightStar {
-        let jd = solarDay.getJulianDay()
-        let offset = Int(jd.getDay() + 0.5) + 11
+    public var twentyEightStar: TwentyEightStar {
+        let offset = Int(solarDay.julianDay.value + 0.5) + 11
         var index = offset % 28
         if index < 0 { index += 28 }
         return TwentyEightStar.fromIndex(index)
     }
-
-    /// Get next SixtyCycleDay
-    /// - Parameter n: Number of days to advance
-    /// - Returns: Next SixtyCycleDay
-    public func next(_ n: Int) -> SixtyCycleDay {
-        return try! SixtyCycleDay(solarDay: solarDay.next(n))
-    }
-
-    /// Create from SolarDay
-    /// - Parameter solarDay: The solar day
-    /// - Returns: SixtyCycleDay instance
-    public static func fromSolarDay(_ solarDay: SolarDay) -> SixtyCycleDay {
-        return SixtyCycleDay(solarDay: solarDay)
-    }
-
-    /// Create from year, month, day
-    /// - Parameters:
-    ///   - year: The year
-    ///   - month: The month
-    ///   - day: The day
-    /// - Returns: SixtyCycleDay instance
-    public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) throws -> SixtyCycleDay {
-        return try SixtyCycleDay(year: year, month: month, day: day)
-    }
-
-    /// 三柱（年柱、月柱、日柱）
-    public func getThreePillars() -> ThreePillars {
+    public var threePillars: ThreePillars {
         let term = findPrevailingTerm()
-        let termIndex = term.getIndex()
-        let termYear = term.getYear()
+        let termIndex = term.index
+        let termYear = term.year
 
-        // 月柱距寅月的偏移
         let offset: Int
         if termIndex < 3 {
             offset = termIndex == 0 ? -2 : -1
@@ -125,12 +50,10 @@ public final class SixtyCycleDay: AbstractCulture {
             offset = (termIndex - 3) / 2
         }
 
-        // 干支年（立春换年）
         let cycleYear = offset < 0 ? termYear - 1 : termYear
         let yearSixtyCycle = SixtyCycle.fromIndex(cycleYear - 4)
 
-        // 月干支（五虎遁）
-        let yearHeavenStemIndex = yearSixtyCycle.getHeavenStem().getIndex()
+        let yearHeavenStemIndex = yearSixtyCycle.heavenStem.index
         let firstMonthHeavenStemIndex = (yearHeavenStemIndex + 1) * 2
         let normalizedOffset = offset < 0 ? offset + 12 : offset
         let monthHeavenStemIndex = (firstMonthHeavenStemIndex + normalizedOffset) % 10
@@ -140,44 +63,83 @@ public final class SixtyCycleDay: AbstractCulture {
 
         return ThreePillars(year: yearSixtyCycle, month: monthSixtyCycle, day: sixtyCycle)
     }
-
-    /// 神煞列表（吉神宜趋，凶神宜忌）
-    /// Gets the list of gods/deities for this day
-    /// - Returns: List of God instances
-    public func getGods() -> [God] {
-        let monthSixtyCycle = getThreePillars().getMonth()
-        return GodLookup.getDayGods(month: monthSixtyCycle, day: sixtyCycle)
+    public var gods: [God] {
+        GodLookup.getDayGods(month: threePillars.month, day: sixtyCycle)
+    }
+    public var recommends: [Taboo] {
+        TabooLookup.getDayRecommends(month: threePillars.month, day: sixtyCycle)
+    }
+    public var avoids: [Taboo] {
+        TabooLookup.getDayAvoids(month: threePillars.month, day: sixtyCycle)
     }
 
-    /// 宜（推荐的活动）
-    /// Gets the list of auspicious activities for this day
-    /// - Returns: List of Taboo instances marked as auspicious
-    public func getRecommends() -> [Taboo] {
-        let monthSixtyCycle = getThreePillars().getMonth()
-        return TabooLookup.getDayRecommends(month: monthSixtyCycle, day: sixtyCycle)
+    /// Get name
+    /// - Returns: SixtyCycle name
+    public override func getName() -> String {
+        return sixtyCycle.getName()
     }
 
-    /// 忌（应避免的活动）
-    /// Gets the list of inauspicious activities for this day
-    /// - Returns: List of Taboo instances marked as inauspicious
-    public func getAvoids() -> [Taboo] {
-        let monthSixtyCycle = getThreePillars().getMonth()
-        return TabooLookup.getDayAvoids(month: monthSixtyCycle, day: sixtyCycle)
+    /// Get next SixtyCycleDay
+    public func next(_ n: Int) -> SixtyCycleDay {
+        return SixtyCycleDay(solarDay: solarDay.next(n))
+    }
+
+    /// Create from SolarDay
+    public static func fromSolarDay(_ solarDay: SolarDay) -> SixtyCycleDay {
+        return SixtyCycleDay(solarDay: solarDay)
+    }
+
+    /// Create from year, month, day
+    public static func fromYmd(_ year: Int, _ month: Int, _ day: Int) throws -> SixtyCycleDay {
+        return try SixtyCycleDay(year: year, month: month, day: day)
     }
 
     private func findPrevailingTerm() -> SolarTerm {
-        var y = solarDay.getYear()
-        var i = solarDay.getMonth() * 2
+        var y = solarDay.year
+        var i = solarDay.month * 2
         if i == 24 {
             y += 1
             i = 0
         }
         var term = SolarTerm.fromIndex(y, i + 1)
-        var termDay = term.getSolarDay()
+        var termDay = term.solarDay
         while solarDay.isBefore(termDay) {
             term = term.next(-1)
-            termDay = term.getSolarDay()
+            termDay = term.solarDay
         }
         return term
     }
+
+    @available(*, deprecated, renamed: "solarDay")
+    public func getSolarDay() -> SolarDay { solarDay }
+
+    @available(*, deprecated, renamed: "sixtyCycle")
+    public func getSixtyCycle() -> SixtyCycle { sixtyCycle }
+
+    @available(*, deprecated, renamed: "heavenStem")
+    public func getHeavenStem() -> HeavenStem { heavenStem }
+
+    @available(*, deprecated, renamed: "earthBranch")
+    public func getEarthBranch() -> EarthBranch { earthBranch }
+
+    @available(*, deprecated, renamed: "naYin")
+    public func getNaYin() -> NaYin { naYin }
+
+    @available(*, deprecated, renamed: "duty")
+    public func getDuty() -> Duty { duty }
+
+    @available(*, deprecated, renamed: "twentyEightStar")
+    public func getTwentyEightStar() -> TwentyEightStar { twentyEightStar }
+
+    @available(*, deprecated, renamed: "threePillars")
+    public func getThreePillars() -> ThreePillars { threePillars }
+
+    @available(*, deprecated, renamed: "gods")
+    public func getGods() -> [God] { gods }
+
+    @available(*, deprecated, renamed: "recommends")
+    public func getRecommends() -> [Taboo] { recommends }
+
+    @available(*, deprecated, renamed: "avoids")
+    public func getAvoids() -> [Taboo] { avoids }
 }

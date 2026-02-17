@@ -2,13 +2,13 @@ import Foundation
 
 public final class HeavenStem: LoopTyme {
     public static let NAMES = ["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"]
-    
+
     // YinYang mapping for HeavenStem (阴阳)
     private static let YIN_YANG = ["阳","阴","阳","阴","阳","阴","阳","阴","阳","阴"]
-    
+
     // WuXing (五行) mapping for HeavenStem
     private static let WU_XING = ["木","木","火","火","土","土","金","金","水","水"]
-    
+
     // NaYin (纳音) - 60 sounds mapping
     private static let NA_YIN = [
         "海中金", "海中金", "炉中火", "炉中火", "大林木", "大林木",
@@ -53,28 +53,28 @@ public final class HeavenStem: LoopTyme {
     public override func next(_ n: Int) -> HeavenStem {
         HeavenStem.fromIndex(nextIndex(n))
     }
-    
-    // Properties
-    public func getYinYang() -> String {
-        HeavenStem.YIN_YANG[index]
-    }
-    
-    public func getWuXing() -> String {
-        HeavenStem.WU_XING[index]
-    }
-    
+
+    public var yinYang: String { HeavenStem.YIN_YANG[index] }
+    public var wuXing: String { HeavenStem.WU_XING[index] }
+
     public func getNaYin(_ branchIndex: Int = 0) -> String {
         let naYinIndex = (index + branchIndex) % 60
         return HeavenStem.NA_YIN[naYinIndex]
     }
-    
+
     public func getFlourish() -> String {
         let flourishStages = ["生", "生", "生", "生", "生", "生", "生", "生", "生", "生"]
         return flourishStages[index]
     }
-    
+
     public func getDecline() -> String {
         let declineStages = ["沐", "沐", "沐", "沐", "沐", "沐", "沐", "沐", "沐", "沐"]
         return declineStages[index]
     }
+
+    @available(*, deprecated, renamed: "yinYang")
+    public func getYinYang() -> String { yinYang }
+
+    @available(*, deprecated, renamed: "wuXing")
+    public func getWuXing() -> String { wuXing }
 }

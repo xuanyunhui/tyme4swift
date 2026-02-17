@@ -2,9 +2,9 @@ import Foundation
 
 /// 三柱（年柱、月柱、日柱）
 public final class ThreePillars: AbstractCulture {
-    private let year: SixtyCycle
-    private let month: SixtyCycle
-    private let day: SixtyCycle
+    public let year: SixtyCycle
+    public let month: SixtyCycle
+    public let day: SixtyCycle
 
     public init(year: SixtyCycle, month: SixtyCycle, day: SixtyCycle) {
         self.year = year
@@ -21,10 +21,6 @@ public final class ThreePillars: AbstractCulture {
         )
     }
 
-    public func getYear() -> SixtyCycle { year }
-    public func getMonth() -> SixtyCycle { month }
-    public func getDay() -> SixtyCycle { day }
-
     /// 公历日列表
     /// - Parameters:
     ///   - startYear: 开始年(含)，支持1-9999年
@@ -33,13 +29,13 @@ public final class ThreePillars: AbstractCulture {
     public func getSolarDays(startYear: Int, endYear: Int) -> [SolarDay] {
         var l: [SolarDay] = []
         // 月地支距寅月的偏移值
-        var m = month.getEarthBranch().next(-2).getIndex()
+        var m = month.earthBranch.next(-2).index
         // 月天干要一致
-        if HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + m).getName() != month.getHeavenStem().getName() {
+        if HeavenStem.fromIndex((year.heavenStem.index + 1) * 2 + m).getName() != month.heavenStem.getName() {
             return l
         }
         // 1年的立春是辛酉，序号57
-        var y = year.next(-57).getIndex() + 1
+        var y = year.next(-57).index + 1
         // 节令偏移值
         m *= 2
         let baseYear = startYear - 1
@@ -53,16 +49,16 @@ public final class ThreePillars: AbstractCulture {
             if m > 0 {
                 term = term.next(m)
             }
-            var solarDay = term.getSolarDay()
-            if solarDay.getYear() >= startYear {
+            var solarDay = term.solarDay
+            if solarDay.year >= startYear {
                 // 日干支和节令干支的偏移值
-                let d = day.next(-solarDay.getLunarDay().getSixtyCycle().getIndex()).getIndex()
+                let d = day.next(-solarDay.lunarDay.sixtyCycle.index).index
                 if d > 0 {
                     // 从节令推移天数
                     solarDay = solarDay.next(d)
                 }
                 // 验证一下
-                if solarDay.getSixtyCycleDay().getThreePillars().getName() == getName() {
+                if solarDay.sixtyCycleDay.threePillars.getName() == getName() {
                     l.append(solarDay)
                 }
             }
@@ -74,4 +70,13 @@ public final class ThreePillars: AbstractCulture {
     public override func getName() -> String {
         "\(year) \(month) \(day)"
     }
+
+    @available(*, deprecated, renamed: "year")
+    public func getYear() -> SixtyCycle { year }
+
+    @available(*, deprecated, renamed: "month")
+    public func getMonth() -> SixtyCycle { month }
+
+    @available(*, deprecated, renamed: "day")
+    public func getDay() -> SixtyCycle { day }
 }

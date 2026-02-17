@@ -3,32 +3,23 @@ import Foundation
 /// 年柱 (SixtyCycle Year)
 /// Represents a year in the SixtyCycle system
 public final class SixtyCycleYear: AbstractCulture {
-    private let year: Int
-    private let sixtyCycle: SixtyCycle
+    public let year: Int
+    public let sixtyCycle: SixtyCycle
 
     /// Initialize with year
     /// - Parameter year: The year
     public init(year: Int) {
         self.year = year
-        // Calculate SixtyCycle index for the year
-        // Year 4 is 甲子 (index 0)
         var index = (year - 4) % 60
         if index < 0 { index += 60 }
         self.sixtyCycle = SixtyCycle.fromIndex(index)
         super.init()
     }
 
-    /// Get year
-    /// - Returns: Year value
-    public func getYear() -> Int {
-        return year
-    }
-
-    /// Get SixtyCycle
-    /// - Returns: SixtyCycle instance
-    public func getSixtyCycle() -> SixtyCycle {
-        return sixtyCycle
-    }
+    public var heavenStem: HeavenStem { sixtyCycle.heavenStem }
+    public var earthBranch: EarthBranch { sixtyCycle.earthBranch }
+    public var naYin: NaYin { NaYin.fromSixtyCycle(sixtyCycle.index) }
+    public var zodiac: Zodiac { Zodiac.fromIndex(sixtyCycle.earthBranch.index) }
 
     /// Get name
     /// - Returns: SixtyCycle name
@@ -36,35 +27,11 @@ public final class SixtyCycleYear: AbstractCulture {
         return sixtyCycle.getName()
     }
 
-    /// Get HeavenStem
-    /// - Returns: HeavenStem instance
-    public func getHeavenStem() -> HeavenStem {
-        return sixtyCycle.getHeavenStem()
-    }
-
-    /// Get EarthBranch
-    /// - Returns: EarthBranch instance
-    public func getEarthBranch() -> EarthBranch {
-        return sixtyCycle.getEarthBranch()
-    }
-
-    /// Get NaYin
-    /// - Returns: NaYin instance
-    public func getNaYin() -> NaYin {
-        return NaYin.fromSixtyCycle(sixtyCycle.getIndex())
-    }
-
-    /// Get Zodiac
-    /// - Returns: Zodiac instance
-    public func getZodiac() -> Zodiac {
-        return Zodiac.fromIndex(sixtyCycle.getEarthBranch().getIndex())
-    }
-
     /// Get next SixtyCycleYear
     /// - Parameter n: Number of years to advance
     /// - Returns: Next SixtyCycleYear
     public func next(_ n: Int) -> SixtyCycleYear {
-        return try! SixtyCycleYear(year: year + n)
+        return SixtyCycleYear(year: year + n)
     }
 
     /// Create from year
@@ -73,4 +40,22 @@ public final class SixtyCycleYear: AbstractCulture {
     public static func fromYear(_ year: Int) -> SixtyCycleYear {
         return SixtyCycleYear(year: year)
     }
+
+    @available(*, deprecated, renamed: "year")
+    public func getYear() -> Int { year }
+
+    @available(*, deprecated, renamed: "sixtyCycle")
+    public func getSixtyCycle() -> SixtyCycle { sixtyCycle }
+
+    @available(*, deprecated, renamed: "heavenStem")
+    public func getHeavenStem() -> HeavenStem { heavenStem }
+
+    @available(*, deprecated, renamed: "earthBranch")
+    public func getEarthBranch() -> EarthBranch { earthBranch }
+
+    @available(*, deprecated, renamed: "naYin")
+    public func getNaYin() -> NaYin { naYin }
+
+    @available(*, deprecated, renamed: "zodiac")
+    public func getZodiac() -> Zodiac { zodiac }
 }
