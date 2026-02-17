@@ -231,4 +231,72 @@ import Testing
         #expect(EarthBranch.fromIndex(5).hideHeavenStemMain.getName() == "丙")  // 巳→丙(2)
         #expect(EarthBranch.fromIndex(6).hideHeavenStemMain.getName() == "丁")  // 午→丁(3)
     }
+
+    @Test func testHeavenStemJoyDirection() throws {
+        // 喜神方位歌：甲己在艮(7), 乙庚乾(5), 丙辛坤(1), 丁壬离(8), 戊癸巽(3)
+        #expect(HeavenStem.fromIndex(0).joyDirection.index == 7)  // 甲→艮(东北)
+        #expect(HeavenStem.fromIndex(1).joyDirection.index == 5)  // 乙→乾(西北)
+        #expect(HeavenStem.fromIndex(2).joyDirection.index == 1)  // 丙→坤(西南)
+        #expect(HeavenStem.fromIndex(3).joyDirection.index == 8)  // 丁→离(南)
+        #expect(HeavenStem.fromIndex(4).joyDirection.index == 3)  // 戊→巽(东南)
+        #expect(HeavenStem.fromIndex(5).joyDirection.index == 7)  // 己→艮(东北)
+    }
+
+    @Test func testHeavenStemYangYinDirection() throws {
+        // 阳贵神: [1,1,6,5,7,0,8,7,2,3]
+        #expect(HeavenStem.fromIndex(0).yangDirection.index == 1)  // 甲→坤(西南)
+        #expect(HeavenStem.fromIndex(2).yangDirection.index == 6)  // 丙→兑(西)
+        #expect(HeavenStem.fromIndex(6).yangDirection.index == 8)  // 庚→离(南)
+        // 阴贵神: [7,0,5,6,1,1,7,8,3,2]
+        #expect(HeavenStem.fromIndex(0).yinDirection.index == 7)   // 甲→艮(东北)
+        #expect(HeavenStem.fromIndex(2).yinDirection.index == 5)   // 丙→乾(西北)
+    }
+
+    @Test func testHeavenStemGetTenStar() throws {
+        // 甲(0) 与各天干的十神
+        let jia = HeavenStem.fromIndex(0) // 甲
+        // 甲与甲：同我者，比肩(index 0)
+        let jiajia = jia.getTenStar(HeavenStem.fromIndex(0))
+        #expect(jiajia.index == 0)
+        // 甲与乙：劫财(index 1)
+        #expect(jia.getTenStar(HeavenStem.fromIndex(1)).index == 1)
+    }
+
+    @Test func testHeavenStemGetTerrain() throws {
+        // 甲(0, 阳木) 的长生十二宫以亥(11)起长生
+        // 基数=[1,6,10,9,10,9,7,0,4,3][0]=1，阳加地支索引
+        // 亥(11): 1+11=12，Terrain.fromIndex(12) → index 0 (长生)
+        let jia = HeavenStem.fromIndex(0)
+        let hai = EarthBranch.fromIndex(11) // 亥
+        let terrain = jia.getTerrain(hai)
+        #expect(terrain.getName() == "长生")
+    }
+
+    @Test func testEarthBranchHarm() throws {
+        // 六害: 子未害(0,7), 丑午害(1,6), 寅巳害(2,5), 卯辰害(3,4), 申亥害(8,11), 酉戌害(9,10)
+        #expect(EarthBranch.fromIndex(0).harm.getName() == "未")   // 子→未
+        #expect(EarthBranch.fromIndex(7).harm.getName() == "子")   // 未→子
+        #expect(EarthBranch.fromIndex(1).harm.getName() == "午")   // 丑→午
+        #expect(EarthBranch.fromIndex(6).harm.getName() == "丑")   // 午→丑
+    }
+
+    @Test func testEarthBranchCombineElement() throws {
+        // 地支合化: 子丑→土(2), 寅亥→木(0), 卯戌→火(1), 辰酉→金(3), 巳申→水(4), 午未→土(2)
+        #expect(EarthBranch.fromIndex(0).combine(EarthBranch.fromIndex(1))?.getName() == "土")  // 子丑→土
+        #expect(EarthBranch.fromIndex(2).combine(EarthBranch.fromIndex(11))?.getName() == "木") // 寅亥→木
+        #expect(EarthBranch.fromIndex(3).combine(EarthBranch.fromIndex(10))?.getName() == "火") // 卯戌→火
+        #expect(EarthBranch.fromIndex(0).combine(EarthBranch.fromIndex(0)) == nil)  // 子子不合
+    }
+
+    @Test func testEarthBranchHideHeavenStemMiddleResidual() throws {
+        // 丑(1): 中气=癸(9), 余气=辛(7)
+        #expect(EarthBranch.fromIndex(1).hideHeavenStemMiddle?.getName() == "癸")
+        #expect(EarthBranch.fromIndex(1).hideHeavenStemResidual?.getName() == "辛")
+        // 寅(2): 中气=丙(2), 余气=戊(4)
+        #expect(EarthBranch.fromIndex(2).hideHeavenStemMiddle?.getName() == "丙")
+        #expect(EarthBranch.fromIndex(2).hideHeavenStemResidual?.getName() == "戊")
+        // 子(0): 无中气和余气
+        #expect(EarthBranch.fromIndex(0).hideHeavenStemMiddle == nil)
+        #expect(EarthBranch.fromIndex(0).hideHeavenStemResidual == nil)
+    }
 }
