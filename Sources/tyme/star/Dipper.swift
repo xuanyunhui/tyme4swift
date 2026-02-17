@@ -1,107 +1,30 @@
 import Foundation
 
-/// 北斗七星 (Big Dipper / Seven Stars of the Northern Dipper)
-/// 北斗七星是北半球天空中最显著的星座之一
-/// Stars: 天枢, 天璇, 天玑, 天权, 玉衡, 开阳, 摇光
+/// 北斗九星
 public final class Dipper: LoopTyme {
-    /// Star names (北斗七星名称)
-    public static let NAMES = ["天枢", "天璇", "天玑", "天权", "玉衡", "开阳", "摇光"]
+    public static let NAMES = ["天枢", "天璇", "天玑", "天权", "玉衡", "开阳", "摇光", "洞明", "隐元"]
 
-    /// Alternative names (别名)
-    public static let ALTERNATIVE_NAMES = ["贪狼", "巨门", "禄存", "文曲", "廉贞", "武曲", "破军"]
-
-    /// Western names (西方名称)
-    public static let WESTERN_NAMES = ["Dubhe", "Merak", "Phecda", "Megrez", "Alioth", "Mizar", "Alkaid"]
-
-    /// Position descriptions (位置描述)
-    /// 斗魁: 天枢、天璇、天玑、天权 (勺部)
-    /// 斗柄: 玉衡、开阳、摇光 (柄部)
-    private static let POSITIONS = ["斗魁", "斗魁", "斗魁", "斗魁", "斗柄", "斗柄", "斗柄"]
-
-    /// Brightness ranking (亮度排名, 1=最亮)
-    private static let BRIGHTNESS_RANK = [4, 5, 6, 7, 1, 2, 3]
-
-    /// Initialize with index
-    /// - Parameter index: Star index (0-6)
     public convenience init(index: Int) {
         self.init(names: Dipper.NAMES, index: index)
     }
 
-    /// Initialize with name
-    /// - Parameter name: Star name (e.g., "天枢", "天璇", etc.)
     public convenience init(name: String) throws {
         try self.init(names: Dipper.NAMES, name: name)
     }
 
-    /// Required initializer from LoopTyme
     public required init(names: [String], index: Int) {
         super.init(names: names, index: index)
     }
 
-    /// Get Dipper star from index
-    /// - Parameter index: Star index (0-6)
-    /// - Returns: Dipper instance
     public static func fromIndex(_ index: Int) -> Dipper {
-        return Dipper(index: index)
+        Dipper(index: index)
     }
 
-    /// Get Dipper star from name
-    /// - Parameter name: Star name (e.g., "天枢", "天璇", etc.)
-    /// - Returns: Dipper instance
     public static func fromName(_ name: String) throws -> Dipper {
-        return try Dipper(name: name)
+        try Dipper(name: name)
     }
 
-    /// Get Dipper star from alternative name
-    /// - Parameter alternativeName: Alternative name (e.g., "贪狼", "巨门", etc.)
-    /// - Returns: Dipper instance
-    public static func fromAlternativeName(_ alternativeName: String) throws -> Dipper {
-        guard let idx = Dipper.ALTERNATIVE_NAMES.firstIndex(of: alternativeName) else {
-            throw TymeError.invalidName(alternativeName)
-        }
-        return Dipper(index: idx)
-    }
-
-    /// Get next star
-    /// - Parameter n: Number of steps to advance
-    /// - Returns: Next Dipper instance
     public override func next(_ n: Int) -> Dipper {
-        return Dipper.fromIndex(nextIndex(n))
+        Dipper.fromIndex(nextIndex(n))
     }
-
-    /// Get steps to target index
-    /// - Parameter targetIndex: Target index
-    /// - Returns: Number of steps
-    public func stepsTo(_ targetIndex: Int) -> Int {
-        let c = Dipper.NAMES.count
-        var i = (targetIndex - index) % c
-        if i < 0 { i += c }
-        return i
-    }
-
-    // MARK: - Properties
-
-    public var alternativeName: String { Dipper.ALTERNATIVE_NAMES[index] }
-    public var westernName: String { Dipper.WESTERN_NAMES[index] }
-    public var position: String { Dipper.POSITIONS[index] }
-    public var brightnessRank: Int { Dipper.BRIGHTNESS_RANK[index] }
-    public var number: Int { index + 1 }
-
-    public var isBowl: Bool { Dipper.POSITIONS[index] == "斗魁" }
-    public var isHandle: Bool { Dipper.POSITIONS[index] == "斗柄" }
-
-    @available(*, deprecated, renamed: "alternativeName")
-    public func getAlternativeName() -> String { alternativeName }
-
-    @available(*, deprecated, renamed: "westernName")
-    public func getWesternName() -> String { westernName }
-
-    @available(*, deprecated, renamed: "position")
-    public func getPosition() -> String { position }
-
-    @available(*, deprecated, renamed: "brightnessRank")
-    public func getBrightnessRank() -> Int { brightnessRank }
-
-    @available(*, deprecated, renamed: "number")
-    public func getNumber() -> Int { number }
 }

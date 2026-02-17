@@ -83,16 +83,6 @@ public final class NineStar: LoopTyme {
         return NineStar.fromIndex(nextIndex(n))
     }
 
-    /// Get steps to target index
-    /// - Parameter targetIndex: Target index
-    /// - Returns: Number of steps
-    public func stepsTo(_ targetIndex: Int) -> Int {
-        let c = NineStar.NAMES.count
-        var i = (targetIndex - index) % c
-        if i < 0 { i += c }
-        return i
-    }
-
     // MARK: - Properties
 
     public var fullName: String { NineStar.FULL_NAMES[index] }

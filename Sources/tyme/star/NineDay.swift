@@ -61,16 +61,6 @@ public final class NineDay: LoopTyme {
         return NineDay.fromIndex(nextIndex(n))
     }
 
-    /// Get steps to target index
-    /// - Parameter targetIndex: Target index
-    /// - Returns: Number of steps
-    public func stepsTo(_ targetIndex: Int) -> Int {
-        let c = NineDay.NAMES.count
-        var i = (targetIndex - index) % c
-        if i < 0 { i += c }
-        return i
-    }
-
     // MARK: - Properties
 
     public var number: Int { NineDay.NUMBERS[index] }

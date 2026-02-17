@@ -67,13 +67,6 @@ public final class EarthBranch: LoopTyme {
         try EarthBranch(name: name)
     }
 
-    public func stepsTo(_ targetIndex: Int) -> Int {
-        let c = EarthBranch.NAMES.count
-        var i = (targetIndex - index) % c
-        if i < 0 { i += c }
-        return i
-    }
-
     public override func next(_ n: Int) -> EarthBranch {
         EarthBranch.fromIndex(nextIndex(n))
     }
