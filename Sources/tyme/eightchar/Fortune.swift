@@ -1,46 +1,48 @@
 import Foundation
 
-/// 大运 (Fortune) - 10-year fortune periods
-/// 管理人生中的大运周期
-public final class Fortune {
+/// 小运
+public final class Fortune: AbstractTyme {
+    public let childLimit: ChildLimit
     public let index: Int
-    public let stem: HeavenStem
-    public let branch: EarthBranch
-    public let startAge: Int
-    public let endAge: Int
 
-    /// 初始化大运
-    /// - Parameters:
-    ///   - index: 大运序号 (0-9)
-    ///   - stem: 天干
-    ///   - branch: 地支
-    ///   - startAge: 开始年龄
-    public init(index: Int, stem: HeavenStem, branch: EarthBranch, startAge: Int) {
+    public init(childLimit: ChildLimit, index: Int) {
+        self.childLimit = childLimit
         self.index = index
-        self.stem = stem
-        self.branch = branch
-        self.startAge = startAge
-        self.endAge = startAge + 9
+        super.init()
     }
 
-    public func getStemName() -> String {
-        stem.getName()
+    public static func fromChildLimit(_ childLimit: ChildLimit, _ index: Int) -> Fortune {
+        Fortune(childLimit: childLimit, index: index)
     }
 
-    public func getBranchName() -> String {
-        branch.getName()
+    /// 年龄
+    public var age: Int {
+        childLimit.endSixtyCycleYear.year - childLimit.startSixtyCycleYear.year + 1 + index
     }
 
-    public func getFortuneString() -> String {
-        return "\(getStemName())\(getBranchName())"
+    /// 干支年
+    public var sixtyCycleYear: SixtyCycleYear {
+        childLimit.endSixtyCycleYear.next(index)
     }
 
-    public func getYearRange() -> String {
-        return "\(startAge)-\(endAge)"
+    /// 干支
+    public var sixtyCycle: SixtyCycle {
+        let n = age
+        return childLimit.eightChar.hour.next(childLimit.forward ? n : -n)
     }
 
-    /// Check if a given age falls within this fortune period
-    public func containsAge(_ age: Int) -> Bool {
-        return age >= startAge && age <= endAge
+    public override func getName() -> String { sixtyCycle.getName() }
+
+    public override func next(_ n: Int) -> Self {
+        Fortune.fromChildLimit(childLimit, index + n) as! Self
     }
+
+    @available(*, deprecated, renamed: "age")
+    public func getAge() -> Int { age }
+
+    @available(*, deprecated, renamed: "sixtyCycle")
+    public func getSixtyCycle() -> SixtyCycle { sixtyCycle }
+
+    @available(*, deprecated, renamed: "sixtyCycleYear")
+    public func getSixtyCycleYear() -> SixtyCycleYear { sixtyCycleYear }
 }

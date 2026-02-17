@@ -35,6 +35,18 @@ public final class LunarHour: SecondUnit, Tyme {
         return try! SolarTime.fromYmdHms(d.year, d.month, d.day, hour, minute, second)
     }
 
+    /// 八字
+    public var eightChar: EightChar {
+        let st = solarTime
+        let provider = DefaultEightCharProvider()
+        return EightChar(
+            year: provider.getYearSixtyCycle(year: st.year, month: st.month, day: st.day),
+            month: provider.getMonthSixtyCycle(year: st.year, month: st.month, day: st.day),
+            day: provider.getDaySixtyCycle(year: st.year, month: st.month, day: st.day),
+            hour: provider.getHourSixtyCycle(year: st.year, month: st.month, day: st.day, hour: st.hour)
+        )
+    }
+
     public func next(_ n: Int) -> LunarHour {
         if n == 0 { return try! LunarHour.fromYmdHms(year, month, day, hour, minute, second) }
         let h = hour + n * 2

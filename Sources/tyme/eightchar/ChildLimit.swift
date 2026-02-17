@@ -5,16 +5,17 @@ public final class ChildLimit {
     /// 童限计算接口
     public nonisolated(unsafe) static var provider: ChildLimitProvider = DefaultChildLimitProvider()
 
+    public let eightChar: EightChar
     public let gender: Gender
     public let forward: Bool
     public let info: ChildLimitInfo
 
     public init(birthTime: SolarTime, gender: Gender) {
         self.gender = gender
+        // 通过 LunarHour 获取八字
+        self.eightChar = birthTime.lunarHour.eightChar
         // 阳男阴女顺推，阴男阳女逆推
-        let eightCharProvider = DefaultEightCharProvider()
-        let yearSixtyCycle = eightCharProvider.getYearSixtyCycle(year: birthTime.year, month: birthTime.month, day: birthTime.day)
-        let yang = yearSixtyCycle.heavenStem.index % 2 == 0
+        let yang = eightChar.year.heavenStem.index % 2 == 0
         let man = gender.isMale
         self.forward = (yang && man) || (!yang && !man)
 
@@ -40,6 +41,40 @@ public final class ChildLimit {
     public var startTime: SolarTime { info.startTime }
     public var endTime: SolarTime { info.endTime }
 
+    /// 起运大运（第0个）
+    public var startDecadeFortune: DecadeFortune {
+        DecadeFortune.fromChildLimit(self, 0)
+    }
+
+    /// 上一个大运（index = -1）
+    public var decadeFortune: DecadeFortune {
+        DecadeFortune.fromChildLimit(self, -1)
+    }
+
+    /// 起运小运（第0个）
+    public var startFortune: Fortune {
+        Fortune.fromChildLimit(self, 0)
+    }
+
+    /// 开始干支年
+    public var startSixtyCycleYear: SixtyCycleYear {
+        SixtyCycleYear.fromYear(startTime.year)
+    }
+
+    /// 结束干支年
+    public var endSixtyCycleYear: SixtyCycleYear {
+        SixtyCycleYear.fromYear(endTime.year)
+    }
+
+    /// 开始年龄
+    public var startAge: Int { 1 }
+
+    /// 结束年龄
+    public var endAge: Int {
+        let n = endSixtyCycleYear.year - startSixtyCycleYear.year
+        return max(n, 1)
+    }
+
     @available(*, deprecated, renamed: "gender")
     public func getGender() -> Gender { gender }
     @available(*, deprecated, renamed: "forward")
@@ -60,4 +95,18 @@ public final class ChildLimit {
     public func getEndTime() -> SolarTime { endTime }
     @available(*, deprecated, renamed: "info")
     public func getInfo() -> ChildLimitInfo { info }
+    @available(*, deprecated, renamed: "eightChar")
+    public func getEightChar() -> EightChar { eightChar }
+    @available(*, deprecated, renamed: "startDecadeFortune")
+    public func getStartDecadeFortune() -> DecadeFortune { startDecadeFortune }
+    @available(*, deprecated, renamed: "startFortune")
+    public func getStartFortune() -> Fortune { startFortune }
+    @available(*, deprecated, renamed: "startSixtyCycleYear")
+    public func getStartSixtyCycleYear() -> SixtyCycleYear { startSixtyCycleYear }
+    @available(*, deprecated, renamed: "endSixtyCycleYear")
+    public func getEndSixtyCycleYear() -> SixtyCycleYear { endSixtyCycleYear }
+    @available(*, deprecated, renamed: "startAge")
+    public func getStartAge() -> Int { startAge }
+    @available(*, deprecated, renamed: "endAge")
+    public func getEndAge() -> Int { endAge }
 }

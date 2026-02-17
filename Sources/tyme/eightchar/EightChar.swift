@@ -1,152 +1,188 @@
 import Foundation
 
 /// 八字 (EightChar) - Birth Destiny System
-/// 由年月日时的天干地支组成的八个字符
-public final class EightChar {
-    public let yearStem: HeavenStem
-    public let yearBranch: EarthBranch
-    public let monthStem: HeavenStem
-    public let monthBranch: EarthBranch
-    public let dayStem: HeavenStem
-    public let dayBranch: EarthBranch
-    public let hourStem: HeavenStem
-    public let hourBranch: EarthBranch
+/// 由年月日时四柱的干支组成，每柱一个 SixtyCycle
+public final class EightChar: AbstractCulture {
+    private let yearPillar: SixtyCycle
+    private let monthPillar: SixtyCycle
+    private let dayPillar: SixtyCycle
+    private let hourPillar: SixtyCycle
 
-    public let solarYear: Int
-    public let solarMonth: Int
-    public let solarDay: Int
-    public let solarHour: Int
-
-    /// 初始化八字
-    /// - Parameters:
-    ///   - year: 公历年份
-    ///   - month: 公历月份 (1-12)
-    ///   - day: 公历日期 (1-31)
-    ///   - hour: 小时 (0-23)
-    public init(year: Int, month: Int, day: Int, hour: Int) {
-        self.solarYear = year
-        self.solarMonth = month
-        self.solarDay = day
-        self.solarHour = hour
-
-        // Calculate lunar date from solar date
-        let lunarYear = Self.getLunarYear(solarYear: year, solarMonth: month, solarDay: day)
-        let lunarMonth = Self.getLunarMonth(solarYear: year, solarMonth: month, solarDay: day)
-
-        // Year stem and branch (based on lunar year)
-        self.yearStem = HeavenStem.fromIndex((lunarYear + 6) % 10)
-        self.yearBranch = EarthBranch.fromIndex((lunarYear + 8) % 12)
-
-        // Month stem and branch (based on solar month and lunar adjustment)
-        let monthIndex = month - 1
-        self.monthStem = HeavenStem.fromIndex((lunarYear * 12 + monthIndex + 6) % 10)
-        self.monthBranch = EarthBranch.fromIndex((lunarMonth - 1 + 2) % 12)
-
-        // Day stem and branch (based on day calculations)
-        self.dayStem = HeavenStem.fromIndex((day + 4) % 10)
-        self.dayBranch = EarthBranch.fromIndex((day + 4) % 12)
-
-        // Hour stem and branch (based on day stem and hour)
-        let hourIndex = (hour + 1) / 2
-        self.hourStem = HeavenStem.fromIndex((yearStem.index * 2 + hourIndex) % 10)
-        self.hourBranch = EarthBranch.fromIndex(hourIndex % 12)
+    /// 通过四柱干支初始化
+    public init(year: SixtyCycle, month: SixtyCycle, day: SixtyCycle, hour: SixtyCycle) {
+        self.yearPillar = year
+        self.monthPillar = month
+        self.dayPillar = day
+        self.hourPillar = hour
+        super.init()
     }
 
-    // MARK: - Properties
-
-    public var yearZodiac: Zodiac { yearBranch.zodiac }
-
-    @available(*, deprecated, renamed: "yearZodiac")
-    public func getYearZodiac() -> String { yearZodiac.getName() }
-
-    @available(*, deprecated, renamed: "solarYear")
-    public func getSolarYear() -> Int { solarYear }
-
-    @available(*, deprecated, renamed: "solarMonth")
-    public func getSolarMonth() -> Int { solarMonth }
-
-    @available(*, deprecated, renamed: "solarDay")
-    public func getSolarDay() -> Int { solarDay }
-
-    @available(*, deprecated, renamed: "solarHour")
-    public func getSolarHour() -> Int { solarHour }
-
-    public func getYearStemName() -> String {
-        yearStem.getName()
+    /// 通过四柱名称初始化
+    public convenience init(year: String, month: String, day: String, hour: String) throws {
+        self.init(
+            year: try SixtyCycle.fromName(year),
+            month: try SixtyCycle.fromName(month),
+            day: try SixtyCycle.fromName(day),
+            hour: try SixtyCycle.fromName(hour)
+        )
     }
 
-    public func getYearBranchName() -> String {
-        yearBranch.getName()
+    // MARK: - 四柱 Pillars
+
+    /// 年柱
+    public var year: SixtyCycle { yearPillar }
+
+    /// 月柱
+    public var month: SixtyCycle { monthPillar }
+
+    /// 日柱
+    public var day: SixtyCycle { dayPillar }
+
+    /// 时柱
+    public var hour: SixtyCycle { hourPillar }
+
+    // MARK: - 派生计算
+
+    /// 胎元 — 月柱天干 next(1), 月柱地支 next(3)
+    public var fetalOrigin: SixtyCycle {
+        let m = month
+        return try! SixtyCycle.fromName(
+            m.heavenStem.next(1).getName() +
+            m.earthBranch.next(3).getName()
+        )
     }
 
-    public func getMonthStemName() -> String {
-        monthStem.getName()
+    /// 胎息 — 日柱天干 next(5), 地支 = 13 - 日柱地支 index
+    public var fetalBreath: SixtyCycle {
+        let d = day
+        return try! SixtyCycle.fromName(
+            d.heavenStem.next(5).getName() +
+            EarthBranch.fromIndex(13 - d.earthBranch.index).getName()
+        )
     }
 
-    public func getMonthBranchName() -> String {
-        monthBranch.getName()
+    /// 命宫
+    public var ownSign: SixtyCycle {
+        var m = month.earthBranch.index - 1
+        if m < 1 { m += 12 }
+        var h = hour.earthBranch.index - 1
+        if h < 1 { h += 12 }
+        let sum = m + h
+        let offset = (sum >= 14 ? 26 : 14) - sum
+        return try! SixtyCycle.fromName(
+            HeavenStem.fromIndex((year.heavenStem.index + 1) * 2 + offset - 1).getName() +
+            EarthBranch.fromIndex(offset + 1).getName()
+        )
     }
 
-    public func getDayStemName() -> String {
-        dayStem.getName()
+    /// 身宫
+    public var bodySign: SixtyCycle {
+        var offset = month.earthBranch.index - 1
+        if offset < 1 { offset += 12 }
+        offset += hour.earthBranch.index + 1
+        if offset > 12 { offset -= 12 }
+        return try! SixtyCycle.fromName(
+            HeavenStem.fromIndex((year.heavenStem.index + 1) * 2 + offset - 1).getName() +
+            EarthBranch.fromIndex(offset + 1).getName()
+        )
     }
 
-    public func getDayBranchName() -> String {
-        dayBranch.getName()
-    }
-
-    public func getHourStemName() -> String {
-        hourStem.getName()
-    }
-
-    public func getHourBranchName() -> String {
-        hourBranch.getName()
-    }
-
-    /// Get complete eight character string
-    public func getEightCharString() -> String {
-        return "\(getYearStemName())\(getYearBranchName())" +
-               "\(getMonthStemName())\(getMonthBranchName())" +
-               "\(getDayStemName())\(getDayBranchName())" +
-               "\(getHourStemName())\(getHourBranchName())"
-    }
-
-    // MARK: - Helper Methods
-
-    private static func getLunarYear(solarYear: Int, solarMonth: Int, solarDay: Int) -> Int {
-        // Simplified: lunar year is same as solar year for most dates
-        if solarMonth == 1 && solarDay < 21 {
-            return solarYear - 1
+    /// 反查公历时刻：给定年份范围，找出所有匹配此八字的 SolarTime
+    public func getSolarTimes(startYear: Int, endYear: Int) -> [SolarTime] {
+        var result: [SolarTime] = []
+        // 月地支距寅月的偏移值
+        let m = month.earthBranch.next(-2).index
+        // 月天干要一致
+        if HeavenStem.fromIndex((year.heavenStem.index + 1) * 2 + m) != month.heavenStem {
+            return result
         }
-        return solarYear
+        // 1年的立春是辛酉，序号57
+        var y = year.next(-57).index + 1
+        // 节令偏移值
+        let termOffset = m * 2
+        // 时辰地支转时刻
+        let h = hour.earthBranch.index * 2
+        let hours = h == 0 ? [0, 23] : [h]
+        let baseYear = startYear - 1
+        if baseYear > y {
+            y += 60 * Int(ceil(Double(baseYear - y) / 60.0))
+        }
+        while y <= endYear {
+            // 立春为寅月的开始
+            var term = SolarTerm.fromIndex(y, 3)
+            // 节令推移
+            if termOffset > 0 {
+                term = term.next(termOffset)
+            }
+            let solarTime = term.julianDay.solarTime
+            if solarTime.year >= startYear {
+                // 日干支和节令干支的偏移值
+                let solarDay = solarTime.solarDay
+                let d = day.next(-solarDay.lunarDay.sixtyCycle.index).index
+                var targetDay = solarDay
+                if d > 0 {
+                    targetDay = solarDay.next(d)
+                }
+                for hr in hours {
+                    var mi = 0
+                    var s = 0
+                    if d == 0 && hr == solarTime.hour {
+                        mi = solarTime.minute
+                        s = solarTime.second
+                    }
+                    var time = try! SolarTime.fromYmdHms(targetDay.year, targetDay.month, targetDay.day, hr, mi, s)
+                    if d == 30 {
+                        time = time.next(-3600)
+                    }
+                    // 验证
+                    if time.lunarHour.eightChar == self {
+                        result.append(time)
+                    }
+                }
+            }
+            y += 60
+        }
+        return result
     }
 
-    private static func getLunarMonth(solarYear: Int, solarMonth: Int, solarDay: Int) -> Int {
-        // Simplified: direct mapping for demonstration
-        return solarMonth
+    // MARK: - Culture
+
+    public override func getName() -> String {
+        "\(year.getName()) \(month.getName()) \(day.getName()) \(hour.getName())"
     }
 }
 
+// MARK: - Equatable
+
+extension EightChar: Equatable {
+    public static func == (lhs: EightChar, rhs: EightChar) -> Bool {
+        lhs.year == rhs.year && lhs.month == rhs.month &&
+        lhs.day == rhs.day && lhs.hour == rhs.hour
+    }
+}
+
+// MARK: - Codable
+
 extension EightChar: Codable {
     private enum CodingKeys: String, CodingKey {
-        case solarYear, solarMonth, solarDay, solarHour
+        case year, month, day, hour
     }
 
     public convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
-            year: try container.decode(Int.self, forKey: .solarYear),
-            month: try container.decode(Int.self, forKey: .solarMonth),
-            day: try container.decode(Int.self, forKey: .solarDay),
-            hour: try container.decode(Int.self, forKey: .solarHour)
+            year: SixtyCycle(index: try container.decode(Int.self, forKey: .year)),
+            month: SixtyCycle(index: try container.decode(Int.self, forKey: .month)),
+            day: SixtyCycle(index: try container.decode(Int.self, forKey: .day)),
+            hour: SixtyCycle(index: try container.decode(Int.self, forKey: .hour))
         )
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(solarYear, forKey: .solarYear)
-        try container.encode(solarMonth, forKey: .solarMonth)
-        try container.encode(solarDay, forKey: .solarDay)
-        try container.encode(solarHour, forKey: .solarHour)
+        try container.encode(year.index, forKey: .year)
+        try container.encode(month.index, forKey: .month)
+        try container.encode(day.index, forKey: .day)
+        try container.encode(hour.index, forKey: .hour)
     }
 }

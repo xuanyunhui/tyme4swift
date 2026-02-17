@@ -1,44 +1,69 @@
 import Foundation
 
-/// 旬空 (DecadeFortune) - Decade fortune / Void period details
-/// 管理旬空周期和相关属性
-public final class DecadeFortune {
-    public let stem: HeavenStem
-    public let branch: EarthBranch
-    public let voidStart: Int
-    public let voidEnd: Int
+/// 大运（10年1大运）
+public final class DecadeFortune: AbstractTyme {
+    public let childLimit: ChildLimit
+    public let index: Int
 
-    /// 初始化旬空
-    /// - Parameters:
-    ///   - stem: 天干
-    ///   - branch: 地支
-    ///   - voidStart: 旬空开始位置
-    ///   - voidEnd: 旬空结束位置
-    public init(stem: HeavenStem, branch: EarthBranch, voidStart: Int = 0, voidEnd: Int = 0) {
-        self.stem = stem
-        self.branch = branch
-        self.voidStart = voidStart
-        self.voidEnd = voidEnd
+    public init(childLimit: ChildLimit, index: Int) {
+        self.childLimit = childLimit
+        self.index = index
+        super.init()
     }
 
-    public func getStemName() -> String {
-        stem.getName()
+    public static func fromChildLimit(_ childLimit: ChildLimit, _ index: Int) -> DecadeFortune {
+        DecadeFortune(childLimit: childLimit, index: index)
     }
 
-    public func getBranchName() -> String {
-        branch.getName()
+    /// 开始年龄
+    public var startAge: Int {
+        childLimit.endSixtyCycleYear.year - childLimit.startSixtyCycleYear.year + 1 + index * 10
     }
 
-    public func getDecadeString() -> String {
-        return "\(getStemName())\(getBranchName())"
+    /// 结束年龄
+    public var endAge: Int { startAge + 9 }
+
+    /// 开始干支年
+    public var startSixtyCycleYear: SixtyCycleYear {
+        childLimit.endSixtyCycleYear.next(index * 10)
     }
 
-    public func getVoidRange() -> String {
-        return "\(voidStart)-\(voidEnd)"
+    /// 结束干支年
+    public var endSixtyCycleYear: SixtyCycleYear {
+        startSixtyCycleYear.next(9)
     }
 
-    /// Check if a position is within void period
-    public func isVoid(_ position: Int) -> Bool {
-        return position >= voidStart && position <= voidEnd
+    /// 干支
+    public var sixtyCycle: SixtyCycle {
+        childLimit.eightChar.month.next(childLimit.forward ? index + 1 : -index - 1)
     }
+
+    public override func getName() -> String { sixtyCycle.getName() }
+
+    public override func next(_ n: Int) -> Self {
+        DecadeFortune.fromChildLimit(childLimit, index + n) as! Self
+    }
+
+    /// 开始小运
+    public var startFortune: Fortune {
+        Fortune.fromChildLimit(childLimit, index * 10)
+    }
+
+    @available(*, deprecated, renamed: "startAge")
+    public func getStartAge() -> Int { startAge }
+
+    @available(*, deprecated, renamed: "endAge")
+    public func getEndAge() -> Int { endAge }
+
+    @available(*, deprecated, renamed: "sixtyCycle")
+    public func getSixtyCycle() -> SixtyCycle { sixtyCycle }
+
+    @available(*, deprecated, renamed: "startSixtyCycleYear")
+    public func getStartSixtyCycleYear() -> SixtyCycleYear { startSixtyCycleYear }
+
+    @available(*, deprecated, renamed: "endSixtyCycleYear")
+    public func getEndSixtyCycleYear() -> SixtyCycleYear { endSixtyCycleYear }
+
+    @available(*, deprecated, renamed: "startFortune")
+    public func getStartFortune() -> Fortune { startFortune }
 }
