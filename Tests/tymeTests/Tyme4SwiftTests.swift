@@ -1922,5 +1922,30 @@ final class Tyme4SwiftTests: XCTestCase {
             XCTAssertFalse(taboo.getName().isEmpty, "Taboo name should not be empty")
         }
     }
+
+    /// Regression test for Issue #42: God/Taboo lookup data integrity
+    func testGodTabooDataIntegrity() throws {
+        // Test specific date from Issue #42
+        let day = SixtyCycleDay(year: 2024, month: 12, day: 1)
+        let gods = day.getGods()
+        XCTAssertTrue(gods.count > 0, "Gods list should not be empty for 2024-12-01")
+        let recommends = day.getRecommends()
+        XCTAssertNotNil(recommends, "Recommends should not be nil for 2024-12-01")
+        let avoids = day.getAvoids()
+        XCTAssertNotNil(avoids, "Avoids should not be nil for 2024-12-01")
+    }
+
+    /// Stress test: all dates in 2024 should not crash
+    func testGodTabooFullYear2024() throws {
+        let daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        for m in 1...12 {
+            for d in 1...daysInMonth[m - 1] {
+                let day = SixtyCycleDay(year: 2024, month: m, day: d)
+                let _ = day.getGods()
+                let _ = day.getRecommends()
+                let _ = day.getAvoids()
+            }
+        }
+    }
 }
 
