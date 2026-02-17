@@ -97,6 +97,8 @@ public final class ChildLimit {
     public func getInfo() -> ChildLimitInfo { info }
     @available(*, deprecated, renamed: "eightChar")
     public func getEightChar() -> EightChar { eightChar }
+    @available(*, deprecated, renamed: "decadeFortune")
+    public func getDecadeFortune() -> DecadeFortune { decadeFortune }
     @available(*, deprecated, renamed: "startDecadeFortune")
     public func getStartDecadeFortune() -> DecadeFortune { startDecadeFortune }
     @available(*, deprecated, renamed: "startFortune")
