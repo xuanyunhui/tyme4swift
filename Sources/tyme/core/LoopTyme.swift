@@ -37,3 +37,20 @@ open class LoopTyme: AbstractTyme {
         Self.init(names: names, index: index + n)
     }
 }
+
+// MARK: - Equatable
+
+extension LoopTyme: Equatable {
+    public static func == (lhs: LoopTyme, rhs: LoopTyme) -> Bool {
+        return type(of: lhs) == type(of: rhs) && lhs.index == rhs.index
+    }
+}
+
+// MARK: - Hashable
+
+extension LoopTyme: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(type(of: self)))
+        hasher.combine(index)
+    }
+}
