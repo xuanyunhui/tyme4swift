@@ -111,11 +111,13 @@ public final class NineStar: LoopTyme {
     public var luck: String { NineStar.LUCK[index] }
     public var number: Int { index + 1 }
 
-    /// Check if this is an auspicious star
-    public func isAuspicious() -> Bool { NineStar.LUCK[index] == "吉" }
+    public var auspicious: Bool { NineStar.LUCK[index] == "吉" }
+    public var inauspicious: Bool { NineStar.LUCK[index] == "凶" }
 
-    /// Check if this is an inauspicious star
-    public func isInauspicious() -> Bool { NineStar.LUCK[index] == "凶" }
+    @available(*, deprecated, renamed: "auspicious")
+    public func isAuspicious() -> Bool { auspicious }
+    @available(*, deprecated, renamed: "inauspicious")
+    public func isInauspicious() -> Bool { inauspicious }
 
     @available(*, deprecated, renamed: "fullName")
     public func getFullName() -> String { fullName }

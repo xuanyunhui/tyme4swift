@@ -87,11 +87,8 @@ public final class Dipper: LoopTyme {
     public var brightnessRank: Int { Dipper.BRIGHTNESS_RANK[index] }
     public var number: Int { index + 1 }
 
-    /// Check if this star is part of the bowl (斗魁)
-    public func isBowl() -> Bool { Dipper.POSITIONS[index] == "斗魁" }
-
-    /// Check if this star is part of the handle (斗柄)
-    public func isHandle() -> Bool { Dipper.POSITIONS[index] == "斗柄" }
+    public var isBowl: Bool { Dipper.POSITIONS[index] == "斗魁" }
+    public var isHandle: Bool { Dipper.POSITIONS[index] == "斗柄" }
 
     @available(*, deprecated, renamed: "alternativeName")
     public func getAlternativeName() -> String { alternativeName }

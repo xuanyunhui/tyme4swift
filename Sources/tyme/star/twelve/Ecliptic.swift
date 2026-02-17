@@ -46,11 +46,13 @@ public final class Ecliptic: LoopTyme {
 
     public var luck: Luck { Luck.fromIndex(index) }
 
-    /// Check if auspicious (黄道)
-    public func isAuspicious() -> Bool { index == 0 }
+    public var auspicious: Bool { index == 0 }
+    public var inauspicious: Bool { index == 1 }
 
-    /// Check if inauspicious (黑道)
-    public func isInauspicious() -> Bool { index == 1 }
+    @available(*, deprecated, renamed: "auspicious")
+    public func isAuspicious() -> Bool { auspicious }
+    @available(*, deprecated, renamed: "inauspicious")
+    public func isInauspicious() -> Bool { inauspicious }
 
     @available(*, deprecated, renamed: "luck")
     public func getLuck() -> Luck { luck }
