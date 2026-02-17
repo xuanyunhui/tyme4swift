@@ -64,13 +64,6 @@ public final class HeavenStem: LoopTyme {
         try HeavenStem(name: name)
     }
 
-    public func stepsTo(_ targetIndex: Int) -> Int {
-        let c = HeavenStem.NAMES.count
-        var i = (targetIndex - index) % c
-        if i < 0 { i += c }
-        return i
-    }
-
     public override func next(_ n: Int) -> HeavenStem {
         HeavenStem.fromIndex(nextIndex(n))
     }

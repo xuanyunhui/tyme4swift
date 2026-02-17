@@ -23,6 +23,17 @@ open class LoopTyme: AbstractTyme {
     @available(*, deprecated, renamed: "index")
     public func getIndex() -> Int { index }
 
+    /// 循环长度
+    public var size: Int { names.count }
+
+    /// 到目标索引的步数
+    public func stepsTo(_ targetIndex: Int) -> Int {
+        let c = names.count
+        var i = (targetIndex - index) % c
+        if i < 0 { i += c }
+        return i
+    }
+
     public func nextIndex(_ n: Int) -> Int {
         let c = names.count
         var i = (index + n) % c
