@@ -51,11 +51,13 @@ public final class TwelveStar: LoopTyme {
 
     public var ecliptic: Ecliptic { Ecliptic.fromIndex(TwelveStar.ECLIPTIC_INDICES[index]) }
 
-    /// Check if auspicious (黄道)
-    public func isAuspicious() -> Bool { TwelveStar.ECLIPTIC_INDICES[index] == 0 }
+    public var auspicious: Bool { TwelveStar.ECLIPTIC_INDICES[index] == 0 }
+    public var inauspicious: Bool { TwelveStar.ECLIPTIC_INDICES[index] == 1 }
 
-    /// Check if inauspicious (黑道)
-    public func isInauspicious() -> Bool { TwelveStar.ECLIPTIC_INDICES[index] == 1 }
+    @available(*, deprecated, renamed: "auspicious")
+    public func isAuspicious() -> Bool { auspicious }
+    @available(*, deprecated, renamed: "inauspicious")
+    public func isInauspicious() -> Bool { inauspicious }
 
     @available(*, deprecated, renamed: "ecliptic")
     public func getEcliptic() -> Ecliptic { ecliptic }

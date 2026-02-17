@@ -245,14 +245,14 @@ import Testing
         let huangdao = Ecliptic.fromIndex(0)
         #expect(huangdao.getName() == "黄道")
         #expect(huangdao.index == 0)
-        #expect(huangdao.isAuspicious())
-        #expect(!huangdao.isInauspicious())
+        #expect(huangdao.auspicious)
+        #expect(!huangdao.inauspicious)
 
         let heidao = Ecliptic.fromIndex(1)
         #expect(heidao.getName() == "黑道")
         #expect(heidao.index == 1)
-        #expect(!heidao.isAuspicious())
-        #expect(heidao.isInauspicious())
+        #expect(!heidao.auspicious)
+        #expect(heidao.inauspicious)
 
         // Test fromName
         let huangdao2 = try Ecliptic.fromName("黄道")
@@ -293,13 +293,13 @@ import Testing
         // Test ecliptic - 青龙 is 黄道
         let ecliptic1 = qinglong.ecliptic
         #expect(ecliptic1.getName() == "黄道")
-        #expect(qinglong.isAuspicious())
+        #expect(qinglong.auspicious)
 
         // Test ecliptic - 天刑 is 黑道
         let tianxing = TwelveStar.fromIndex(2)
         let ecliptic2 = tianxing.ecliptic
         #expect(ecliptic2.getName() == "黑道")
-        #expect(tianxing.isInauspicious())
+        #expect(tianxing.inauspicious)
     }
     @Test func testZone() throws {
         // Test all four zones
@@ -451,12 +451,12 @@ import Testing
         // Test luck - 角 is 吉
         let luck = jiao.luck
         #expect(luck.getName() == "吉")
-        #expect(jiao.isAuspicious())
+        #expect(jiao.auspicious)
 
         // Test luck - 亢 is 凶
         let luck2 = kang.luck
         #expect(luck2.getName() == "凶")
-        #expect(kang.isInauspicious())
+        #expect(kang.inauspicious)
 
         // Test sevenStar
         let sevenStar = jiao.sevenStar

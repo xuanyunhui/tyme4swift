@@ -58,11 +58,13 @@ public final class TwentyEightStar: LoopTyme {
     public var animal: Animal { Animal.fromIndex(index) }
     public var luck: Luck { Luck.fromIndex(TwentyEightStar.LUCK_INDICES[index]) }
 
-    /// Check if auspicious
-    public func isAuspicious() -> Bool { TwentyEightStar.LUCK_INDICES[index] == 0 }
+    public var auspicious: Bool { TwentyEightStar.LUCK_INDICES[index] == 0 }
+    public var inauspicious: Bool { TwentyEightStar.LUCK_INDICES[index] == 1 }
 
-    /// Check if inauspicious
-    public func isInauspicious() -> Bool { TwentyEightStar.LUCK_INDICES[index] == 1 }
+    @available(*, deprecated, renamed: "auspicious")
+    public func isAuspicious() -> Bool { auspicious }
+    @available(*, deprecated, renamed: "inauspicious")
+    public func isInauspicious() -> Bool { inauspicious }
 
     @available(*, deprecated, renamed: "sevenStar")
     public func getSevenStar() -> SevenStar { sevenStar }
