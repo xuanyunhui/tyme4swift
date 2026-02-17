@@ -101,3 +101,24 @@ public final class SolarDay: DayUnit, Tyme {
     @available(*, deprecated, renamed: "lunarDay")
     public func getLunarDay() -> LunarDay { lunarDay }
 }
+
+extension SolarDay: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case year, month, day
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let year = try container.decode(Int.self, forKey: .year)
+        let month = try container.decode(Int.self, forKey: .month)
+        let day = try container.decode(Int.self, forKey: .day)
+        try self.init(year: year, month: month, day: day)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(year, forKey: .year)
+        try container.encode(month, forKey: .month)
+        try container.encode(day, forKey: .day)
+    }
+}

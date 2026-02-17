@@ -86,3 +86,31 @@ public final class SolarTime: SecondUnit, Tyme {
     @available(*, deprecated, renamed: "term")
     public func getTerm() -> SolarTerm { term }
 }
+
+extension SolarTime: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case year, month, day, hour, minute, second
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        try self.init(
+            year: container.decode(Int.self, forKey: .year),
+            month: container.decode(Int.self, forKey: .month),
+            day: container.decode(Int.self, forKey: .day),
+            hour: container.decode(Int.self, forKey: .hour),
+            minute: container.decode(Int.self, forKey: .minute),
+            second: container.decode(Int.self, forKey: .second)
+        )
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(year, forKey: .year)
+        try container.encode(month, forKey: .month)
+        try container.encode(day, forKey: .day)
+        try container.encode(hour, forKey: .hour)
+        try container.encode(minute, forKey: .minute)
+        try container.encode(second, forKey: .second)
+    }
+}
