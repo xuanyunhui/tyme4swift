@@ -1947,5 +1947,52 @@ final class Tyme4SwiftTests: XCTestCase {
             }
         }
     }
+
+    // MARK: - HideHeavenStemDay Tests
+
+    func testHideHeavenStemDay() {
+        let eb = EarthBranch.fromIndex(0) // 子
+        let stems = eb.getHideHeavenStems()
+        let day = HideHeavenStemDay(hideHeavenStem: stems[0], dayIndex: 0)
+        XCTAssertEqual(day.getHideHeavenStem().getName(), "癸")
+        XCTAssertEqual(day.getName(), "癸水")  // 癸的五行是水
+        XCTAssertEqual(day.getDayIndex(), 0)
+        XCTAssertEqual(day.description, "癸水第1天")
+    }
+
+    // MARK: - PhenologyDay Tests
+
+    func testPhenologyDay() {
+        let p = Phenology.fromIndex(0)
+        let day = PhenologyDay(phenology: p, dayIndex: 2)
+        XCTAssertEqual(day.getPhenology().getName(), "蚯蚓结")
+        XCTAssertEqual(day.getDayIndex(), 2)
+        XCTAssertEqual(day.getName(), "蚯蚓结")
+        XCTAssertEqual(day.description, "蚯蚓结第3天")
+    }
+
+    // MARK: - RabByungElement Tests
+
+    func testRabByungElement() {
+        let e = RabByungElement(index: 3) // 金→铁
+        XCTAssertEqual(e.getName(), "铁")
+        XCTAssertEqual(e.getIndex(), 3)
+        XCTAssertEqual(e.getReinforce().getName(), "水")  // 铁生水
+        XCTAssertEqual(e.getRestrain().getName(), "木")   // 铁克木
+        XCTAssertEqual(e.getReinforced().getName(), "土") // 土生铁
+        XCTAssertEqual(e.getRestrained().getName(), "火") // 火克铁
+
+        let e2 = RabByungElement.fromName("铁")
+        XCTAssertEqual(e2.getIndex(), 3)
+        XCTAssertEqual(e2.getName(), "铁")
+
+        // Test cycle
+        let wood = RabByungElement.fromName("木")
+        XCTAssertEqual(wood.next(1).getName(), "火")
+        XCTAssertEqual(wood.next(2).getName(), "土")
+        XCTAssertEqual(wood.next(3).getName(), "铁")
+        XCTAssertEqual(wood.next(4).getName(), "水")
+        XCTAssertEqual(wood.next(5).getName(), "木")
+    }
 }
 
