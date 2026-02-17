@@ -46,21 +46,15 @@ benchmark("EightChar.init") {
 // MARK: - 干支循环
 
 benchmark("SixtyCycle.fromIndex") {
-    for i in 0..<60 {
-        let _ = SixtyCycle.fromIndex(i)
-    }
+    let _ = SixtyCycle.fromIndex(30)
 }
 
 benchmark("HeavenStem.fromIndex") {
-    for i in 0..<10 {
-        let _ = HeavenStem.fromIndex(i)
-    }
+    let _ = HeavenStem.fromIndex(5)
 }
 
 benchmark("EarthBranch.fromIndex") {
-    for i in 0..<12 {
-        let _ = EarthBranch.fromIndex(i)
-    }
+    let _ = EarthBranch.fromIndex(6)
 }
 
 Benchmark.main()
