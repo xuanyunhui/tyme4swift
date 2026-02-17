@@ -40,7 +40,12 @@ benchmark("LunarDay.solarDay") {
 // MARK: - 八字计算
 
 benchmark("EightChar.init") {
-    let _ = EightChar(year: 1990, month: 6, day: 15, hour: 12)
+    let provider = DefaultEightCharProvider()
+    let y = provider.getYearSixtyCycle(year: 1990, month: 6, day: 15)
+    let m = provider.getMonthSixtyCycle(year: 1990, month: 6, day: 15)
+    let d = provider.getDaySixtyCycle(year: 1990, month: 6, day: 15)
+    let h = provider.getHourSixtyCycle(year: 1990, month: 6, day: 15, hour: 12)
+    let _ = EightChar(year: y, month: m, day: d, hour: h)
 }
 
 // MARK: - 干支循环
