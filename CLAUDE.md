@@ -11,7 +11,7 @@ swift test --filter SolarTests/testSolarDay   # Run a single test
 swift run -c release TymeBenchmarks           # Run performance benchmarks
 ```
 
-No linter or formatter is configured. Dependencies: swift-docc-plugin (documentation), google/swift-benchmark (benchmarks).
+SwiftLint configured (`.swiftlint.yml`). Run `swiftlint lint Sources` before committing. Dependencies: swift-docc-plugin (documentation), google/swift-benchmark (benchmarks).
 
 ## CI/CD
 

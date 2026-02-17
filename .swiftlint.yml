@@ -1,0 +1,60 @@
+# SwiftLint Configuration for tyme4swift
+
+excluded:
+  - .build
+  - Benchmarks
+  - Package.swift
+
+# Rule customization
+identifier_name:
+  min_length:
+    warning: 1      # Allow single-char vars (n, i, v, m) common in math/algorithm code
+  max_length:
+    warning: 60
+  excluded:
+    - id
+  allowed_symbols:
+    - _
+  validates_start_with_lowercase: warning
+
+line_length:
+  warning: 150
+  error: 200
+  ignores_urls: true
+  ignores_comments: true
+
+file_length:
+  warning: 600
+  error: 1000
+
+type_body_length:
+  warning: 400
+  error: 600
+
+function_body_length:
+  warning: 60
+  error: 100
+
+function_parameter_count:
+  warning: 6
+  error: 8
+
+large_tuple:
+  warning: 4
+
+# Disabled rules
+disabled_rules:
+  - comma                   # Data tables use aligned spacing (e.g., ShouXingUtil)
+  - trailing_comma          # Optional trailing commas are acceptable
+  - todo                    # TODOs are valid during development
+  - orphaned_doc_comment    # Some legacy doc comments exist
+
+# Opt-in rules
+opt_in_rules:
+  - empty_count             # Prefer .isEmpty over .count == 0
+  - closure_spacing         # Consistent closure formatting
+  - operator_usage_whitespace
+
+# Rule severity overrides
+force_try: warning          # Project has legitimate force-try in safe contexts
+force_cast: warning         # Occasional safe force casts
