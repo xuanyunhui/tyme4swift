@@ -1,9 +1,9 @@
 import Foundation
 
 open class SecondUnit: DayUnit {
-    internal let hour: Int
-    internal let minute: Int
-    internal let second: Int
+    public let hour: Int
+    public let minute: Int
+    public let second: Int
 
     public static func validate(hour: Int, minute: Int, second: Int) throws {
         if hour < 0 || hour > 23 { throw TymeError.invalidHour(hour) }
@@ -19,7 +19,10 @@ open class SecondUnit: DayUnit {
         try super.init(year: year, month: month, day: day)
     }
 
+    @available(*, deprecated, renamed: "hour")
     public func getHour() -> Int { hour }
+    @available(*, deprecated, renamed: "minute")
     public func getMinute() -> Int { minute }
+    @available(*, deprecated, renamed: "second")
     public func getSecond() -> Int { second }
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 open class MonthUnit: YearUnit {
-    private let month: Int
+    public let month: Int
 
     public init(year: Int, month: Int) throws {
         if month < 1 || month > 12 {
@@ -11,5 +11,6 @@ open class MonthUnit: YearUnit {
         try super.init(year: year)
     }
 
+    @available(*, deprecated, renamed: "month")
     public func getMonth() -> Int { month }
 }

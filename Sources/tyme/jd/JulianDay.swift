@@ -33,6 +33,7 @@ public struct JulianDay: CustomStringConvertible {
         return JulianDay(jd)
     }
 
+    @available(*, deprecated, renamed: "value")
     public func getDay() -> Double { value }
 
     public func toYmdHms() -> (year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) {
@@ -65,16 +66,25 @@ public struct JulianDay: CustomStringConvertible {
 
     public func next(_ n: Int) -> JulianDay { JulianDay(value + Double(n)) }
 
-    public func getSolarTime() -> SolarTime {
+    public var solarTime: SolarTime {
         let ymd = toYmdHms()
         return try! SolarTime.fromYmdHms(ymd.year, ymd.month, ymd.day, ymd.hour, ymd.minute, ymd.second)
     }
 
-    public func getSolarDay() -> SolarDay { try! getSolarTime().getSolarDay() }
+    public var solarDay: SolarDay { solarTime.getSolarDay() }
 
-    public func getWeek() -> Week {
+    public var week: Week {
         Week.fromIndex(Int(value + 0.5) + 7000001)
     }
+
+    @available(*, deprecated, renamed: "solarTime")
+    public func getSolarTime() -> SolarTime { solarTime }
+
+    @available(*, deprecated, renamed: "solarDay")
+    public func getSolarDay() -> SolarDay { solarDay }
+
+    @available(*, deprecated, renamed: "week")
+    public func getWeek() -> Week { week }
 
     public func subtract(_ target: JulianDay) -> Double { value - target.value }
 }
