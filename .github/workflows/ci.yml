@@ -7,6 +7,19 @@ on:
   pull_request:
 
 jobs:
+  lint:
+    name: SwiftLint
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Run SwiftLint
+        run: swiftlint lint Sources
+
   build-and-test:
     name: Build and Test
     runs-on: ${{ matrix.os }}
