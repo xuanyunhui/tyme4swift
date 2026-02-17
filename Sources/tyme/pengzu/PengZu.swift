@@ -16,10 +16,10 @@ import Foundation
 /// - 乙丑日: "乙不栽植千株不长 丑不冠带主不还乡"
 public final class PengZu: AbstractCulture {
     /// 天干彭祖百忌 (Heaven Stem taboo)
-    private let pengZuHeavenStem: PengZuHeavenStem
+    public let pengZuHeavenStem: PengZuHeavenStem
 
     /// 地支彭祖百忌 (Earth Branch taboo)
-    private let pengZuEarthBranch: PengZuEarthBranch
+    public let pengZuEarthBranch: PengZuEarthBranch
 
     /// Initialize from SixtyCycle
     /// - Parameter sixtyCycle: The sixty-cycle (干支) for the day
@@ -52,33 +52,27 @@ public final class PengZu: AbstractCulture {
         return "\(pengZuHeavenStem) \(pengZuEarthBranch)"
     }
 
-    /// Get the Heaven Stem taboo
-    /// - Returns: PengZuHeavenStem instance
-    public func getPengZuHeavenStem() -> PengZuHeavenStem {
-        return pengZuHeavenStem
-    }
+    /// The Heaven Stem taboo text
+    public var heavenStemTaboo: String { pengZuHeavenStem.getName() }
 
-    /// Get the Earth Branch taboo
-    /// - Returns: PengZuEarthBranch instance
-    public func getPengZuEarthBranch() -> PengZuEarthBranch {
-        return pengZuEarthBranch
-    }
+    /// The Earth Branch taboo text
+    public var earthBranchTaboo: String { pengZuEarthBranch.getName() }
 
-    /// Get the Heaven Stem taboo text
-    /// - Returns: Heaven Stem taboo description
-    public func getHeavenStemTaboo() -> String {
-        return pengZuHeavenStem.getName()
-    }
+    /// All taboos as an array
+    public var taboos: [String] { [pengZuHeavenStem.getName(), pengZuEarthBranch.getName()] }
 
-    /// Get the Earth Branch taboo text
-    /// - Returns: Earth Branch taboo description
-    public func getEarthBranchTaboo() -> String {
-        return pengZuEarthBranch.getName()
-    }
+    @available(*, deprecated, renamed: "pengZuHeavenStem")
+    public func getPengZuHeavenStem() -> PengZuHeavenStem { pengZuHeavenStem }
 
-    /// Get all taboos as an array
-    /// - Returns: Array containing both Heaven Stem and Earth Branch taboos
-    public func getTaboos() -> [String] {
-        return [pengZuHeavenStem.getName(), pengZuEarthBranch.getName()]
-    }
+    @available(*, deprecated, renamed: "pengZuEarthBranch")
+    public func getPengZuEarthBranch() -> PengZuEarthBranch { pengZuEarthBranch }
+
+    @available(*, deprecated, renamed: "heavenStemTaboo")
+    public func getHeavenStemTaboo() -> String { heavenStemTaboo }
+
+    @available(*, deprecated, renamed: "earthBranchTaboo")
+    public func getEarthBranchTaboo() -> String { earthBranchTaboo }
+
+    @available(*, deprecated, renamed: "taboos")
+    public func getTaboos() -> [String] { taboos }
 }

@@ -2,7 +2,7 @@ import Foundation
 
 open class LoopTyme: AbstractTyme {
     internal let names: [String]
-    internal let index: Int
+    public let index: Int
 
     public required init(names: [String], index: Int) {
         self.names = names
@@ -20,6 +20,7 @@ open class LoopTyme: AbstractTyme {
         self.init(names: names, index: i)
     }
 
+    @available(*, deprecated, renamed: "index")
     public func getIndex() -> Int { index }
 
     public func nextIndex(_ n: Int) -> Int {

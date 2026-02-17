@@ -1,8 +1,8 @@
 import Foundation
 
 open class AbstractCultureDay: AbstractCulture {
-    internal let culture: Culture
-    internal let dayIndex: Int
+    public let culture: Culture
+    public let dayIndex: Int
 
     public init(culture: Culture, dayIndex: Int) {
         self.culture = culture
@@ -10,6 +10,7 @@ open class AbstractCultureDay: AbstractCulture {
         super.init()
     }
 
+    @available(*, deprecated, renamed: "dayIndex")
     public func getDayIndex() -> Int { dayIndex }
 
     public override func getName() -> String {

@@ -1,12 +1,16 @@
 import Foundation
 
 open class WeekUnit: MonthUnit {
-    internal var index: Int = 0
-    internal var start: Int = 0
+    public var index: Int = 0
+    public var startIndex: Int = 0
 
+    public var start: Week { Week.fromIndex(startIndex) }
+
+    @available(*, deprecated, renamed: "index")
     public func getIndex() -> Int { index }
 
-    public func getStart() -> Week { Week.fromIndex(start) }
+    @available(*, deprecated, renamed: "start")
+    public func getStart() -> Week { start }
 
     public static func validate(index: Int, start: Int) throws {
         if index < 0 || index > 5 { throw TymeError.invalidIndex(index) }
