@@ -106,10 +106,9 @@ public final class SixtyCycleHour: AbstractCulture {
     }
 
     /// 八字
-    // TODO: Phase 4 - EightChar new constructor
-    // public var eightChar: EightChar {
-    //     EightChar(yearPillar, monthPillar, dayPillar, sixtyCycle)
-    // }
+    public var eightChar: EightChar {
+        EightChar(year: yearPillar, month: monthPillar, day: dayPillar, hour: sixtyCycle)
+    }
 
     /// Get name
     public override func getName() -> String {
