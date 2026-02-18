@@ -82,6 +82,7 @@ public final class LunarDay: DayUnit, Tyme {
     /// 太岁方位
     public var jupiterDirection: Direction {
         let idx = sixtyCycle.index
+        // Safe: year is already validated by LunarDay's throwing initializer
         return idx % 12 < 6 ? Element.fromIndex(idx / 12).direction : (try! LunarYear.fromYear(year)).jupiterDirection
     }
 
@@ -91,7 +92,10 @@ public final class LunarDay: DayUnit, Tyme {
         let m = lunarMonth.next(1)
         var p = Phase.fromIndex(m.year, m.monthWithLeap, 0)
         var d = p.solarDay
+        var guardCount = 0
         while d.isAfter(today) {
+            guardCount += 1
+            if guardCount > 50 { break } // Phase cycle < 30 days; 50 steps is impossible
             p = p.next(-1)
             d = p.solarDay
         }
@@ -124,6 +128,8 @@ public final class LunarDay: DayUnit, Tyme {
 
     /// 当天的农历时辰列表
     public var hours: [LunarHour] {
+        // Safe: year/month/day already validated by LunarDay's throwing initializer;
+        // hour values are fixed constants (0, 1, 3, ..., 23)
         let m = monthWithLeap
         var l: [LunarHour] = []
         l.append(try! LunarHour.fromYmdHms(year, m, day, 0, 0, 0))
