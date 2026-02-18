@@ -80,6 +80,26 @@ public final class LunarYear: YearUnit, Tyme {
         return result
     }
 
+    /// 运
+    public var twenty: Twenty {
+        Twenty.fromIndex(Int(floor(Double(year - 1864) / 20.0)))
+    }
+
+    /// 九星
+    public var nineStar: NineStar {
+        NineStar.fromIndex(63 + twenty.sixty.index * 3 - sixtyCycle.index)
+    }
+
+    /// 太岁方位
+    public var jupiterDirection: Direction {
+        Direction.fromIndex([0, 7, 7, 2, 3, 3, 8, 1, 1, 6, 0, 0][sixtyCycle.earthBranch.index])
+    }
+
+    /// 灶马头
+    public var kitchenGodSteed: KitchenGodSteed {
+        KitchenGodSteed.fromLunarYear(year)
+    }
+
     public func getName() -> String { "农历\(sixtyCycle)年" }
 
     public func next(_ n: Int) -> LunarYear { try! LunarYear(year: year + n) }

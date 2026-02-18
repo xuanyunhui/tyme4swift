@@ -58,6 +58,27 @@ public final class LunarMonth: MonthUnit, Tyme {
     public var firstDay: LunarDay { try! LunarDay.fromYmd(year, monthWithLeap, 1) }
     public var fetus: FetusMonth? { FetusMonth.fromLunarMonth(self) }
 
+    /// 九星
+    public var nineStar: NineStar {
+        var index = sixtyCycle.earthBranch.index
+        if index < 2 {
+            index += 3
+        }
+        return NineStar.fromIndex(27 - lunarYear.sixtyCycle.earthBranch.index % 3 * 3 - index)
+    }
+
+    /// 太岁方位
+    public var jupiterDirection: Direction {
+        let sc = sixtyCycle
+        let n = [7, -1, 1, 3][sc.earthBranch.next(-2).index % 4]
+        return n != -1 ? Direction.fromIndex(n) : sc.heavenStem.direction
+    }
+
+    /// 小六壬
+    public var minorRen: MinorRen {
+        MinorRen.fromIndex((month - 1) % 6)
+    }
+
     private var newMoon: Double {
         let dongZhiJd = SolarTerm.fromIndex(year, 0).cursoryJulianDay
         var w = ShouXingUtil.calcShuo(dongZhiJd)
