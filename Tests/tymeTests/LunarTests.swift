@@ -99,7 +99,7 @@ import Testing
         #expect(try LunarMonth.fromYm(2024, 3).jupiterDirection.getName() == "东北")
         // 2024-6: 月干支 辛未, earthBranch=未(index 7), next(-2)=巳(index 5), 5%4=1 → n=-1 → heavenStem辛.direction
         let m6 = try LunarMonth.fromYm(2024, 6)
-        #expect(!m6.jupiterDirection.getName().isEmpty) // n=-1 branch (heavenStem direction)
+        #expect(m6.jupiterDirection.getName() == "西") // n=-1 branch → heavenStem辛.direction = "西"
     }
 
     @Test func testLunarMonthMinorRen() throws {
@@ -237,7 +237,7 @@ import Testing
         let d2 = try SolarDay.fromYmd(2023, 9, 17).lunarDay
         let pd2 = d2.phaseDay
         #expect(pd2.phase.getName() == "蛾眉月")
-        // dayIndex should be 1 (第2天 = index 1)
+        #expect(pd2.dayIndex == 1) // 第2天 = dayIndex 1
 
         // Also verify phase computed property matches
         #expect(d2.phase.getName() == "蛾眉月")
@@ -256,9 +256,9 @@ import Testing
     @Test func testLunarDayLeapMonthSixStar() throws {
         // 2023 has leap month 2 (-2)
         // sixStar: (abs(monthWithLeap) + day - 2) % 6
-        // month=-2, day=15: (2 + 15 - 2) % 6 = 15 % 6 = 3 → "先负"
+        // month=-2, day=15: (2 + 15 - 2) % 6 = 15 % 6 = 3 → "佛灭"
         let d = try LunarDay.fromYmd(2023, -2, 15)
-        #expect(d.sixStar.getName() == "先负")
+        #expect(d.sixStar.getName() == "佛灭")
     }
 
     @Test func testLunarDayLeapMonthMinorRen() throws {
@@ -267,7 +267,7 @@ import Testing
         // minorRen = lunarMonth.minorRen.next(day - 1)
         // lunarMonth.minorRen for month 2: (2-1)%6=1 → index 1
         // day=1: next(0) = same
-        #expect(!d.minorRen.getName().isEmpty)
+        #expect(d.minorRen.getName() == "留连")
     }
 
     @Test func testLunarDayLeapMonthFestival() throws {
@@ -278,7 +278,7 @@ import Testing
 
     // tyme4j SixStarTest: additional precise values
     @Test func testLunarDaySixStarPrecise() throws {
-        #expect(try LunarDay.fromYmd(2020, 3, 1).sixStar.getName() == "佛灭")
+        #expect(try LunarDay.fromYmd(2020, 3, 1).sixStar.getName() == "先负")
         #expect(try LunarDay.fromYmd(2020, 4, 20).sixStar.getName() == "大安")
         #expect(try LunarDay.fromYmd(2020, 10, 24).sixStar.getName() == "先负")
         #expect(try LunarDay.fromYmd(2020, 10, 27).sixStar.getName() == "赤口")
