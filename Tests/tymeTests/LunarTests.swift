@@ -307,9 +307,10 @@ import Testing
     }
 
     @Test func testLunarHourTwelveStar() throws {
-        let h = try LunarHour.fromYmdHms(2023, 11, 14, 6, 0, 0)
-        let ts = h.twelveStar
-        #expect(ts.getName().count > 0)
+        // LunarHour(2023,11,14,23:00): 甲子时，day=己未
+        // index = 0 + (8 - 7%6)*2 = 14, 14%12=2 → "天刑"
+        let h1 = try LunarHour.fromYmdHms(2023, 11, 14, 23, 0, 0)
+        #expect(h1.twelveStar.getName() == "天刑")
     }
 
     @Test func testLunarHourNineStar() throws {
@@ -323,12 +324,15 @@ import Testing
     }
 
     @Test func testLunarHourRecommendsAvoids() throws {
-        let h = try LunarHour.fromYmdHms(2024, 1, 1, 6, 0, 0)
-        // recommends and avoids should return arrays (may be empty)
-        let rec = h.recommends
-        let avo = h.avoids
-        #expect(rec.count >= 0)
-        #expect(avo.count >= 0)
+        // tyme4j TabooTest test9/10/11: 2024-6-25 04:00 → 寅时，无宜，忌["诸事不宜"]
+        let r1 = try SolarTime.fromYmdHms(2024, 6, 25, 4, 0, 0).lunarHour.recommends
+        #expect(r1.isEmpty)
+        let a1 = try SolarTime.fromYmdHms(2024, 6, 25, 4, 0, 0).lunarHour.avoids
+        #expect(a1.first?.getName() == "诸事不宜")
+
+        // 2024-4-22 00:00 → 宜["嫁娶","交易","开市","安床","祭祀","求财"]
+        let r2 = try SolarTime.fromYmdHms(2024, 4, 22, 0, 0, 0).lunarHour.recommends
+        #expect(r2.map { $0.getName() } == ["嫁娶", "交易", "开市", "安床", "祭祀", "求财"])
     }
 
     @Test func testLunarHourMinorRen() throws {
