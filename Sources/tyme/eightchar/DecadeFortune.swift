@@ -7,7 +7,7 @@ public final class DecadeFortune {
     public let branch: EarthBranch
     public let voidStart: Int
     public let voidEnd: Int
-    
+
     /// 初始化旬空
     /// - Parameters:
     ///   - stem: 天干
@@ -20,23 +20,23 @@ public final class DecadeFortune {
         self.voidStart = voidStart
         self.voidEnd = voidEnd
     }
-    
+
     public func getStemName() -> String {
         stem.getName()
     }
-    
+
     public func getBranchName() -> String {
         branch.getName()
     }
-    
+
     public func getDecadeString() -> String {
         return "\(getStemName())\(getBranchName())"
     }
-    
+
     public func getVoidRange() -> String {
         return "\(voidStart)-\(voidEnd)"
     }
-    
+
     /// Check if a position is within void period
     public func isVoid(_ position: Int) -> Bool {
         return position >= voidStart && position <= voidEnd

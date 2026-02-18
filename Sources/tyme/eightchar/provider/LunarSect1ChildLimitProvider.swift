@@ -26,7 +26,7 @@ public final class LunarSect1ChildLimitProvider: ChildLimitProvider {
         var month = dayDiff * 4 + monthDiff
         let day = hourDiff * 10 - monthDiff * 30
         let year = month / 12
-        month = month - year * 12
+        month -= year * 12
 
         return next(birthTime, year, month, day, 0, 0, 0)
     }

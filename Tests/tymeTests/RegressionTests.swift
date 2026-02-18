@@ -43,7 +43,7 @@ import Testing
         // Test specific date from Issue #42
         let day = try SixtyCycleDay(year: 2024, month: 12, day: 1)
         let gods = day.gods
-        #expect(gods.count > 0)
+        #expect(!gods.isEmpty)
         _ = day.recommends
         _ = day.avoids
     }
@@ -52,9 +52,9 @@ import Testing
         for m in 1...12 {
             for d in 1...daysInMonth[m - 1] {
                 let day = try SixtyCycleDay(year: 2024, month: m, day: d)
-                let _ = day.gods
-                let _ = day.recommends
-                let _ = day.avoids
+                _ = day.gods
+                _ = day.recommends
+                _ = day.avoids
             }
         }
     }

@@ -1,5 +1,7 @@
 import Foundation
 
+// swiftlint:disable line_length
+
 /// 宜忌查找表
 /// Taboo lookup table for querying auspicious and inauspicious activities
 public enum TabooLookup {

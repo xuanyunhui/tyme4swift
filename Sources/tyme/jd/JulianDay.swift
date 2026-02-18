@@ -28,7 +28,7 @@ public struct JulianDay: CustomStringConvertible {
         let isGregorian = (year > 1582) || (year == 1582 && (month > 10 || (month == 10 && day >= 15)))
         let b = isGregorian ? (2 - a + a / 4) : 0
 
-        let dayFraction = (Double(hour) + Double(minute)/60.0 + Double(second)/3600.0) / 24.0
+        let dayFraction = (Double(hour) + Double(minute) / 60.0 + Double(second) / 3600.0) / 24.0
         let jd = floor(365.25 * Double(y + 4716)) + floor(30.6001 * Double(m + 1)) + Double(day) + Double(b) - 1524.5 + dayFraction
         return JulianDay(jd)
     }
