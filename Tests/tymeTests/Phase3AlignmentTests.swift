@@ -23,12 +23,72 @@ struct Phase3AlignmentTests {
         #expect(phaseDay.phase.getName() == "新月")
     }
 
-    // MARK: - SixtyCycleYear
+    // Phase.solarTime — tyme4j: Phase.fromName(2025, 7, "下弦月").solarTime == "2025年9月14日 18:32:57"
+    @Test func testPhaseSolarTimeFromName() throws {
+        let phase = try Phase.fromName(2025, 7, "下弦月")
+        let st = phase.solarTime
+        #expect(st.year == 2025)
+        #expect(st.month == 9)
+        #expect(st.day == 14)
+        #expect(st.hour == 18)
+        #expect(st.minute == 32)
+        #expect(st.second == 57)
+    }
 
-    @Test func testSixtyCycleYearTwenty() {
-        let year = SixtyCycleYear.fromYear(2024)
-        let twenty = year.twenty
-        #expect(twenty.getName() != "")
+    // Phase.solarTime — tyme4j: Phase.fromIndex(2025, 7, 6).solarTime == "2025年9月14日 18:32:57"
+    @Test func testPhaseSolarTimeFromIndex() {
+        let phase = Phase.fromIndex(2025, 7, 6)
+        let st = phase.solarTime
+        #expect(st.year == 2025)
+        #expect(st.month == 9)
+        #expect(st.day == 14)
+        #expect(st.hour == 18)
+        #expect(st.minute == 32)
+        #expect(st.second == 57)
+    }
+
+    // Phase.solarTime — tyme4j: Phase.fromIndex(2025, 7, 8).solarTime == "2025年9月22日 03:54:07"
+    @Test func testPhaseSolarTimeWrapToNextMonth() {
+        let phase = Phase.fromIndex(2025, 7, 8)
+        let st = phase.solarTime
+        #expect(st.year == 2025)
+        #expect(st.month == 9)
+        #expect(st.day == 22)
+        #expect(st.hour == 3)
+        #expect(st.minute == 54)
+        #expect(st.second == 7)
+    }
+
+    // Phase.solarDay
+    @Test func testPhaseSolarDay() throws {
+        // 下弦月的 solarDay (odd index → next day from start)
+        let phase = try Phase.fromName(2025, 7, "下弦月")
+        let sd = phase.solarDay
+        #expect(sd.year == 2025)
+        #expect(sd.month == 9)
+        // solarDay for odd index adds 1 day to start
+        #expect(sd.day == 15)
+    }
+
+    // MARK: - SixtyCycleYear (精确值断言)
+
+    // tyme4j: SixtyCycleYear.fromYear(2025).firstMonth.getName() == "戊寅月"
+    @Test func testSixtyCycleYearFirstMonth2025() {
+        let year = SixtyCycleYear.fromYear(2025)
+        #expect(year.firstMonth.getName() == "戊寅月")
+    }
+
+    // tyme4j: SixtyCycleYear.fromYear(1864).twenty.getName() == "一运"
+    @Test func testSixtyCycleYearTwentyPrecise() {
+        #expect(SixtyCycleYear.fromYear(1864).twenty.getName() == "一运")
+        #expect(SixtyCycleYear.fromYear(2004).twenty.getName() == "八运")
+    }
+
+    // tyme4j: SixtyCycleYear.fromYear(1864).twenty.sixty.getName() == "上元"
+    @Test func testSixtyCycleYearSixtyPrecise() {
+        #expect(SixtyCycleYear.fromYear(1864).twenty.sixty.getName() == "上元")
+        #expect(SixtyCycleYear.fromYear(1924).twenty.sixty.getName() == "中元")
+        #expect(SixtyCycleYear.fromYear(1984).twenty.sixty.getName() == "下元")
     }
 
     @Test func testSixtyCycleYearNineStar() {
@@ -43,15 +103,25 @@ struct Phase3AlignmentTests {
         #expect(dir.getName() != "")
     }
 
-    @Test func testSixtyCycleYearFirstMonthAndMonths() {
+    @Test func testSixtyCycleYearMonthsCount() {
         let year = SixtyCycleYear.fromYear(2024)
-        let first = year.firstMonth
-        #expect(first.sixtyCycle.getName() != "")
-        let months = year.months
-        #expect(months.count == 12)
+        #expect(year.months.count == 12)
     }
 
-    // MARK: - SixtyCycleMonth
+    // MARK: - SixtyCycleMonth (精确值断言)
+
+    // tyme4j: SixtyCycleMonth.fromIndex(2025, 0).toString() == "乙巳年戊寅月"
+    @Test func testSixtyCycleMonthDescription2025() {
+        let month = SixtyCycleMonth.fromIndex(2025, 0)
+        #expect(month.description == "乙巳年戊寅月")
+    }
+
+    // tyme4j: SixtyCycleMonth.fromIndex(1150, 0).firstDay.toString() == "庚午年戊寅月戊寅日"
+    @Test func testSixtyCycleMonthFirstDay1150() {
+        let month = SixtyCycleMonth.fromIndex(1150, 0)
+        #expect(month.description == "庚午年戊寅月")
+        #expect(month.firstDay.description == "庚午年戊寅月戊寅日")
+    }
 
     @Test func testSixtyCycleMonthFromYm() {
         let month = SixtyCycleMonth.fromYm(2024, 1)
@@ -82,24 +152,45 @@ struct Phase3AlignmentTests {
         #expect(days.count > 0)
     }
 
-    // MARK: - SixtyCycleDay
-
-    @Test func testSixtyCycleDaySixtyCycleMonth() throws {
-        let day = try SixtyCycleDay.fromYmd(2024, 2, 10)
-        let scMonth = day.sixtyCycleMonth
-        #expect(scMonth.sixtyCycle.getName() != "")
+    // SixtyCycleMonth.Equatable test — critical: used in SixtyCycleDay.hours while loop
+    @Test func testSixtyCycleMonthEquatable() {
+        let m1 = SixtyCycleMonth.fromIndex(2024, 0)
+        let m2 = SixtyCycleMonth.fromIndex(2024, 0)
+        let m3 = SixtyCycleMonth.fromIndex(2024, 1)
+        let m4 = SixtyCycleMonth.fromIndex(2025, 0)
+        #expect(m1 == m2)
+        #expect(m1 != m3)
+        #expect(m1 != m4)
     }
 
-    @Test func testSixtyCycleDayYearAndMonthPillars() throws {
-        let day = try SixtyCycleDay.fromYmd(2024, 2, 10)
-        #expect(day.yearPillar.getName() != "")
-        #expect(day.monthPillar.getName() != "")
+    // MARK: - SixtyCycleDay (精确值断言)
+
+    // tyme4j: SixtyCycleDay(2025,2,3).toString() == "乙巳年戊寅月癸卯日"
+    @Test func testSixtyCycleDayDescription2025_02_03() throws {
+        let day = try SixtyCycleDay.fromYmd(2025, 2, 3)
+        #expect(day.description == "乙巳年戊寅月癸卯日")
     }
 
-    @Test func testSixtyCycleDayTwelveStar() throws {
-        let day = try SixtyCycleDay.fromYmd(2024, 2, 10)
-        let star = day.twelveStar
-        #expect(star.getName() != "")
+    // tyme4j: SixtyCycleDay(2025,2,2).toString() == "甲辰年丁丑月壬寅日"
+    @Test func testSixtyCycleDayDescription2025_02_02() throws {
+        let day = try SixtyCycleDay.fromYmd(2025, 2, 2)
+        #expect(day.description == "甲辰年丁丑月壬寅日")
+    }
+
+    // tyme4j EclipticTest: SolarDay(2023,10,30).sixtyCycleDay.twelveStar == "天德"
+    @Test func testSixtyCycleDayTwelveStarPrecise() throws {
+        #expect(try SixtyCycleDay.fromYmd(2023, 10, 30).twelveStar.getName() == "天德")
+        #expect(try SixtyCycleDay.fromYmd(2023, 10, 19).twelveStar.getName() == "白虎")
+        #expect(try SixtyCycleDay.fromYmd(2023, 10, 7).twelveStar.getName() == "天牢")
+        #expect(try SixtyCycleDay.fromYmd(2023, 10, 8).twelveStar.getName() == "玉堂")
+    }
+
+    // tyme4j DutyTest: SolarDay(2023,10,30).sixtyCycleDay.duty == "闭"
+    @Test func testSixtyCycleDayDutyPrecise() throws {
+        #expect(try SixtyCycleDay.fromYmd(2023, 10, 30).duty.getName() == "闭")
+        #expect(try SixtyCycleDay.fromYmd(2023, 10, 19).duty.getName() == "建")
+        #expect(try SixtyCycleDay.fromYmd(2023, 10, 7).duty.getName() == "除")
+        #expect(try SixtyCycleDay.fromYmd(2023, 10, 8).duty.getName() == "除")
     }
 
     @Test func testSixtyCycleDayNineStar() throws {
@@ -126,14 +217,28 @@ struct Phase3AlignmentTests {
         #expect(hours.count == 12)
     }
 
-    @Test func testSixtyCycleDayDescription() throws {
-        let day = try SixtyCycleDay.fromYmd(2024, 2, 10)
-        let desc = day.description
-        #expect(desc.contains("日"))
-        #expect(desc.contains("月"))
+    // MARK: - SixtyCycleHour (精确值断言)
+
+    // tyme4j: SolarTime(2025,2,3,23,0,0).sixtyCycleHour == "乙巳年戊寅月甲辰日甲子时"
+    @Test func testSixtyCycleHourDescription23() throws {
+        let hour = try SixtyCycleHour.fromYmdHms(2025, 2, 3, 23, 0, 0)
+        #expect(hour.description == "乙巳年戊寅月甲辰日甲子时")
+        let day = hour.sixtyCycleDay
+        #expect(day.description == "乙巳年戊寅月甲辰日")
+        #expect(day.solarDay.getName() == "2025-02-03")
     }
 
-    // MARK: - SixtyCycleHour
+    // tyme4j: SolarTime(2025,2,3,4,0,0).sixtyCycleHour == "甲辰年丁丑月癸卯日甲寅时"
+    @Test func testSixtyCycleHourDescriptionEarlyMorning() throws {
+        let hour = try SixtyCycleHour.fromYmdHms(2025, 2, 3, 4, 0, 0)
+        #expect(hour.description == "甲辰年丁丑月癸卯日甲寅时")
+    }
+
+    // tyme4j: SolarTime(2025,2,3,22,30,0).sixtyCycleHour == "乙巳年戊寅月癸卯日癸亥时"
+    @Test func testSixtyCycleHourDescriptionLateEvening() throws {
+        let hour = try SixtyCycleHour.fromYmdHms(2025, 2, 3, 22, 30, 0)
+        #expect(hour.description == "乙巳年戊寅月癸卯日癸亥时")
+    }
 
     @Test func testSixtyCycleHourPillars() throws {
         let hour = try SixtyCycleHour.fromYmdHms(2024, 2, 10, 12, 0, 0)
@@ -173,13 +278,7 @@ struct Phase3AlignmentTests {
         #expect(nextHour.solarTime.hour == 14)
     }
 
-    @Test func testSixtyCycleHourDescription() throws {
-        let hour = try SixtyCycleHour.fromYmdHms(2024, 2, 10, 12, 0, 0)
-        let desc = hour.description
-        #expect(desc.contains("时"))
-    }
-
-    @Test func testSixtyCycleHour23() throws {
+    @Test func testSixtyCycleHour23IndexInDay() throws {
         // 23:00 should switch to next day's 子时
         let hour = try SixtyCycleHour.fromYmdHms(2024, 2, 10, 23, 0, 0)
         #expect(hour.indexInDay == 0) // 子时
