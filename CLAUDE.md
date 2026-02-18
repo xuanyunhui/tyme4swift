@@ -2,6 +2,19 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Code Style
+
+- Use `struct` and `mutating func` for all code.
+- Use `OptionSet` for all bitwise operations.
+- Use `Int`/`Int64` for all numerical calculations. (avoid `Double` unless strictly necessary for Astronomy).
+- Use `Optional` for all possible failures.
+- Use `throw Error` for all possible failures.
+- Use `public final` for all concrete classes.
+- Use `open` for all base classes.
+- **NO FORCE UNWRAP (`!`)**. Use `guard let` or `throw`.
+- Naming: Use Swift "Term of Art" (e.g., `computed property` instead of `getFoo()`).
+
+
 ## Build & Test Commands
 
 ```bash
