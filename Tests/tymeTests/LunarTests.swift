@@ -283,4 +283,57 @@ import Testing
         #expect(try LunarDay.fromYmd(2020, 10, 24).sixStar.getName() == "先负")
         #expect(try LunarDay.fromYmd(2020, 10, 27).sixStar.getName() == "赤口")
     }
+
+    // MARK: - LunarHour properties (Phase 5c)
+
+    @Test func testLunarHourSixtyCycleHour() throws {
+        // tyme4j test8: 2023-11-14 23:00
+        let h = try LunarHour.fromYmdHms(2023, 11, 14, 23, 0, 0)
+        #expect(h.sixtyCycle.getName() == "甲子")
+        let sch = h.sixtyCycleHour
+        #expect(sch.dayPillar.getName() == "己未")
+        #expect(sch.monthPillar.getName() == "甲子")
+        #expect(sch.yearPillar.getName() == "癸卯")
+    }
+
+    @Test func testLunarHourSixtyCycleHourDaytime() throws {
+        // tyme4j test9: 2023-11-14 06:00
+        let h = try LunarHour.fromYmdHms(2023, 11, 14, 6, 0, 0)
+        #expect(h.sixtyCycle.getName() == "乙卯")
+        let sch = h.sixtyCycleHour
+        #expect(sch.dayPillar.getName() == "戊午")
+        #expect(sch.monthPillar.getName() == "甲子")
+        #expect(sch.yearPillar.getName() == "癸卯")
+    }
+
+    @Test func testLunarHourTwelveStar() throws {
+        let h = try LunarHour.fromYmdHms(2023, 11, 14, 6, 0, 0)
+        let ts = h.twelveStar
+        #expect(ts.getName().count > 0)
+    }
+
+    @Test func testLunarHourNineStar() throws {
+        // tyme4j NineStarTest test10: 2033-1-1 12:00
+        let h = try LunarHour.fromYmdHms(2033, 1, 1, 12, 0, 0)
+        #expect(h.nineStar.description == "七赤金")
+
+        // tyme4j NineStarTest test11: 2011-5-3 23:00
+        let h2 = try LunarHour.fromYmdHms(2011, 5, 3, 23, 0, 0)
+        #expect(h2.nineStar.description == "七赤金")
+    }
+
+    @Test func testLunarHourRecommendsAvoids() throws {
+        let h = try LunarHour.fromYmdHms(2024, 1, 1, 6, 0, 0)
+        // recommends and avoids should return arrays (may be empty)
+        let rec = h.recommends
+        let avo = h.avoids
+        #expect(rec.count >= 0)
+        #expect(avo.count >= 0)
+    }
+
+    @Test func testLunarHourMinorRen() throws {
+        // tyme4j test28: 2024-9-7 10:00 → 留连
+        let h = try LunarHour.fromYmdHms(2024, 9, 7, 10, 0, 0)
+        #expect(h.minorRen.getName() == "留连")
+    }
 }

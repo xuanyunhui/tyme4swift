@@ -24,7 +24,7 @@ public final class LunarHour: SecondUnit, Tyme {
         let earthBranchIndex = indexInDay % 12
         var d = lunarDay.sixtyCycle
         if hour >= 23 { d = d.next(1) }
-        let stemIndex = d.getHeavenStem().index % 5 * 2 + earthBranchIndex
+        let stemIndex = d.heavenStem.index % 5 * 2 + earthBranchIndex
         let stem = HeavenStem.fromIndex(stemIndex).getName()
         let branch = EarthBranch.fromIndex(earthBranchIndex).getName()
         return try! SixtyCycle.fromName(stem + branch)
@@ -84,6 +84,47 @@ public final class LunarHour: SecondUnit, Tyme {
         return second > target.second
     }
 
+    /// 黄道黑道十二神
+    public var twelveStar: TwelveStar {
+        TwelveStar.fromIndex(sixtyCycle.earthBranch.index + (8 - sixtyCycleHour.dayPillar.earthBranch.index % 6) * 2)
+    }
+
+    /// 九星
+    public var nineStar: NineStar {
+        let d = lunarDay
+        let solar = d.solarDay
+        let dongZhi = SolarTerm.fromIndex(solar.year, 0)
+        let earthBranchIndex = indexInDay % 12
+        let baseIndex = [8, 5, 2][d.sixtyCycle.earthBranch.index % 3]
+        let idx: Int
+        if !solar.isBefore(dongZhi.julianDay.solarDay) && solar.isBefore(dongZhi.next(12).julianDay.solarDay) {
+            idx = 8 + earthBranchIndex - baseIndex
+        } else {
+            idx = baseIndex - earthBranchIndex
+        }
+        return NineStar.fromIndex(idx)
+    }
+
+    /// 干支时辰
+    public var sixtyCycleHour: SixtyCycleHour {
+        solarTime.sixtyCycleHour
+    }
+
+    /// 宜
+    public var recommends: [Taboo] {
+        TabooLookup.getHourRecommends(day: sixtyCycleHour.dayPillar, hour: sixtyCycle)
+    }
+
+    /// 忌
+    public var avoids: [Taboo] {
+        TabooLookup.getHourAvoids(day: sixtyCycleHour.dayPillar, hour: sixtyCycle)
+    }
+
+    /// 小六壬
+    public var minorRen: MinorRen {
+        lunarDay.minorRen.next(indexInDay)
+    }
+
     @available(*, deprecated, renamed: "lunarDay")
     public func getLunarDay() -> LunarDay { lunarDay }
 
@@ -95,4 +136,22 @@ public final class LunarHour: SecondUnit, Tyme {
 
     @available(*, deprecated, renamed: "solarTime")
     public func getSolarTime() -> SolarTime { solarTime }
+
+    @available(*, deprecated, renamed: "twelveStar")
+    public func getTwelveStar() -> TwelveStar { twelveStar }
+
+    @available(*, deprecated, renamed: "nineStar")
+    public func getNineStar() -> NineStar { nineStar }
+
+    @available(*, deprecated, renamed: "sixtyCycleHour")
+    public func getSixtyCycleHour() -> SixtyCycleHour { sixtyCycleHour }
+
+    @available(*, deprecated, renamed: "recommends")
+    public func getRecommends() -> [Taboo] { recommends }
+
+    @available(*, deprecated, renamed: "avoids")
+    public func getAvoids() -> [Taboo] { avoids }
+
+    @available(*, deprecated, renamed: "minorRen")
+    public func getMinorRen() -> MinorRen { minorRen }
 }
