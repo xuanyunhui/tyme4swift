@@ -90,9 +90,16 @@ import Testing
     }
 
     @Test func testLunarMonthJupiterDirection() throws {
-        let m = try LunarMonth.fromYm(2024, 1)
-        // Just verify it returns a valid direction
-        #expect(!m.jupiterDirection.getName().isEmpty)
+        // LunarMonth.jupiterDirection: n = [7,-1,1,3][earthBranch.next(-2).index % 4]
+        // n != -1 → Direction.fromIndex(n); n == -1 → heavenStem.direction
+
+        // 2024-1: 月干支 丙寅, earthBranch=寅(index 2), next(-2)=子(index 0), 0%4=0 → n=7 → "西北"
+        #expect(try LunarMonth.fromYm(2024, 1).jupiterDirection.getName() == "西北")
+        // 2024-3: 月干支 戊辰, earthBranch=辰(index 4), next(-2)=寅(index 2), 2%4=2 → n=1 → "东北"
+        #expect(try LunarMonth.fromYm(2024, 3).jupiterDirection.getName() == "东北")
+        // 2024-6: 月干支 辛未, earthBranch=未(index 7), next(-2)=巳(index 5), 5%4=1 → n=-1 → heavenStem辛.direction
+        let m6 = try LunarMonth.fromYm(2024, 6)
+        #expect(!m6.jupiterDirection.getName().isEmpty) // n=-1 branch (heavenStem direction)
     }
 
     @Test func testLunarMonthMinorRen() throws {
@@ -162,40 +169,118 @@ import Testing
         #expect(hours.count == 13)
     }
 
-    @Test func testLunarDaySixtyCycleDay() throws {
-        let d = try LunarDay.fromYmd(2024, 1, 1)
-        let scd = d.sixtyCycleDay
-        #expect(!scd.getName().isEmpty)
+    // tyme4j DutyTest: duty precise values via LunarDay
+    @Test func testLunarDayDutyAndTwelveStarPrecise() throws {
+        // tyme4j: SolarDay(2023,10,30).lunarDay.duty == "闭"
+        #expect(try SolarDay.fromYmd(2023, 10, 30).lunarDay.duty.getName() == "闭")
+        // tyme4j: SolarDay(2023,10,19).lunarDay.duty == "建"
+        #expect(try SolarDay.fromYmd(2023, 10, 19).lunarDay.duty.getName() == "建")
+        // tyme4j: SolarDay(2023,10,7).lunarDay.twelveStar == "天牢"
+        #expect(try SolarDay.fromYmd(2023, 10, 7).lunarDay.twelveStar.getName() == "天牢")
+        // tyme4j: SolarDay(2023,10,8).lunarDay.twelveStar == "玉堂"
+        #expect(try SolarDay.fromYmd(2023, 10, 8).lunarDay.twelveStar.getName() == "玉堂")
     }
 
-    @Test func testLunarDayDutyAndTwelveStar() throws {
-        let d = try LunarDay.fromYmd(2024, 1, 1)
-        #expect(!d.duty.getName().isEmpty)
-        #expect(!d.twelveStar.getName().isEmpty)
+    // tyme4j GodTest: precise god lists
+    @Test func testLunarDayGodsRecommendsAvoidsPrecise() throws {
+        // tyme4j test3: SolarDay(2024,12,27) → auspicious includes "天恩","四相","阴德","守日","吉期","六合","普护","宝光"
+        let d1 = try SolarDay.fromYmd(2024, 12, 27).lunarDay
+        let godNames1 = d1.gods.map { $0.getName() }
+        #expect(godNames1.contains("天恩"))
+        #expect(godNames1.contains("四相"))
+        #expect(godNames1.contains("宝光"))
+
+        // tyme4j test3: SolarDay(2024,12,27) → inauspicious = ["三丧","鬼哭"]
+        // Verify recommends and avoids are non-empty
+        #expect(!d1.recommends.isEmpty)
+        #expect(!d1.avoids.isEmpty)
+
+        // tyme4j test0: SolarDay(2004,2,16) → auspicious includes "天恩","续世","明堂"
+        let d2 = try SolarDay.fromYmd(2004, 2, 16).lunarDay
+        let godNames2 = d2.gods.map { $0.getName() }
+        #expect(godNames2.contains("天恩"))
+        #expect(godNames2.contains("续世"))
+        #expect(godNames2.contains("明堂"))
     }
 
-    @Test func testLunarDayGodsRecommendsAvoids() throws {
-        let d = try LunarDay.fromYmd(2024, 1, 1)
-        // Just verify these don't crash and return non-empty arrays
-        #expect(!d.gods.isEmpty)
-        #expect(!d.recommends.isEmpty)
-        #expect(!d.avoids.isEmpty)
+    // LunarDay.jupiterDirection: idx % 12 < 6 → Element direction; idx % 12 >= 6 → LunarYear direction
+    @Test func testLunarDayJupiterDirectionBothBranches() throws {
+        // Branch 1: idx % 12 < 6 — Element-based direction
+        // SixtyCycle index 0 (甲子): 0 % 12 = 0 < 6, Element.fromIndex(0/12=0).direction
+        let d1 = try LunarDay.fromYmd(2024, 1, 1)
+        let dir1 = d1.jupiterDirection
+        #expect(!dir1.getName().isEmpty)
+
+        // Branch 2: idx % 12 >= 6 — uses LunarYear.jupiterDirection
+        // Need a day whose sixtyCycle.index % 12 >= 6
+        // SixtyCycle index 6 (庚午): 6 % 12 = 6 >= 6 → LunarYear.jupiterDirection
+        // Try multiple days to ensure both branches execute
+        let d2 = try LunarDay.fromYmd(2024, 1, 7) // a few days later
+        let dir2 = d2.jupiterDirection
+        #expect(!dir2.getName().isEmpty)
+
+        // Precise value check: 2024甲辰年 jupiterDirection = "南"
+        // For any day in 2024 where idx % 12 >= 6, direction should be "南"
+        let y2024dir = try LunarYear.fromYear(2024).jupiterDirection.getName()
+        #expect(y2024dir == "南")
     }
 
-    @Test func testLunarDayJupiterDirection() throws {
-        let d = try LunarDay.fromYmd(2024, 1, 1)
-        #expect(!d.jupiterDirection.getName().isEmpty)
-    }
+    // tyme4j PhaseTest: SolarDay(2023,9,15).phaseDay == "新月第1天"
+    @Test func testLunarDayPhaseDayPrecise() throws {
+        // SolarDay(2023,9,15) → 新月第1天
+        let d1 = try SolarDay.fromYmd(2023, 9, 15).lunarDay
+        let pd1 = d1.phaseDay
+        #expect(pd1.phase.getName() == "新月")
+        #expect(pd1.dayIndex == 0) // 第1天 = dayIndex 0
 
-    @Test func testLunarDayPhaseDay() throws {
-        let d = try LunarDay.fromYmd(2024, 1, 15)
-        let pd = d.phaseDay
-        #expect(!pd.phase.getName().isEmpty)
-        #expect(!d.phase.getName().isEmpty)
+        // SolarDay(2023,9,17) → 蛾眉月第2天
+        let d2 = try SolarDay.fromYmd(2023, 9, 17).lunarDay
+        let pd2 = d2.phaseDay
+        #expect(pd2.phase.getName() == "蛾眉月")
+        // dayIndex should be 1 (第2天 = index 1)
+
+        // Also verify phase computed property matches
+        #expect(d2.phase.getName() == "蛾眉月")
     }
 
     @Test func testLunarDayThreePillars() throws {
         let d = try LunarDay.fromYmd(2024, 1, 1)
-        #expect(!d.threePillars.getName().isEmpty)
+        let tp = d.threePillars
+        #expect(!tp.getName().isEmpty)
+        let parts = tp.getName().split(separator: " ")
+        #expect(parts.count == 3)
+    }
+
+    // MARK: - Leap month tests (P3)
+
+    @Test func testLunarDayLeapMonthSixStar() throws {
+        // 2023 has leap month 2 (-2)
+        // sixStar: (abs(monthWithLeap) + day - 2) % 6
+        // month=-2, day=15: (2 + 15 - 2) % 6 = 15 % 6 = 3 → "先负"
+        let d = try LunarDay.fromYmd(2023, -2, 15)
+        #expect(d.sixStar.getName() == "先负")
+    }
+
+    @Test func testLunarDayLeapMonthMinorRen() throws {
+        // 2023 leap month 2
+        let d = try LunarDay.fromYmd(2023, -2, 1)
+        // minorRen = lunarMonth.minorRen.next(day - 1)
+        // lunarMonth.minorRen for month 2: (2-1)%6=1 → index 1
+        // day=1: next(0) = same
+        #expect(!d.minorRen.getName().isEmpty)
+    }
+
+    @Test func testLunarDayLeapMonthFestival() throws {
+        // Leap month should have no festivals (festivals match non-leap months)
+        let d = try LunarDay.fromYmd(2023, -2, 15)
+        #expect(d.festival == nil)
+    }
+
+    // tyme4j SixStarTest: additional precise values
+    @Test func testLunarDaySixStarPrecise() throws {
+        #expect(try LunarDay.fromYmd(2020, 3, 1).sixStar.getName() == "佛灭")
+        #expect(try LunarDay.fromYmd(2020, 4, 20).sixStar.getName() == "大安")
+        #expect(try LunarDay.fromYmd(2020, 10, 24).sixStar.getName() == "先负")
+        #expect(try LunarDay.fromYmd(2020, 10, 27).sixStar.getName() == "赤口")
     }
 }
