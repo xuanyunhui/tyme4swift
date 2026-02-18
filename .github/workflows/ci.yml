@@ -22,6 +22,7 @@ jobs:
 
   build-and-test:
     name: Build and Test
+    needs: lint
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
