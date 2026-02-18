@@ -333,6 +333,10 @@ import Testing
         // 2024-4-22 00:00 → 宜["嫁娶","交易","开市","安床","祭祀","求财"]
         let r2 = try SolarTime.fromYmdHms(2024, 4, 22, 0, 0, 0).lunarHour.recommends
         #expect(r2.map { $0.getName() } == ["嫁娶", "交易", "开市", "安床", "祭祀", "求财"])
+
+        // tyme4j TabooTest test12: 2024-4-22 00:00 → 忌
+        let a2 = try SolarTime.fromYmdHms(2024, 4, 22, 0, 0, 0).lunarHour.avoids
+        #expect(a2.map { $0.getName() } == ["出行", "移徙", "赴任", "词讼", "祈福", "修造", "求嗣"])
     }
 
     @Test func testLunarHourMinorRen() throws {

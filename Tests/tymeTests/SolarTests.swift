@@ -194,6 +194,24 @@ import Testing
         #expect(t2.phase.getName() == "残月")
     }
 
+    // MARK: - SolarTime.phenology
+
+    @Test func testSolarTimePhenology() throws {
+        // tyme4j PhenologyTest test4: 时刻边界测试
+        #expect(try SolarTime.fromYmdHms(2025, 12, 26, 20, 49, 38).phenology.getName() == "蚯蚓结")
+        #expect(try SolarTime.fromYmdHms(2025, 12, 26, 20, 49, 56).phenology.getName() == "麋角解")
+    }
+
+    @Test func testPhenologyJulianDay() throws {
+        // tyme4j PhenologyTest test2: Phenology.fromIndex(2026, 1) → julianDay → "2025年12月26日"
+        let p = Phenology.fromIndex(2026, 1)
+        #expect(p.getName() == "麋角解")
+        let jdSolarDay = p.julianDay.solarDay
+        #expect(jdSolarDay.year == 2025)
+        #expect(jdSolarDay.month == 12)
+        #expect(jdSolarDay.day == 26)
+    }
+
     // MARK: - SolarYear.isLeap
 
     @Test func testSolarYearIsLeap() throws {
