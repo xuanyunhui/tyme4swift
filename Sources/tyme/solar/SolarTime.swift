@@ -74,6 +74,24 @@ public final class SolarTime: SecondUnit, Tyme {
         return minute != target.minute ? minute < target.minute : second < target.second
     }
 
+    /// 干支时辰
+    public var sixtyCycleHour: SixtyCycleHour {
+        SixtyCycleHour.fromSolarTime(self)
+    }
+
+    /// 月相
+    public var phase: Phase {
+        let m = lunarHour.lunarDay.lunarMonth.next(1)
+        var p = Phase.fromIndex(m.year, m.monthWithLeap, 0)
+        var guardCount = 0
+        while p.solarTime.isAfter(self) {
+            guardCount += 1
+            if guardCount > 50 { break } // Phase cycle < 30 days; 50 steps is impossible
+            p = p.next(-1)
+        }
+        return p
+    }
+
     @available(*, deprecated, renamed: "julianDay")
     public func getJulianDay() -> JulianDay { julianDay }
 
@@ -85,6 +103,12 @@ public final class SolarTime: SecondUnit, Tyme {
 
     @available(*, deprecated, renamed: "term")
     public func getTerm() -> SolarTerm { term }
+
+    @available(*, deprecated, renamed: "sixtyCycleHour")
+    public func getSixtyCycleHour() -> SixtyCycleHour { sixtyCycleHour }
+
+    @available(*, deprecated, renamed: "phase")
+    public func getPhase() -> Phase { phase }
 }
 
 extension SolarTime: Codable {

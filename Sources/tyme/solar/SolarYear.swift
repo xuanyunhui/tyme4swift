@@ -18,6 +18,12 @@ public final class SolarYear: YearUnit, Tyme {
     public var seasons: [SolarSeason] { (0..<4).map { try! SolarSeason(year: year, index: $0) } }
     public var halfYears: [SolarHalfYear] { (0..<2).map { try! SolarHalfYear(year: year, index: $0) } }
 
+    /// 是否闰年
+    public var isLeap: Bool { SolarUtil.isLeapYear(year) }
+
+    /// 藏历年
+    public var tibetanYear: TibetanYear { TibetanYear.fromYear(year) }
+
     public func getSolarMonth(_ month: Int) -> SolarMonth { try! SolarMonth(year: year, month: month) }
 
     public func next(_ n: Int) -> SolarYear { try! SolarYear(year: year + n) }
@@ -36,4 +42,10 @@ public final class SolarYear: YearUnit, Tyme {
 
     @available(*, deprecated, renamed: "halfYears")
     public func getHalfYears() -> [SolarHalfYear] { halfYears }
+
+    @available(*, deprecated, renamed: "isLeap")
+    public func getIsLeap() -> Bool { isLeap }
+
+    @available(*, deprecated, renamed: "tibetanYear")
+    public func getTibetanYear() -> TibetanYear { tibetanYear }
 }
