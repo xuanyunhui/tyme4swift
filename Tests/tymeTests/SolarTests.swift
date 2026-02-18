@@ -118,9 +118,11 @@ import Testing
     // MARK: - SolarDay.hideHeavenStemDay
 
     @Test func testHideHeavenStemDay() throws {
-        let d = try SolarDay.fromYmd(2024, 1, 1).hideHeavenStemDay
-        #expect(d.hideHeavenStem.heavenStem.getName().count > 0)
-        #expect(d.dayIndex >= 0)
+        let d1 = try SolarDay.fromYmd(2024, 11, 7).hideHeavenStemDay
+        #expect(d1.description == "戊土第1天")
+
+        let d2 = try SolarDay.fromYmd(2024, 12, 4).hideHeavenStemDay
+        #expect(d2.description == "壬水第16天")
     }
 
     // MARK: - SolarDay.indexInYear
@@ -142,8 +144,12 @@ import Testing
     // MARK: - SolarDay.phaseDay / phase
 
     @Test func testPhaseDay() throws {
-        let d = try SolarDay.fromYmd(2024, 1, 15).phaseDay
-        #expect(d.phase.getName().count > 0)
+        let d1 = try SolarDay.fromYmd(2023, 9, 15).phaseDay
+        #expect(d1.description == "新月第1天")
+
+        let d2 = try SolarDay.fromYmd(2023, 9, 17).phaseDay
+        #expect(d2.phase.getName() == "蛾眉月")
+        #expect(d2.dayIndex == 1)
     }
 
     // MARK: - SolarDay.legalHoliday
@@ -173,17 +179,19 @@ import Testing
     // MARK: - SolarTime.sixtyCycleHour
 
     @Test func testSolarTimeSixtyCycleHour() throws {
-        let t = try SolarTime.fromYmdHms(2024, 1, 1, 12, 0, 0)
+        let t = try SolarTime.fromYmdHms(2025, 2, 3, 23, 0, 0)
         let h = t.sixtyCycleHour
-        #expect(h.sixtyCycle.getName().count > 0)
+        #expect(h.sixtyCycle.getName() == "甲子")
     }
 
     // MARK: - SolarTime.phase
 
     @Test func testSolarTimePhase() throws {
-        let t = try SolarTime.fromYmdHms(2024, 1, 15, 12, 0, 0)
-        let p = t.phase
-        #expect(p.getName().count > 0)
+        let t1 = try SolarTime.fromYmdHms(2025, 9, 22, 4, 0, 0)
+        #expect(t1.phase.getName() == "蛾眉月")
+
+        let t2 = try SolarTime.fromYmdHms(2025, 9, 22, 3, 0, 0)
+        #expect(t2.phase.getName() == "残月")
     }
 
     // MARK: - SolarYear.isLeap
@@ -200,7 +208,8 @@ import Testing
 
     @Test func testSolarYearTibetanYear() throws {
         let ty = try SolarYear.fromYear(2024).tibetanYear
-        #expect(ty.getName().count > 0)
+        #expect(ty.getName() == "第17绕迥木龙年")
         #expect(ty.year == 2024)
+        #expect(ty.rabByungCycle == 17)
     }
 }
