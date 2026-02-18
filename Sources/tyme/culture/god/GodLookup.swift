@@ -1,5 +1,7 @@
 import Foundation
 
+// swiftlint:disable line_length
+
 /// 神煞查找表
 /// God lookup table for querying deities and spirits based on SixtyCycle combinations
 public enum GodLookup {

@@ -1,5 +1,7 @@
 import Foundation
 
+// swiftlint:disable line_length
+
 public final class LunarYear: YearUnit, Tyme {
     private static let chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_@"
 

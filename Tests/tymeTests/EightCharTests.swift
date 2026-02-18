@@ -191,6 +191,6 @@ import Testing
         // without needing to call getLunarDay(), so no crash.
         let threePillars = ThreePillars(yearName: "甲子", monthName: "甲子", dayName: "甲子")
         let solarDays = threePillars.getSolarDays(startYear: 1900, endYear: 2200)
-        #expect(solarDays.count == 0)
+        #expect(solarDays.isEmpty)
     }
 }

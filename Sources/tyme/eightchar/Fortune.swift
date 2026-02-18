@@ -8,7 +8,7 @@ public final class Fortune {
     public let branch: EarthBranch
     public let startAge: Int
     public let endAge: Int
-    
+
     /// 初始化大运
     /// - Parameters:
     ///   - index: 大运序号 (0-9)
@@ -22,23 +22,23 @@ public final class Fortune {
         self.startAge = startAge
         self.endAge = startAge + 9
     }
-    
+
     public func getStemName() -> String {
         stem.getName()
     }
-    
+
     public func getBranchName() -> String {
         branch.getName()
     }
-    
+
     public func getFortuneString() -> String {
         return "\(getStemName())\(getBranchName())"
     }
-    
+
     public func getYearRange() -> String {
         return "\(startAge)-\(endAge)"
     }
-    
+
     /// Check if a given age falls within this fortune period
     public func containsAge(_ age: Int) -> Bool {
         return age >= startAge && age <= endAge

@@ -1,5 +1,9 @@
 import Foundation
 
+// swiftlint:disable line_length
+// swiftlint:disable cyclomatic_complexity
+// swiftlint:disable function_body_length
+
 /// 法定假日（自2001-12-29起）
 /// Legal holidays in China (since 2001-12-29), including compensatory workdays.
 public final class LegalHoliday: AbstractTyme {
