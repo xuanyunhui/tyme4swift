@@ -20,22 +20,32 @@ public final class Phenology: LoopTyme {
         "螳螂生", "鵙始鸣", "反舌无声",
         "鹿角解", "蜩始鸣", "半夏生",
         "温风至", "蟋蟀居壁", "鹰始挚",
-        "腐草为萤", "土润溽暑", "大雨时行",
+        "腐草为萤", "土润溽暑", "大雨行时",
         "凉风至", "白露降", "寒蝉鸣",
         "鹰乃祭鸟", "天地始肃", "禾乃登",
         "鸿雁来", "玄鸟归", "群鸟养羞",
         "雷始收声", "蛰虫坯户", "水始涸",
-        "鸿雁来宾", "雀入大水为蛤", "菊有黄华",
+        "鸿雁来宾", "雀入大水为蛤", "菊有黄花",
         "豺乃祭兽", "草木黄落", "蛰虫咸俯",
         "水始冰", "地始冻", "雉入大水为蜃",
-        "虹藏不见", "天气上升地气下降", "闭塞成冬",
+        "虹藏不见", "天气上升地气下降", "闭塞而成冬",
         "鹖鴠不鸣", "虎始交", "荔挺出"
     ]
 
-    /// Initialize with index
-    /// - Parameter index: Phenology index (0-71)
-    public convenience init(index: Int) {
-        self.init(names: Phenology.NAMES, index: index)
+    /// 年
+    public private(set) var year: Int
+
+    /// Initialize with year and index (aligned with tyme4j)
+    public init(year: Int, index: Int) {
+        let size = Phenology.NAMES.count
+        self.year = (year * size + index) / size
+        super.init(names: Phenology.NAMES, index: index)
+    }
+
+    /// Required initializer from LoopTyme (no year context, year = 0)
+    public required init(names: [String], index: Int) {
+        self.year = 0
+        super.init(names: names, index: index)
     }
 
     /// Initialize with name
@@ -44,16 +54,20 @@ public final class Phenology: LoopTyme {
         try self.init(names: Phenology.NAMES, name: name)
     }
 
-    /// Required initializer from LoopTyme
-    public required init(names: [String], index: Int) {
-        super.init(names: names, index: index)
+    /// 儒略日
+    public var julianDay: JulianDay {
+        let t = ShouXingUtil.saLonT((Double(year) - 2000.0 + (Double(index) - 18.0) * 5.0 / 360.0 + 1.0) * 2.0 * .pi)
+        return JulianDay.fromJulianDay(t * 36525.0 + JulianDay.J2000 + 8.0 / 24.0 - ShouXingUtil.dtT(t * 36525.0))
     }
 
-    /// Get Phenology from index
-    /// - Parameter index: Phenology index (0-71)
-    /// - Returns: Phenology instance
+    /// Get Phenology from year and index
+    public static func fromIndex(_ year: Int, _ index: Int) -> Phenology {
+        return Phenology(year: year, index: index)
+    }
+
+    /// Get Phenology from index (no year context)
     public static func fromIndex(_ index: Int) -> Phenology {
-        return Phenology(index: index)
+        return Phenology(names: Phenology.NAMES, index: index)
     }
 
     /// Get Phenology from name
@@ -63,11 +77,11 @@ public final class Phenology: LoopTyme {
         return try Phenology(name: name)
     }
 
-    /// Get next phenology
-    /// - Parameter n: Number of steps to advance
-    /// - Returns: Next Phenology instance
+    /// Get next phenology (carries year context)
     public override func next(_ n: Int) -> Phenology {
-        return Phenology.fromIndex(nextIndex(n))
+        let size = Phenology.NAMES.count
+        let i = index + n
+        return Phenology.fromIndex((year * size + i) / size, indexOf(i, size))
     }
 
     public var threePhenology: ThreePhenology { ThreePhenology.fromIndex(index % 3) }
@@ -78,4 +92,7 @@ public final class Phenology: LoopTyme {
 
     @available(*, deprecated, renamed: "solarTermIndex")
     public func getSolarTermIndex() -> Int { solarTermIndex }
+
+    @available(*, deprecated, renamed: "julianDay")
+    public func getJulianDay() -> JulianDay { julianDay }
 }

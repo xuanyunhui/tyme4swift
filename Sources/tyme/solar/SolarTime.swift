@@ -104,8 +104,20 @@ public final class SolarTime: SecondUnit, Tyme {
     @available(*, deprecated, renamed: "term")
     public func getTerm() -> SolarTerm { term }
 
+    /// 物候（七十二候）
+    public var phenology: Phenology {
+        var p = solarDay.phenology
+        if isBefore(p.julianDay.solarTime) {
+            p = p.next(-1)
+        }
+        return p
+    }
+
     @available(*, deprecated, renamed: "sixtyCycleHour")
     public func getSixtyCycleHour() -> SixtyCycleHour { sixtyCycleHour }
+
+    @available(*, deprecated, renamed: "phenology")
+    public func getPhenology() -> Phenology { phenology }
 
     @available(*, deprecated, renamed: "phase")
     public func getPhase() -> Phase { phase }

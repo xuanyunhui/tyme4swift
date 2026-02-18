@@ -210,7 +210,7 @@ public final class SolarDay: DayUnit, Tyme {
         var idx = dayIdx / 5
         if idx > 2 { idx = 2 }
         let t = d.solarTerm
-        return PhenologyDay(phenology: Phenology.fromIndex(t.index * 3 + idx), dayIndex: dayIdx - idx * 5)
+        return PhenologyDay(phenology: Phenology.fromIndex(t.year, t.index * 3 + idx), dayIndex: dayIdx - idx * 5)
     }
 
     /// 物候
