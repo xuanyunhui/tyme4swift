@@ -297,11 +297,13 @@ import Testing
         let last = try RabByungDay.fromYmd(2050, 12, 30)
         let beyond = last.next(100)
         #expect(beyond.year == last.year)
+        #expect(beyond.month == last.month)
         #expect(beyond.day == last.day)
 
         let first = try RabByungDay.fromYmd(1950, 12, 1)
         let before = first.next(-100)
         #expect(before.year == first.year)
+        #expect(before.month == first.month)
         #expect(before.day == first.day)
     }
 
@@ -312,8 +314,10 @@ import Testing
         let d = try SolarDay.fromYmd(1951, 1, 7)
         #expect(d.rabByungDay == nil)
 
-        // 1951-01-08 是第一个合法日
+        // 1951-01-08 是纪元首日（藏历1950年十二月初一）
         let d2 = try SolarDay.fromYmd(1951, 1, 8)
-        #expect(d2.rabByungDay != nil)
+        #expect(d2.rabByungDay?.day == 1)
+        #expect(d2.rabByungDay?.month == 12)
+        #expect(d2.rabByungDay?.isLeap == false)
     }
 }
