@@ -159,6 +159,62 @@ import Testing
         #expect(before.isLeap == first.isLeap)
     }
 
+    // MARK: - RabByungMonth：next() 补充边界测试（Issue #124）
+
+    @Test func testRabByungMonthNext1950Boundary() throws {
+        // 1950/12 是最早有效月，next(-1) 应返回 self，next(1) 应是 1951/正月
+        let m1950_12 = try RabByungMonth.fromYm(1950, 12)
+
+        // next(-1) 返回 self
+        let before = m1950_12.next(-1)
+        #expect(before.year == m1950_12.year)
+        #expect(before.month == m1950_12.month)
+        #expect(before.isLeap == m1950_12.isLeap)
+
+        // next(1) 应是 1951/正月
+        let after = m1950_12.next(1)
+        #expect(after.year == 1951)
+        #expect(after.month == 1)
+        #expect(after.isLeap == false)
+        #expect(after.getName() == "正月")
+    }
+
+    @Test func testRabByungMonthNextZeroIdentity() throws {
+        // next(0) 对普通月和闰月都应返回等值月（year/month/isLeap 不变）
+        let normalMonth = try RabByungMonth.fromYm(2024, 6)
+        let normalZero = normalMonth.next(0)
+        #expect(normalZero.year == normalMonth.year)
+        #expect(normalZero.month == normalMonth.month)
+        #expect(normalZero.isLeap == normalMonth.isLeap)
+        #expect(normalZero.getName() == normalMonth.getName())
+
+        let leapMonth = try RabByungMonth.fromYm(2024, -6)
+        let leapZero = leapMonth.next(0)
+        #expect(leapZero.year == leapMonth.year)
+        #expect(leapZero.month == leapMonth.month)
+        #expect(leapZero.isLeap == leapMonth.isLeap)
+        #expect(leapZero.getName() == leapMonth.getName())
+    }
+
+    @Test func testRabByungMonthLeapConsistency() throws {
+        // 导航到闰月后，isLeap==true，monthWithLeap 为负数
+        let m = try RabByungMonth.fromYm(2024, 1)
+
+        // 导航到闰六月（正月 + 6步）
+        let leapMonth = m.next(6)
+        #expect(leapMonth.isLeap == true)
+        #expect(leapMonth.month == 6)
+        #expect(leapMonth.monthWithLeap == -6)
+        #expect(leapMonth.getName() == "闰六月")
+
+        // 普通月的 monthWithLeap 为正数
+        let normalMonth = try RabByungMonth.fromYm(2024, 6)
+        #expect(normalMonth.isLeap == false)
+        #expect(normalMonth.month == 6)
+        #expect(normalMonth.monthWithLeap == 6)
+        #expect(normalMonth.getName() == "六月")
+    }
+
     // MARK: - RabByungMonth：next() 正常导航
 
     @Test func testRabByungMonthNext() throws {
@@ -168,7 +224,44 @@ import Testing
         #expect(m.next(12).year == 2024)        // 有闰月年：12步不跨年
         #expect(m.next(12).getName() == "十二月")
         #expect(m.next(13).year == 2025)        // 13步才跨年
+        #expect(m.next(13).getName() == "正月")  // 跨年后的第13步是2025年正月
         #expect(m.next(0).getName() == "正月")
+    }
+
+    // MARK: - RabByungMonth：闰月年导航完整覆盖（Issue #118）
+
+    @Test func testRabByungMonthLeapYearNavigation() throws {
+        // 2024年有闰月：leapMonth=6（闰六月）
+        let leapYearMonth6 = try RabByungMonth.fromYm(2024, 6)
+        let leapMonth = try RabByungMonth.fromYm(2024, -6)  // 闰六月
+
+        // 从正月导航到闰月：正月 + 6步 = 闰六月
+        let m1 = try RabByungMonth.fromYm(2024, 1)
+        let afterSixSteps = m1.next(6)
+        #expect(afterSixSteps.month == 6)
+        #expect(afterSixSteps.isLeap == true)
+        #expect(afterSixSteps.getName() == "闰六月")
+
+        // 从闰月出发：next(1) = 七月
+        let leapM6 = try RabByungMonth.fromYm(2024, -6)
+        let nextMonth = leapM6.next(1)
+        #expect(nextMonth.month == 7)
+        #expect(nextMonth.isLeap == false)
+        #expect(nextMonth.getName() == "七月")
+
+        // 从闰月出发：next(-1) = 六月（正月）
+        let prevMonth = leapM6.next(-1)
+        #expect(prevMonth.month == 6)
+        #expect(prevMonth.isLeap == false)
+        #expect(prevMonth.getName() == "六月")
+
+        // 反向穿越：从2025年正月反向13步回到2024年正月
+        let m2025_1 = try RabByungMonth.fromYm(2025, 1)
+        let back13Steps = m2025_1.next(-13)
+        #expect(back13Steps.year == 2024)
+        #expect(back13Steps.month == 1)
+        #expect(back13Steps.isLeap == false)
+        #expect(back13Steps.getName() == "正月")
     }
 
     // MARK: - solarYear Optional（不在 SolarYear 范围内返回 nil）
