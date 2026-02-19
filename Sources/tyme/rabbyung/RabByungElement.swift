@@ -18,6 +18,9 @@ public final class RabByungElement: AbstractCulture {
     /// Initialize with index
     /// - Parameter index: Element index (0-4)
     public init(index: Int) throws {
+        guard index >= 0, index < RabByungElement.NAMES.count else {
+            throw TymeError.invalidIndex(index)
+        }
         self.element = Element.fromIndex(index)
         super.init()
     }
