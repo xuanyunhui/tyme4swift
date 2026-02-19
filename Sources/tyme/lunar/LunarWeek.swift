@@ -5,7 +5,7 @@ public final class LunarWeek: WeekUnit, Tyme {
 
     public static func validate(year: Int, month: Int, index: Int, start: Int) throws {
         try WeekUnit.validate(index: index, start: start)
-        let m = try! LunarMonth.fromYm(year, month)
+        let m = try LunarMonth.fromYm(year, month)
         if index >= m.getWeekCount(start) {
             throw TymeError.invalidIndex(index)
         }
@@ -22,12 +22,22 @@ public final class LunarWeek: WeekUnit, Tyme {
         try LunarWeek(year: year, month: month, index: index, start: start)
     }
 
-    public var lunarMonth: LunarMonth { try! LunarMonth.fromYm(year, month) }
+    public var lunarMonth: LunarMonth {
+        guard let m = try? LunarMonth.fromYm(year, month) else {
+            preconditionFailure("LunarWeek: invalid month calculation")
+        }
+        return m
+    }
 
     public func getName() -> String { LunarWeek.NAMES[index] }
 
     public func next(_ n: Int) -> LunarWeek {
-        if n == 0 { return try! LunarWeek(year: year, month: month, index: index, start: startIndex) }
+        if n == 0 {
+            guard let result = try? LunarWeek(year: year, month: month, index: index, start: startIndex) else {
+                preconditionFailure("LunarWeek: invalid self recreation")
+            }
+            return result
+        }
         var d = index + n
         var m = lunarMonth
         if n > 0 {
@@ -45,11 +55,16 @@ public final class LunarWeek: WeekUnit, Tyme {
                 d += m.getWeekCount(startIndex)
             }
         }
-        return try! LunarWeek(year: m.year, month: m.monthWithLeap, index: d, start: startIndex)
+        guard let result = try? LunarWeek(year: m.year, month: m.monthWithLeap, index: d, start: startIndex) else {
+            preconditionFailure("LunarWeek: invalid next calculation")
+        }
+        return result
     }
 
     public var firstDay: LunarDay {
-        let fd = try! LunarDay.fromYmd(year, month, 1)
+        guard let fd = try? LunarDay.fromYmd(year, month, 1) else {
+            preconditionFailure("LunarWeek: invalid first day calculation")
+        }
         return fd.next(index * 7 - indexOf(fd.week.index - startIndex, 7))
     }
 

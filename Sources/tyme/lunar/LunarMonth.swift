@@ -9,7 +9,7 @@ public final class LunarMonth: MonthUnit, Tyme {
         if month == 0 || month > 12 || month < -12 {
             throw TymeError.invalidMonth(month)
         }
-        if month < 0 && -month != (try! try! LunarYear.fromYear(year)).leapMonth {
+        if month < 0, -month != (try LunarYear.fromYear(year)).leapMonth {
             throw TymeError.invalidMonth(month)
         }
     }
@@ -24,7 +24,12 @@ public final class LunarMonth: MonthUnit, Tyme {
         try LunarMonth(year: year, month: month)
     }
 
-    public var lunarYear: LunarYear { try! LunarYear.fromYear(year) }
+    public var lunarYear: LunarYear {
+        guard let y = try? LunarYear.fromYear(year) else {
+            preconditionFailure("LunarMonth: invalid year")
+        }
+        return y
+    }
     public var monthWithLeap: Int { leap ? -month : month }
     public var indexInYear: Int {
         var index = month - 1
@@ -38,10 +43,13 @@ public final class LunarMonth: MonthUnit, Tyme {
     }
     public var season: LunarSeason { LunarSeason.fromIndex(month - 1) }
     public var sixtyCycle: SixtyCycle {
-        try! SixtyCycle.fromName(
+        guard let sc = try? SixtyCycle.fromName(
             HeavenStem.fromIndex(lunarYear.sixtyCycle.heavenStem.index * 2 + month + 1).getName()
             + EarthBranch.fromIndex(month + 1).getName()
-        )
+        ) else {
+            preconditionFailure("LunarMonth: invalid sixty cycle calculation")
+        }
+        return sc
     }
     public var firstJulianDay: JulianDay {
         JulianDay.fromJulianDay(JulianDay.J2000 + ShouXingUtil.calcShuo(newMoon))
@@ -53,9 +61,19 @@ public final class LunarMonth: MonthUnit, Tyme {
     public var days: [LunarDay] {
         let size = dayCount
         let m = monthWithLeap
-        return (1...size).map { try! LunarDay.fromYmd(year, m, $0) }
+        return (1...size).map { d in
+            guard let day = try? LunarDay.fromYmd(year, m, d) else {
+                preconditionFailure("LunarMonth: invalid day \(d)")
+            }
+            return day
+        }
     }
-    public var firstDay: LunarDay { try! LunarDay.fromYmd(year, monthWithLeap, 1) }
+    public var firstDay: LunarDay {
+        guard let d = try? LunarDay.fromYmd(year, monthWithLeap, 1) else {
+            preconditionFailure("LunarMonth: invalid first day")
+        }
+        return d
+    }
     public var fetus: FetusMonth? { FetusMonth.fromLunarMonth(self) }
 
     /// 九星
@@ -101,7 +119,12 @@ public final class LunarMonth: MonthUnit, Tyme {
     public func getName() -> String { (leap ? "闰" : "") + LunarMonth.NAMES[month - 1] }
 
     public func next(_ n: Int) -> LunarMonth {
-        if n == 0 { return try! LunarMonth(year: year, month: monthWithLeap) }
+        if n == 0 {
+            guard let result = try? LunarMonth(year: year, month: monthWithLeap) else {
+                preconditionFailure("LunarMonth: invalid self recreation")
+            }
+            return result
+        }
         var m = indexInYear + 1 + n
         var y = lunarYear
         if n > 0 {
@@ -123,13 +146,21 @@ public final class LunarMonth: MonthUnit, Tyme {
             if m == lm + 1 { isLeap = true }
             if m > lm { m -= 1 }
         }
-        return try! LunarMonth(year: y.year, month: isLeap ? -m : m)
+        guard let result = try? LunarMonth(year: y.year, month: isLeap ? -m : m) else {
+            preconditionFailure("LunarMonth: invalid next calculation")
+        }
+        return result
     }
 
     public func getWeeks(_ start: Int) -> [LunarWeek] {
         let size = getWeekCount(start)
         let m = monthWithLeap
-        return (0..<size).map { try! LunarWeek.fromYm(year, m, $0, start) }
+        return (0..<size).map { i in
+            guard let w = try? LunarWeek.fromYm(year, m, i, start) else {
+                preconditionFailure("LunarMonth: invalid week \(i)")
+            }
+            return w
+        }
     }
 
     @available(*, deprecated, renamed: "lunarYear")

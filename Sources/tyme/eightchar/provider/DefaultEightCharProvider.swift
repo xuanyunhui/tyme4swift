@@ -60,7 +60,9 @@ public final class DefaultEightCharProvider: EightCharProvider {
 
     /// Get day pillar SixtyCycle
     public func getDaySixtyCycle(year: Int, month: Int, day: Int) -> SixtyCycle {
-        let solarDay = try! SolarDay.fromYmd(year, month, day)
+        guard let solarDay = try? SolarDay.fromYmd(year, month, day) else {
+            preconditionFailure("DefaultEightCharProvider: invalid solar day")
+        }
         let jd = solarDay.julianDay
         let offset = Int(jd.value + 0.5) + 49
         var index = offset % 60

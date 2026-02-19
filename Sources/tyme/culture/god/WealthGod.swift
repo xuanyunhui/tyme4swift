@@ -24,7 +24,12 @@ public final class WealthGod: AbstractCulture {
         return WealthGod.DIRECTIONS[heavenStemIndex]
     }
 
-    public var direction: Direction { try! Direction.fromName(getName()) }
+    public var direction: Direction {
+        guard let d = try? Direction.fromName(getName()) else {
+            preconditionFailure("WealthGod: invalid direction lookup")
+        }
+        return d
+    }
 
     @available(*, deprecated, renamed: "direction")
     public func getDirection() -> Direction { direction }

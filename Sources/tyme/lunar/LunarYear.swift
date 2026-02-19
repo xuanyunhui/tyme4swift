@@ -62,14 +62,19 @@ public final class LunarYear: YearUnit, Tyme {
     public var sixtyCycle: SixtyCycle { SixtyCycle.fromIndex(year - 4) }
     public var leapMonth: Int {
         if year == -1 { return 11 }
-        for (i, years) in LunarYear.leapData.enumerated() {
-            if years.contains(year) { return i + 1 }
+        for (i, years) in LunarYear.leapData.enumerated() where years.contains(year) {
+            return i + 1
         }
         return 0
     }
     public var monthCount: Int { leapMonth < 1 ? 12 : 13 }
     public var dayCount: Int { months.reduce(0) { $0 + $1.dayCount } }
-    public var firstMonth: LunarMonth { try! LunarMonth(year: year, month: 1) }
+    public var firstMonth: LunarMonth {
+        guard let m = try? LunarMonth(year: year, month: 1) else {
+            preconditionFailure("LunarYear: invalid first month")
+        }
+        return m
+    }
     public var months: [LunarMonth] {
         var result: [LunarMonth] = []
         var m = firstMonth
@@ -102,7 +107,12 @@ public final class LunarYear: YearUnit, Tyme {
 
     public func getName() -> String { "农历\(sixtyCycle)年" }
 
-    public func next(_ n: Int) -> LunarYear { try! LunarYear(year: year + n) }
+    public func next(_ n: Int) -> LunarYear {
+        guard let y = try? LunarYear(year: year + n) else {
+            preconditionFailure("LunarYear: invalid next calculation")
+        }
+        return y
+    }
 
     @available(*, deprecated, renamed: "sixtyCycle")
     public func getSixtyCycle() -> SixtyCycle { sixtyCycle }
@@ -122,3 +132,5 @@ public final class LunarYear: YearUnit, Tyme {
     @available(*, deprecated, renamed: "months")
     public func getMonths() -> [LunarMonth] { months }
 }
+
+// swiftlint:enable line_length

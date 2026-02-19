@@ -46,19 +46,25 @@ public final class EightChar: AbstractCulture {
     /// 胎元 — 月柱天干 next(1), 月柱地支 next(3)
     public var fetalOrigin: SixtyCycle {
         let m = month
-        return try! SixtyCycle.fromName(
+        guard let sc = try? SixtyCycle.fromName(
             m.heavenStem.next(1).getName() +
             m.earthBranch.next(3).getName()
-        )
+        ) else {
+            preconditionFailure("EightChar: invalid fetalOrigin calculation")
+        }
+        return sc
     }
 
     /// 胎息 — 日柱天干 next(5), 地支 = 13 - 日柱地支 index
     public var fetalBreath: SixtyCycle {
         let d = day
-        return try! SixtyCycle.fromName(
+        guard let sc = try? SixtyCycle.fromName(
             d.heavenStem.next(5).getName() +
             EarthBranch.fromIndex(13 - d.earthBranch.index).getName()
-        )
+        ) else {
+            preconditionFailure("EightChar: invalid fetalBreath calculation")
+        }
+        return sc
     }
 
     /// 命宫
@@ -69,10 +75,13 @@ public final class EightChar: AbstractCulture {
         if h < 1 { h += 12 }
         let sum = m + h
         let offset = (sum >= 14 ? 26 : 14) - sum
-        return try! SixtyCycle.fromName(
+        guard let sc = try? SixtyCycle.fromName(
             HeavenStem.fromIndex((year.heavenStem.index + 1) * 2 + offset - 1).getName() +
             EarthBranch.fromIndex(offset + 1).getName()
-        )
+        ) else {
+            preconditionFailure("EightChar: invalid ownSign calculation")
+        }
+        return sc
     }
 
     /// 身宫
@@ -81,13 +90,17 @@ public final class EightChar: AbstractCulture {
         if offset < 1 { offset += 12 }
         offset += hour.earthBranch.index + 1
         if offset > 12 { offset -= 12 }
-        return try! SixtyCycle.fromName(
+        guard let sc = try? SixtyCycle.fromName(
             HeavenStem.fromIndex((year.heavenStem.index + 1) * 2 + offset - 1).getName() +
             EarthBranch.fromIndex(offset + 1).getName()
-        )
+        ) else {
+            preconditionFailure("EightChar: invalid bodySign calculation")
+        }
+        return sc
     }
 
     /// 反查公历时刻：给定年份范围，找出所有匹配此八字的 SolarTime
+    // swiftlint:disable:next cyclomatic_complexity
     public func getSolarTimes(startYear: Int, endYear: Int) -> [SolarTime] {
         var result: [SolarTime] = []
         // 月地支距寅月的偏移值
@@ -130,7 +143,9 @@ public final class EightChar: AbstractCulture {
                         mi = solarTime.minute
                         s = solarTime.second
                     }
-                    var time = try! SolarTime.fromYmdHms(targetDay.year, targetDay.month, targetDay.day, hr, mi, s)
+                    guard var time = try? SolarTime.fromYmdHms(targetDay.year, targetDay.month, targetDay.day, hr, mi, s) else {
+                        continue
+                    }
                     if d == 30 {
                         time = time.next(-3600)
                     }

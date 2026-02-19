@@ -35,7 +35,10 @@ public final class SixtyCycleHour: AbstractCulture {
         }
 
         let d = lunarDay.sixtyCycle
-        let monthSixtyCycle = (try! LunarMonth.fromYm(solarYear, 1)).sixtyCycle.next(Int(floor(Double(termOffset) * 0.5)))
+        guard let lunarMonth1 = try? LunarMonth.fromYm(solarYear, 1) else {
+            preconditionFailure("SixtyCycleHour: invalid lunar month calculation")
+        }
+        let monthSixtyCycle = lunarMonth1.sixtyCycle.next(Int(floor(Double(termOffset) * 0.5)))
         let scMonth = SixtyCycleMonth(
             year: SixtyCycleYear.fromYear(lunarYear.year),
             month: monthSixtyCycle

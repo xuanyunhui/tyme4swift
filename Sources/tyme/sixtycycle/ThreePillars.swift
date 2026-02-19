@@ -14,11 +14,12 @@ public final class ThreePillars: AbstractCulture {
     }
 
     public convenience init(yearName: String, monthName: String, dayName: String) {
-        self.init(
-            year: try! SixtyCycle.fromName(yearName),
-            month: try! SixtyCycle.fromName(monthName),
-            day: try! SixtyCycle.fromName(dayName)
-        )
+        guard let y = try? SixtyCycle.fromName(yearName),
+              let m = try? SixtyCycle.fromName(monthName),
+              let d = try? SixtyCycle.fromName(dayName) else {
+            preconditionFailure("ThreePillars: invalid pillar names")
+        }
+        self.init(year: y, month: m, day: d)
     }
 
     /// 公历日列表

@@ -41,6 +41,7 @@ public final class DecadeFortune: AbstractTyme {
     public override func getName() -> String { sixtyCycle.getName() }
 
     public override func next(_ n: Int) -> Self {
+        // swiftlint:disable:next force_cast
         DecadeFortune.fromChildLimit(childLimit, index + n) as! Self
     }
 

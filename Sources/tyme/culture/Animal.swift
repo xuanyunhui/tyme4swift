@@ -4,6 +4,7 @@ import Foundation
 /// Each of the 28 lunar mansions is associated with an animal
 public final class Animal: LoopTyme {
     /// Animal names (动物名称)
+    // swiftlint:disable:next line_length
     public static let NAMES = ["蛟", "龙", "貉", "兔", "狐", "虎", "豹", "獬", "牛", "蝠", "鼠", "燕", "猪", "獝", "狼", "狗", "彘", "鸡", "乌", "猴", "猿", "犴", "羊", "獐", "马", "鹿", "蛇", "蚓"]
 
     /// Initialize with index

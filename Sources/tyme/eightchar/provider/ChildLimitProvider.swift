@@ -7,6 +7,7 @@ public protocol ChildLimitProvider {
 
 /// 童限计算抽象辅助方法
 extension ChildLimitProvider {
+    // swiftlint:disable:next function_parameter_count line_length
     func next(_ birthTime: SolarTime, _ addYear: Int, _ addMonth: Int, _ addDay: Int, _ addHour: Int, _ addMinute: Int, _ addSecond: Int) -> ChildLimitInfo {
         var d = birthTime.day + addDay
         var h = birthTime.hour + addHour
@@ -19,7 +20,10 @@ extension ChildLimitProvider {
         d += h / 24
         h = h % 24
 
-        var sm = try! SolarMonth.fromYm(birthTime.year + addYear, birthTime.month).next(addMonth)
+        guard let baseSm = try? SolarMonth.fromYm(birthTime.year + addYear, birthTime.month) else {
+            preconditionFailure("ChildLimitProvider: invalid solar month")
+        }
+        var sm = baseSm.next(addMonth)
 
         var dc = sm.dayCount
         while d > dc {
@@ -30,7 +34,12 @@ extension ChildLimitProvider {
 
         return ChildLimitInfo(
             startTime: birthTime,
-            endTime: try! SolarTime.fromYmdHms(sm.year, sm.month, d, h, mi, s),
+            endTime: {
+                guard let t = try? SolarTime.fromYmdHms(sm.year, sm.month, d, h, mi, s) else {
+                    preconditionFailure("ChildLimitProvider: invalid end time")
+                }
+                return t
+            }(),
             yearCount: addYear,
             monthCount: addMonth,
             dayCount: addDay,

@@ -6,6 +6,7 @@ public final class SolarFestival: AbstractTyme {
 
     public static let NAMES = ["元旦", "三八妇女节", "植树节", "五一劳动节", "五四青年节", "六一儿童节", "建党节", "八一建军节", "教师节", "国庆节"]
 
+    // swiftlint:disable:next line_length
     public static let DATA = "@00001011950@01003081950@02003121979@03005011950@04005041950@05006011950@06007011941@07008011933@08009101985@09010011950"
 
     /// The festival type (always .day for SolarFestival).

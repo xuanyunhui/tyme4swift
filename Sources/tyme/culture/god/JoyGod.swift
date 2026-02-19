@@ -24,7 +24,12 @@ public final class JoyGod: AbstractCulture {
         return JoyGod.DIRECTIONS[heavenStemIndex % 5]
     }
 
-    public var direction: Direction { try! Direction.fromName(getName()) }
+    public var direction: Direction {
+        guard let d = try? Direction.fromName(getName()) else {
+            preconditionFailure("JoyGod: invalid direction lookup")
+        }
+        return d
+    }
 
     @available(*, deprecated, renamed: "direction")
     public func getDirection() -> Direction { direction }

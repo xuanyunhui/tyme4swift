@@ -39,7 +39,10 @@ public final class SixtyCycleYear: AbstractCulture {
     /// 首月（五虎遁月）
     public var firstMonth: SixtyCycleMonth {
         let h = HeavenStem.fromIndex((sixtyCycle.heavenStem.index + 1) * 2)
-        return SixtyCycleMonth(year: self, month: try! SixtyCycle.fromName(h.getName() + "寅"))
+        guard let sc = try? SixtyCycle.fromName(h.getName() + "寅") else {
+            preconditionFailure("SixtyCycleYear: invalid first month calculation")
+        }
+        return SixtyCycleMonth(year: self, month: sc)
     }
 
     /// 本年所有干支月（12个）

@@ -11,7 +11,12 @@ public final class PhenologyDay: AbstractCultureDay {
         super.init(culture: phenology, dayIndex: dayIndex)
     }
 
-    public var phenology: Phenology { culture as! Phenology }
+    public var phenology: Phenology {
+        guard let result = culture as? Phenology else {
+            preconditionFailure("PhenologyDay: unexpected culture type")
+        }
+        return result
+    }
 
     @available(*, deprecated, renamed: "phenology")
     public func getPhenology() -> Phenology { phenology }

@@ -492,3 +492,6 @@ enum ShouXingUtil {
     }
 
 }
+
+// swiftlint:enable line_length
+// swiftlint:enable type_body_length

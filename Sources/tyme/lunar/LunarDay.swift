@@ -24,7 +24,7 @@ public final class LunarDay: DayUnit, Tyme {
 
     public static func validate(year: Int, month: Int, day: Int) throws {
         if day < 1 { throw TymeError.invalidDay(day) }
-        let m = try! LunarMonth.fromYm(year, month)
+        let m = try LunarMonth.fromYm(year, month)
         if day > m.dayCount { throw TymeError.invalidDay(day) }
     }
 
@@ -41,7 +41,12 @@ public final class LunarDay: DayUnit, Tyme {
         try LunarDay(year: year, month: month, day: day)
     }
 
-    public var lunarMonth: LunarMonth { try! LunarMonth.fromYm(year, monthWithLeap) }
+    public var lunarMonth: LunarMonth {
+        guard let m = try? LunarMonth.fromYm(year, monthWithLeap) else {
+            preconditionFailure("LunarDay: invalid month calculation")
+        }
+        return m
+    }
 
     public func getName() -> String { LunarDay.NAMES[day - 1] }
 
@@ -65,7 +70,10 @@ public final class LunarDay: DayUnit, Tyme {
         let offset = Int(lunarMonth.firstJulianDay.next(day - 12).value)
         let stem = HeavenStem.fromIndex(offset).getName()
         let branch = EarthBranch.fromIndex(offset).getName()
-        return try! SixtyCycle.fromName(stem + branch)
+        guard let sc = try? SixtyCycle.fromName(stem + branch) else {
+            preconditionFailure("LunarDay: invalid sixty cycle calculation")
+        }
+        return sc
     }
     /// The corresponding Gregorian calendar date.
     public var solarDay: SolarDay {
@@ -83,7 +91,13 @@ public final class LunarDay: DayUnit, Tyme {
     public var jupiterDirection: Direction {
         let idx = sixtyCycle.index
         // Safe: year is already validated by LunarDay's throwing initializer
-        return idx % 12 < 6 ? Element.fromIndex(idx / 12).direction : (try! LunarYear.fromYear(year)).jupiterDirection
+        if idx % 12 < 6 {
+            return Element.fromIndex(idx / 12).direction
+        }
+        guard let ly = try? LunarYear.fromYear(year) else {
+            preconditionFailure("LunarDay: invalid year for jupiter direction")
+        }
+        return ly.jupiterDirection
     }
 
     /// 月相第几天
@@ -132,9 +146,15 @@ public final class LunarDay: DayUnit, Tyme {
         // hour values are fixed constants (0, 1, 3, ..., 23)
         let m = monthWithLeap
         var l: [LunarHour] = []
-        l.append(try! LunarHour.fromYmdHms(year, m, day, 0, 0, 0))
+        guard let h0 = try? LunarHour.fromYmdHms(year, m, day, 0, 0, 0) else {
+            preconditionFailure("LunarDay: invalid hour 0")
+        }
+        l.append(h0)
         for i in stride(from: 0, to: 24, by: 2) {
-            l.append(try! LunarHour.fromYmdHms(year, m, day, i + 1, 0, 0))
+            guard let h = try? LunarHour.fromYmdHms(year, m, day, i + 1, 0, 0) else {
+                preconditionFailure("LunarDay: invalid hour \(i + 1)")
+            }
+            l.append(h)
         }
         return l
     }

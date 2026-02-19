@@ -44,7 +44,12 @@ public final class Zone: LoopTyme {
         return Zone.fromIndex(nextIndex(n))
     }
 
-    public var direction: Direction { try! Direction.fromName(getName()) }
+    public var direction: Direction {
+        guard let d = try? Direction.fromName(getName()) else {
+            preconditionFailure("Zone: invalid direction lookup")
+        }
+        return d
+    }
     public var beast: Beast { Beast.fromIndex(index) }
 
     @available(*, deprecated, renamed: "direction")

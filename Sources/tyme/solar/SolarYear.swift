@@ -14,9 +14,30 @@ public final class SolarYear: YearUnit, Tyme {
 
     public var monthCount: Int { 12 }
     public var dayCount: Int { year == 1582 ? 355 : SolarUtil.isLeapYear(year) ? 366 : 365 }
-    public var months: [SolarMonth] { (1...12).map { try! SolarMonth(year: year, month: $0) } }
-    public var seasons: [SolarSeason] { (0..<4).map { try! SolarSeason(year: year, index: $0) } }
-    public var halfYears: [SolarHalfYear] { (0..<2).map { try! SolarHalfYear(year: year, index: $0) } }
+    public var months: [SolarMonth] {
+        (1...12).map { m in
+            guard let month = try? SolarMonth(year: year, month: m) else {
+                preconditionFailure("SolarYear: invalid month \(m)")
+            }
+            return month
+        }
+    }
+    public var seasons: [SolarSeason] {
+        (0..<4).map { i in
+            guard let s = try? SolarSeason(year: year, index: i) else {
+                preconditionFailure("SolarYear: invalid season \(i)")
+            }
+            return s
+        }
+    }
+    public var halfYears: [SolarHalfYear] {
+        (0..<2).map { i in
+            guard let h = try? SolarHalfYear(year: year, index: i) else {
+                preconditionFailure("SolarYear: invalid half year \(i)")
+            }
+            return h
+        }
+    }
 
     /// 是否闰年
     public var isLeap: Bool { SolarUtil.isLeapYear(year) }
@@ -28,9 +49,19 @@ public final class SolarYear: YearUnit, Tyme {
     @available(*, deprecated, renamed: "rabByungYear")
     public var tibetanYear: RabByungYear? { rabByungYear }
 
-    public func getSolarMonth(_ month: Int) -> SolarMonth { try! SolarMonth(year: year, month: month) }
+    public func getSolarMonth(_ month: Int) -> SolarMonth {
+        guard let m = try? SolarMonth(year: year, month: month) else {
+            preconditionFailure("SolarYear: invalid month \(month)")
+        }
+        return m
+    }
 
-    public func next(_ n: Int) -> SolarYear { try! SolarYear(year: year + n) }
+    public func next(_ n: Int) -> SolarYear {
+        guard let y = try? SolarYear(year: year + n) else {
+            preconditionFailure("SolarYear: invalid next calculation")
+        }
+        return y
+    }
 
     @available(*, deprecated, renamed: "monthCount")
     public func getMonthCount() -> Int { monthCount }

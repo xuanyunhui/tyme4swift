@@ -69,7 +69,12 @@ public final class NaYin: LoopTyme {
     }
 
     public var wuXing: String { NaYin.WU_XING[index] }
-    public var element: Element { try! Element.fromName(NaYin.WU_XING[index]) }
+    public var element: Element {
+        guard let e = try? Element.fromName(NaYin.WU_XING[index]) else {
+            preconditionFailure("NaYin: invalid element lookup")
+        }
+        return e
+    }
 
     @available(*, deprecated, renamed: "wuXing")
     public func getWuXing() -> String { wuXing }

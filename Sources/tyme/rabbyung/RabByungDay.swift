@@ -57,6 +57,7 @@ public final class RabByungDay: AbstractTyme {
     }
 
     /// 由饶迥序号、五行、生肖、月、日构造
+    // swiftlint:disable:next line_length
     public static func fromElementZodiac(_ rabByungIndex: Int, _ element: RabByungElement, _ zodiac: Zodiac, _ month: Int, _ day: Int) throws -> RabByungDay {
         let m = try RabByungMonth.fromElementZodiac(rabByungIndex, element, zodiac, month)
         return try RabByungDay(m, day)
