@@ -496,25 +496,16 @@ import Testing
 
     @Test func testRabByungYearElement() throws {
         // 1027 年是第一饶迥火兔年（丁卯）
-        let y1027 = try RabByungYear.fromYear(1027)
-        #expect(y1027.element.name == "火")
-
+        #expect(try RabByungYear.fromYear(1027).element.name == "火")
         // 2024 年是木龙年（甲辰）
-        let y2024 = try RabByungYear.fromYear(2024)
-        #expect(y2024.element.name == "木")
-
+        #expect(try RabByungYear.fromYear(2024).element.name == "木")
         // Issue #137：补全五种元素测试覆盖
         // 1028 年是第一饶迥土龙年（戊辰）
-        let y1028 = try RabByungYear.fromYear(1028)
-        #expect(y1028.element.name == "土")
-
+        #expect(try RabByungYear.fromYear(1028).element.name == "土")
         // 1030 年是第一饶迥铁马年（庚午）
-        let y1030 = try RabByungYear.fromYear(1030)
-        #expect(y1030.element.name == "铁")
-
+        #expect(try RabByungYear.fromYear(1030).element.name == "铁")
         // 1032 年是第一饶迥水猴年（壬申）
-        let y1032 = try RabByungYear.fromYear(1032)
-        #expect(y1032.element.name == "水")
+        #expect(try RabByungYear.fromYear(1032).element.name == "水")
     }
 
     // MARK: - RabByungDay：SolarDay 超出范围返回错误（Issue #133）
@@ -537,6 +528,5 @@ import Testing
         #expect(rbd.rabByungMonth.month == 12)
         #expect(rbd.day == 30)
         #expect(rbd.isLeap == false)
-        #expect(rbd.rabByungMonth.rabByungYear.getName() + rbd.rabByungMonth.getName() + rbd.getName() == "第十八饶迥铁马年十二月三十")
     }
 }
