@@ -165,7 +165,9 @@ import Testing
         let m = try RabByungMonth.fromYm(2024, 1)
         #expect(m.next(1).getName() == "二月")
         #expect(m.next(1).year == 2024)
-        #expect(m.next(13).year == 2025)
+        #expect(m.next(12).year == 2024)        // 有闰月年：12步不跨年
+        #expect(m.next(12).getName() == "十二月")
+        #expect(m.next(13).year == 2025)        // 13步才跨年
         #expect(m.next(0).getName() == "正月")
     }
 
