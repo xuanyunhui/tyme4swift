@@ -48,8 +48,8 @@ public final class RabByungYear: AbstractTyme {
     /// 公历年
     public var year: Int { 1024 + rabByungIndex * 60 + sixtyCycle.index }
 
-    /// 藏历五行
-    public var element: RabByungElement { try! RabByungElement(index: sixtyCycle.heavenStem.element.index) }
+    /// 藏历五行；index 始终在 0-4 范围内，nil 情况实际不可达
+    public var element: RabByungElement? { try? RabByungElement(index: sixtyCycle.heavenStem.element.index) }
 
     /// 生肖
     public var zodiac: Zodiac { sixtyCycle.earthBranch.zodiac }
@@ -74,7 +74,7 @@ public final class RabByungYear: AbstractTyme {
         if s.hasPrefix("一十") {
             s = String(s.dropFirst())
         }
-        return "第\(s)饶迥\(element.getName())\(zodiac.getName())年"
+        return "第\(s)饶迥\(element?.getName() ?? "")\(zodiac.getName())年"
     }
 
     /// 闰月，0表示无闰月
@@ -98,7 +98,9 @@ public final class RabByungYear: AbstractTyme {
     /// 月份数量（含闰月为13，否则12）
     public var monthCount: Int { leapMonth < 1 ? 12 : 13 }
 
-    /// 向前/后导航 n 个藏历年；超出支持范围时返回最近的边界年
+    /// 向前/后导航 n 个藏历年。
+    /// 设计决策：超出饶迥合法范围（rabByungIndex 0-150）时返回 self，而非 throw，
+    /// 保持与 AbstractTyme.next() 非抛出签名一致，调用方可通过 year 属性检测是否发生了截断。
     public override func next(_ n: Int) -> RabByungYear {
         (try? RabByungYear.fromYear(year + n)) ?? self
     }
@@ -115,7 +117,7 @@ public final class RabByungYear: AbstractTyme {
     public func getYear() -> Int { year }
 
     @available(*, deprecated, renamed: "element")
-    public func getElement() -> RabByungElement { element }
+    public func getElement() -> RabByungElement? { element }
 
     @available(*, deprecated, renamed: "zodiac")
     public func getZodiac() -> Zodiac { zodiac }
