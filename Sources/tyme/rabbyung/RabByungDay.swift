@@ -14,6 +14,22 @@ public final class RabByungDay: AbstractTyme {
         "廿六", "廿七", "廿八", "廿九", "三十"
     ]
 
+    /// 历元藏历月（1950年十二月），固定值，不会失败
+    private nonisolated(unsafe) static let epochMonth: RabByungMonth = {
+        guard let m = try? RabByungMonth.fromYm(1950, 12) else {
+            preconditionFailure("RabByungDay: epoch month 1950-12 is always valid")
+        }
+        return m
+    }()
+
+    /// 历元公历日（1951年1月7日），固定值，不会失败
+    private nonisolated(unsafe) static let anchorDay: SolarDay = {
+        guard let d = try? SolarDay.fromYmd(1951, 1, 7) else {
+            preconditionFailure("RabByungDay: anchor day 1951-01-07 is always valid")
+        }
+        return d
+    }()
+
     // MARK: - Stored Properties
 
     /// 藏历月
@@ -116,12 +132,8 @@ public final class RabByungDay: AbstractTyme {
 
     /// 对应的公历日
     public var solarDay: SolarDay {
-        guard let epochMonth = try? RabByungMonth.fromYm(1950, 12),
-              let anchorDay = try? SolarDay.fromYmd(1951, 1, 7) else {
-            preconditionFailure("RabByungDay: epoch values 1950-12 / 1951-01-07 are always valid")
-        }
         var n = 0
-        var cur = epochMonth
+        var cur = Self.epochMonth
         var iterations = 0
         while !(rabByungMonth.year == cur.year && rabByungMonth.monthWithLeap == cur.monthWithLeap) {
             precondition(iterations < 1500, "RabByungDay.solarDay: unexpected infinite loop")
@@ -138,7 +150,7 @@ public final class RabByungDay: AbstractTyme {
             }
         }
         if isLeap { t += 1 }
-        return anchorDay.next(n + t)
+        return Self.anchorDay.next(n + t)
     }
 
     // MARK: - Arithmetic
@@ -152,7 +164,11 @@ public final class RabByungDay: AbstractTyme {
 
     public override func next(_ n: Int) -> RabByungDay {
         if n == 0 { return self }
-        return (try? RabByungDay.fromSolarDay(solarDay.next(n))) ?? self
+        // 超出支持范围（1951-01-08 至 2050 年末）时返回 self
+        guard let result = try? RabByungDay.fromSolarDay(solarDay.next(n)) else {
+            return self
+        }
+        return result
     }
 
     // MARK: - Deprecated API

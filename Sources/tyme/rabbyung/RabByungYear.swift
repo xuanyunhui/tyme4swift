@@ -105,7 +105,11 @@ public final class RabByungYear: AbstractTyme {
     /// 向前/后导航 n 个藏历年；超出饶迥合法范围（rabByungIndex 0-150）时返回 self（当前年），
     /// 保持与 AbstractTyme.next() 非抛出签名一致。
     public override func next(_ n: Int) -> RabByungYear {
-        (try? RabByungYear.fromYear(year + n)) ?? self
+        // 超出有效范围（rabByungIndex 0-150，约 1024-10083 年）时返回 self
+        guard let result = try? RabByungYear.fromYear(year + n) else {
+            return self
+        }
+        return result
     }
 
     // MARK: - Deprecated API
