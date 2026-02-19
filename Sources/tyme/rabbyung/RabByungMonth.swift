@@ -9,7 +9,7 @@ public final class RabByungMonth: AbstractTyme {
     public static let ALIAS = ["神变月", "苦行月", "具香月", "萨嘎月", "作净月", "明净月", "具醉月", "具贤月", "天降月", "持众月", "庄严月", "满意月"]
 
     /// 特殊日数据表：key = gregorianYear * 13 + indexInYear，value = 特殊日数组（正=闰日，负=缺日的绝对值取负）
-    public static let DAYS: [Int: [Int]] = {
+    static let DAYS: [Int: [Int]] = {
         var result = [Int: [Int]]()
         var y = 1950
         var m = 11
@@ -114,8 +114,7 @@ public final class RabByungMonth: AbstractTyme {
     /// 特殊日列表（正=闰日日序，负=缺日日序的负值）
     public var specialDays: [Int] {
         guard let days = RabByungMonth.DAYS[year * 13 + indexInYear] else {
-            assertionFailure("RabByungMonth: missing DAYS entry for year=\(year), indexInYear=\(indexInYear)")
-            return []
+            preconditionFailure("RabByungMonth: missing DAYS entry for year=\(year), indexInYear=\(indexInYear)")
         }
         return days
     }
@@ -139,7 +138,7 @@ public final class RabByungMonth: AbstractTyme {
 
     /// 向前/后导航 n 个藏历月；超出支持范围（1950-2050）时返回 self
     public override func next(_ n: Int) -> RabByungMonth {
-        if n == 0 { return self }
+        if n == 0 { return (try? RabByungMonth.fromYm(year, monthWithLeap)) ?? self }
         var m = indexInYear + 1 + n
         var y = rabByungYear
         if n > 0 {

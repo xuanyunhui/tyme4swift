@@ -42,7 +42,10 @@ public final class RabByungElement: AbstractCulture {
     /// Get next element in cycle
     public func next(_ n: Int) -> RabByungElement {
         let nextElement = element.next(n)
-        return try! RabByungElement(index: nextElement.index)
+        guard let result = try? RabByungElement(index: nextElement.index) else {
+            preconditionFailure("RabByungElement: invalid index \(nextElement.index)")
+        }
+        return result
     }
 
     // MARK: - Five Elements Relationships (五行生克)
