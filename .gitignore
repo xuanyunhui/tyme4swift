@@ -31,3 +31,6 @@ refs
 .vscode
 .gitignore
 .claude/settings.local.json
+
+# Maven build artifacts
+Tools/tyme4j-truth-gen/target/
