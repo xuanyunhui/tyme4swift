@@ -1,9 +1,9 @@
 import Foundation
 
 /// 饶迥五行 (Rab-byung Element)
-/// Tibetan calendar element system using 铁 (iron) instead of 金 (metal)
+/// 藏历五行，用铁代替金
 public final class RabByungElement: AbstractCulture {
-    /// Element names in Tibetan calendar (金→铁)
+    /// 藏历五行名称（金→铁）
     public static let NAMES = ["木", "火", "土", "铁", "水"]
 
     /// Internal element (uses standard Element)

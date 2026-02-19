@@ -10,7 +10,7 @@ public final class SolarYear: YearUnit, Tyme {
         try SolarYear(year: year)
     }
 
-    public func getName() -> String { String(format: "%04d", year) }
+    public func getName() -> String { "\(year)年" }
 
     public var monthCount: Int { 12 }
     public var dayCount: Int { year == 1582 ? 355 : SolarUtil.isLeapYear(year) ? 366 : 365 }

@@ -165,7 +165,7 @@ import Testing
         let m = try RabByungMonth.fromYm(2024, 1)
         #expect(m.next(1).getName() == "二月")
         #expect(m.next(1).year == 2024)
-        #expect(m.next(12).year == 2025)
+        #expect(m.next(13).year == 2025)
         #expect(m.next(0).getName() == "正月")
     }
 
@@ -269,13 +269,15 @@ import Testing
     // MARK: - RabByungDay：tyme4j test7 & test8（连续特殊日）
 
     @Test func testRabByungDayTest7and8() throws {
+        // test7：2025-04-26 = 藏历木蛇年二月廿九
         let d7 = try SolarDay.fromYmd(2025, 4, 26)
         let rbd7 = try #require(d7.rabByungDay)
-        #expect(rbd7.rabByungMonth.getName() + rbd7.getName() == "二月廿九")
+        #expect(rbd7.rabByungMonth.rabByungYear.getName() + rbd7.rabByungMonth.getName() + rbd7.getName() == "第十七饶迥木蛇年二月廿九")
 
+        // test8：2025-04-25 = 藏历木蛇年二月廿七（廿八为缺日）
         let d8 = try SolarDay.fromYmd(2025, 4, 25)
         let rbd8 = try #require(d8.rabByungDay)
-        #expect(rbd8.rabByungMonth.getName() + rbd8.getName() == "二月廿七")
+        #expect(rbd8.rabByungMonth.rabByungYear.getName() + rbd8.rabByungMonth.getName() + rbd8.getName() == "第十七饶迥木蛇年二月廿七")
     }
 
     // MARK: - RabByungDay：subtract & next
@@ -319,5 +321,64 @@ import Testing
         #expect(d2.rabByungDay?.day == 1)
         #expect(d2.rabByungDay?.month == 12)
         #expect(d2.rabByungDay?.isLeap == false)
+
+        // 2051-02-12 超出上界（最后一天是 2051-02-11），应返回 nil
+        let d3 = try SolarDay.fromYmd(2051, 2, 12)
+        #expect(d3.rabByungDay == nil)
+    }
+
+    // MARK: - RabByungDay：init 错误路径（Issue #108）
+
+    @Test func testRabByungDayValidation() throws {
+        let m = try RabByungMonth.fromYm(1950, 12)
+        // 1950/12: leapDays=[16], missDays=[21]
+
+        // day=0 无效
+        #expect(throws: TymeError.self) { _ = try RabByungDay(m, 0) }
+
+        // day=31 超出范围（1-30）
+        #expect(throws: TymeError.self) { _ = try RabByungDay(m, 31) }
+
+        // day=-31 超出范围
+        #expect(throws: TymeError.self) { _ = try RabByungDay(m, -31) }
+
+        // 缺日：1950/12 第21日为缺日（missDays=[21]），正日 21 不可构建
+        #expect(throws: TymeError.self) { _ = try RabByungDay(m, 21) }
+
+        // 非闰日传负值（isLeap=true）：1950/12 leapDays=[16]，-17 不在闰日集合中
+        #expect(throws: TymeError.self) { _ = try RabByungDay(m, -17) }
+
+        // 正常日：第16日（正日）和闰十六日均有效
+        #expect(throws: Never.self) { _ = try RabByungDay(m, 16) }
+        #expect(throws: Never.self) { _ = try RabByungDay(m, -16) }
+    }
+
+    // MARK: - RabByungDay：next(0) 返回 self（Issue #108）
+
+    @Test func testRabByungDayNextZero() throws {
+        let d = try RabByungDay.fromYmd(2025, 2, 25)
+        let d0 = d.next(0)
+        // next(0) 直接返回 self
+        #expect(d0 === d)
+        #expect(d0.year == d.year)
+        #expect(d0.month == d.month)
+        #expect(d0.day == d.day)
+        #expect(d0.isLeap == d.isLeap)
+    }
+
+    // MARK: - RabByungDay：dayWithLeap 符号约定（Issue #108）
+
+    @Test func testRabByungDayDayWithLeap() throws {
+        // 普通日：dayWithLeap 为正数
+        let normal = try RabByungDay.fromYmd(1950, 12, 1)
+        #expect(normal.dayWithLeap == 1)
+        #expect(normal.isLeap == false)
+
+        // 闰日：dayWithLeap 为负数（-16 表示闰十六）
+        let m = try RabByungMonth.fromYm(1950, 12)
+        let leap = try RabByungDay(m, -16)
+        #expect(leap.dayWithLeap == -16)
+        #expect(leap.isLeap == true)
+        #expect(leap.day == 16)
     }
 }
