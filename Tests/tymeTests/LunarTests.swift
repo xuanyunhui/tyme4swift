@@ -64,8 +64,8 @@ import Testing
 
     @Test func testLunarYearJupiterDirection() throws {
         let y2024 = try LunarYear.fromYear(2024)
-        // 2024甲辰年，地支辰index=4，方向表[4]=3，Direction index 3 = "南"
-        #expect(y2024.jupiterDirection.getName() == "南")
+        // 2024甲辰年，地支辰index=4，方向表[4]=3，Direction index 3 = "东南"
+        #expect(y2024.jupiterDirection.getName() == "东南")
     }
 
     @Test func testLunarYearKitchenGodSteed() throws {
@@ -93,10 +93,10 @@ import Testing
         // LunarMonth.jupiterDirection: n = [7,-1,1,3][earthBranch.next(-2).index % 4]
         // n != -1 → Direction.fromIndex(n); n == -1 → heavenStem.direction
 
-        // 2024-1: 月干支 丙寅, earthBranch=寅(index 2), next(-2)=子(index 0), 0%4=0 → n=7 → "西北"
-        #expect(try LunarMonth.fromYm(2024, 1).jupiterDirection.getName() == "西北")
-        // 2024-3: 月干支 戊辰, earthBranch=辰(index 4), next(-2)=寅(index 2), 2%4=2 → n=1 → "东北"
-        #expect(try LunarMonth.fromYm(2024, 3).jupiterDirection.getName() == "东北")
+        // 2024-1: 月干支 丙寅, earthBranch=寅(index 2), next(-2)=子(index 0), 0%4=0 → n=7 → "东北"
+        #expect(try LunarMonth.fromYm(2024, 1).jupiterDirection.getName() == "东北")
+        // 2024-3: 月干支 戊辰, earthBranch=辰(index 4), next(-2)=寅(index 2), 2%4=2 → n=1 → "西南"
+        #expect(try LunarMonth.fromYm(2024, 3).jupiterDirection.getName() == "西南")
         // 2024-6: 月干支 辛未, earthBranch=未(index 7), next(-2)=巳(index 5), 5%4=1 → n=-1 → heavenStem辛.direction
         let m6 = try LunarMonth.fromYm(2024, 6)
         #expect(m6.jupiterDirection.getName() == "西") // n=-1 branch → heavenStem辛.direction = "西"
@@ -219,10 +219,10 @@ import Testing
         let dir2 = d2.jupiterDirection
         #expect(!dir2.getName().isEmpty)
 
-        // Precise value check: 2024甲辰年 jupiterDirection = "南"
-        // For any day in 2024 where idx % 12 >= 6, direction should be "南"
+        // Precise value check: 2024甲辰年 jupiterDirection = "东南"
+        // For any day in 2024 where idx % 12 >= 6, direction should be "东南"
         let y2024dir = try LunarYear.fromYear(2024).jupiterDirection.getName()
-        #expect(y2024dir == "南")
+        #expect(y2024dir == "东南")
     }
 
     // tyme4j PhaseTest: SolarDay(2023,9,15).phaseDay == "新月第1天"
@@ -271,9 +271,12 @@ import Testing
     }
 
     @Test func testLunarDayLeapMonthFestival() throws {
-        // Leap month should have no festivals (festivals match non-leap months)
+        // Leap month DAY-type festivals don't match, but TERM-type festivals (e.g. 清明)
+        // can still occur since they are based on the solar date, not the lunar month.
+        // 2023年闰二月十五日 falls on 清明
         let d = try LunarDay.fromYmd(2023, -2, 15)
-        #expect(d.festival == nil)
+        #expect(d.festival != nil)
+        #expect(d.festival?.getName() == "清明节")
     }
 
     // tyme4j SixStarTest: additional precise values

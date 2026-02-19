@@ -60,14 +60,14 @@ struct Phase3AlignmentTests {
     }
 
     // Phase.solarDay
+    // tyme4j: Phase.fromName(2025, 7, "下弦月").getSolarTime() == "2025年9月14日 18:32:57"
     @Test func testPhaseSolarDay() throws {
-        // 下弦月的 solarDay (odd index → next day from start)
+        // 下弦月 index=6 (even), solarDay returns start day without +1
         let phase = try Phase.fromName(2025, 7, "下弦月")
         let sd = phase.solarDay
         #expect(sd.year == 2025)
         #expect(sd.month == 9)
-        // solarDay for odd index adds 1 day to start
-        #expect(sd.day == 15)
+        #expect(sd.day == 14)
     }
 
     // MARK: - SixtyCycleYear (精确值断言)

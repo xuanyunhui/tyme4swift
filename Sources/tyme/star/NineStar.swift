@@ -117,6 +117,10 @@ public final class NineStar: LoopTyme {
     @available(*, deprecated, renamed: "inauspicious")
     public func isInauspicious() -> Bool { inauspicious }
 
+    public override var description: String {
+        getName() + element.getName()
+    }
+
     @available(*, deprecated, renamed: "fullName")
     public func getFullName() -> String { fullName }
 
