@@ -83,6 +83,9 @@ public final class SolarDay: DayUnit, Tyme {
         return try! LunarDay.fromYmd(m.year, m.monthWithLeap, days + 1)
     }
 
+    /// 对应的藏历日（仅支持1951年1月8日至2051年2月11日范围，超出返回nil）
+    public var rabByungDay: RabByungDay? { try? RabByungDay.fromSolarDay(self) }
+
     /// Returns the solar day offset by the given number of days.
     /// - Parameter n: Positive to advance, negative to go back.
     public func next(_ n: Int) -> SolarDay {

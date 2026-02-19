@@ -181,4 +181,139 @@ import Testing
         #expect(boundary.year > 9999)
         #expect(boundary.solarYear == nil)
     }
+
+    // MARK: - RabByungDay：tyme4j test0（纪元首日）
+
+    @Test func testRabByungDayTest0() throws {
+        // 公历→藏历
+        let d0 = try SolarDay.fromYmd(1951, 1, 8)
+        let rbd0 = try #require(d0.rabByungDay)
+        #expect(rbd0.rabByungMonth.rabByungYear.getName() + rbd0.rabByungMonth.getName() + rbd0.getName() == "第十六饶迥铁虎年十二月初一")
+
+        // 藏历→公历
+        let rbd1 = try RabByungDay.fromElementZodiac(15, RabByungElement(index: 3), Zodiac.fromName("虎"), 12, 1)
+        #expect(rbd1.solarDay.getName() == "1951-01-08")
+    }
+
+    // MARK: - RabByungDay：tyme4j test1（纪元末日）
+
+    @Test func testRabByungDayTest1() throws {
+        // 公历→藏历
+        let d = try SolarDay.fromYmd(2051, 2, 11)
+        let rbd = try #require(d.rabByungDay)
+        #expect(rbd.rabByungMonth.rabByungYear.getName() + rbd.rabByungMonth.getName() + rbd.getName() == "第十八饶迥铁马年十二月三十")
+
+        // 藏历→公历
+        let rbd2 = try RabByungDay.fromElementZodiac(17, RabByungElement(index: 3), Zodiac.fromName("马"), 12, 30)
+        #expect(rbd2.solarDay.getName() == "2051-02-11")
+    }
+
+    // MARK: - RabByungDay：tyme4j test2（现代日期）
+
+    @Test func testRabByungDayTest2() throws {
+        let d = try SolarDay.fromYmd(2025, 4, 23)
+        let rbd = try #require(d.rabByungDay)
+        #expect(rbd.rabByungMonth.rabByungYear.getName() + rbd.rabByungMonth.getName() + rbd.getName() == "第十七饶迥木蛇年二月廿五")
+
+        let rbd2 = try RabByungDay.fromElementZodiac(16, RabByungElement(name: "木"), Zodiac.fromName("蛇"), 2, 25)
+        #expect(rbd2.solarDay.getName() == "2025-04-23")
+    }
+
+    // MARK: - RabByungDay：tyme4j test3（正常日期）
+
+    @Test func testRabByungDayTest3() throws {
+        let d = try SolarDay.fromYmd(1951, 2, 8)
+        let rbd = try #require(d.rabByungDay)
+        #expect(rbd.rabByungMonth.rabByungYear.getName() + rbd.rabByungMonth.getName() + rbd.getName() == "第十六饶迥铁兔年正月初二")
+
+        let rbd2 = try RabByungDay.fromElementZodiac(15, RabByungElement(index: 3), Zodiac.fromName("兔"), 1, 2)
+        #expect(rbd2.solarDay.getName() == "1951-02-08")
+    }
+
+    // MARK: - RabByungDay：tyme4j test4（闰日）
+
+    @Test func testRabByungDayTest4() throws {
+        // 1951-01-24 = 藏历1950年十二月闰十六
+        let d = try SolarDay.fromYmd(1951, 1, 24)
+        let rbd = try #require(d.rabByungDay)
+        #expect(rbd.rabByungMonth.rabByungYear.getName() + rbd.rabByungMonth.getName() + rbd.getName() == "第十六饶迥铁虎年十二月闰十六")
+        #expect(rbd.isLeap == true)
+        #expect(rbd.day == 16)
+
+        let rbd2 = try RabByungDay.fromElementZodiac(15, RabByungElement(index: 3), Zodiac.fromName("虎"), 12, -16)
+        #expect(rbd2.solarDay.getName() == "1951-01-24")
+    }
+
+    // MARK: - RabByungDay：tyme4j test5（缺日跳过）
+
+    @Test func testRabByungDayTest5() throws {
+        let d = try SolarDay.fromYmd(1961, 6, 24)
+        let rbd = try #require(d.rabByungDay)
+        #expect(rbd.rabByungMonth.rabByungYear.getName() + rbd.rabByungMonth.getName() + rbd.getName() == "第十六饶迥铁牛年五月十一")
+
+        let rbd2 = try RabByungDay.fromElementZodiac(15, RabByungElement(index: 3), Zodiac.fromName("牛"), 5, 11)
+        #expect(rbd2.solarDay.getName() == "1961-06-24")
+    }
+
+    // MARK: - RabByungDay：tyme4j test6
+
+    @Test func testRabByungDayTest6() throws {
+        let d = try SolarDay.fromYmd(1952, 2, 23)
+        let rbd = try #require(d.rabByungDay)
+        #expect(rbd.rabByungMonth.rabByungYear.getName() + rbd.rabByungMonth.getName() + rbd.getName() == "第十六饶迥铁兔年十二月廿八")
+
+        let rbd2 = try RabByungDay.fromElementZodiac(15, RabByungElement(index: 3), Zodiac.fromName("兔"), 12, 28)
+        #expect(rbd2.solarDay.getName() == "1952-02-23")
+    }
+
+    // MARK: - RabByungDay：tyme4j test7 & test8（连续特殊日）
+
+    @Test func testRabByungDayTest7and8() throws {
+        let d7 = try SolarDay.fromYmd(2025, 4, 26)
+        let rbd7 = try #require(d7.rabByungDay)
+        #expect(rbd7.rabByungMonth.getName() + rbd7.getName() == "二月廿九")
+
+        let d8 = try SolarDay.fromYmd(2025, 4, 25)
+        let rbd8 = try #require(d8.rabByungDay)
+        #expect(rbd8.rabByungMonth.getName() + rbd8.getName() == "二月廿七")
+    }
+
+    // MARK: - RabByungDay：subtract & next
+
+    @Test func testRabByungDaySubtractAndNext() throws {
+        let d1 = try RabByungDay.fromYmd(2025, 2, 25)
+        let d2 = try RabByungDay.fromYmd(2025, 2, 20)
+        #expect(d1.subtract(d2) == 5)
+        #expect(d2.subtract(d1) == -5)
+
+        let next = d2.next(5)
+        #expect(next.day == d1.day)
+        #expect(next.rabByungMonth.year == d1.rabByungMonth.year)
+    }
+
+    // MARK: - RabByungDay：边界：超出范围返回 self
+
+    @Test func testRabByungDayNextBoundary() throws {
+        let last = try RabByungDay.fromYmd(2050, 12, 30)
+        let beyond = last.next(100)
+        #expect(beyond.year == last.year)
+        #expect(beyond.day == last.day)
+
+        let first = try RabByungDay.fromYmd(1950, 12, 1)
+        let before = first.next(-100)
+        #expect(before.year == first.year)
+        #expect(before.day == first.day)
+    }
+
+    // MARK: - SolarDay.rabByungDay：范围外返回 nil
+
+    @Test func testSolarDayRabByungDayOptional() throws {
+        // 1951-01-07 在纪元日之前，应返回 nil
+        let d = try SolarDay.fromYmd(1951, 1, 7)
+        #expect(d.rabByungDay == nil)
+
+        // 1951-01-08 是第一个合法日
+        let d2 = try SolarDay.fromYmd(1951, 1, 8)
+        #expect(d2.rabByungDay != nil)
+    }
 }
