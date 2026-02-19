@@ -26,7 +26,7 @@ public final class TibetanMonth: AbstractCulture {
 
     public var monthWithLeap: Int { isLeap ? -month : month }
 
-    public var tibetanYear: TibetanYear { TibetanYear.fromYear(year) }
+    public var tibetanYear: TibetanYear { try! TibetanYear.fromYear(year) }
 
     /// Get name
     /// - Returns: Month name

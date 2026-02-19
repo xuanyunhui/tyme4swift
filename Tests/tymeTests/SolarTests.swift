@@ -225,7 +225,7 @@ import Testing
     // MARK: - SolarYear.rabByungYear
 
     @Test func testSolarYearRabByungYear() throws {
-        let ty = try SolarYear.fromYear(2024).rabByungYear
+        let ty = try #require(try SolarYear.fromYear(2024).rabByungYear)
         #expect(ty.getName() == "第十七饶迥木龙年")
         #expect(ty.year == 2024)
         #expect(ty.rabByungIndex == 16)
