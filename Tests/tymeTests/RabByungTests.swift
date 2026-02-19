@@ -232,8 +232,8 @@ import Testing
 
     @Test func testRabByungMonthLeapYearNavigation() throws {
         // 2024年有闰月：leapMonth=6（闰六月）
-        let leapYearMonth6 = try RabByungMonth.fromYm(2024, 6)
-        let leapMonth = try RabByungMonth.fromYm(2024, -6)  // 闰六月
+        let y2024 = try RabByungYear.fromYear(2024)
+        #expect(y2024.leapMonth == 6)
 
         // 从正月导航到闰月：正月 + 6步 = 闰六月
         let m1 = try RabByungMonth.fromYm(2024, 1)
@@ -249,7 +249,7 @@ import Testing
         #expect(nextMonth.isLeap == false)
         #expect(nextMonth.getName() == "七月")
 
-        // 从闰月出发：next(-1) = 六月（正月）
+        // 从闰月出发：next(-1) = 六月（非闰）
         let prevMonth = leapM6.next(-1)
         #expect(prevMonth.month == 6)
         #expect(prevMonth.isLeap == false)
