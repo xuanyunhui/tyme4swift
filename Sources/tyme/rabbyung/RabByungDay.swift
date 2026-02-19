@@ -92,7 +92,7 @@ public final class RabByungDay: AbstractTyme {
             days -= count
             let next = m.next(1)
             guard next.year != m.year || next.monthWithLeap != m.monthWithLeap else {
-                throw TymeError.invalidDay(days)
+                throw TymeError.invalidYear(solarDay.year)
             }
             m = next
             count = m.dayCount
