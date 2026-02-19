@@ -204,12 +204,13 @@ import Testing
         #expect(try SolarYear.fromYear(400).isLeap == true)
     }
 
-    // MARK: - SolarYear.tibetanYear
+    // MARK: - SolarYear.rabByungYear
 
-    @Test func testSolarYearTibetanYear() throws {
-        let ty = try SolarYear.fromYear(2024).tibetanYear
-        #expect(ty.getName() == "第17绕迥木龙年")
+    @Test func testSolarYearRabByungYear() throws {
+        let ty = try SolarYear.fromYear(2024).rabByungYear
+        #expect(ty.getName() == "第十七饶迥木龙年")
         #expect(ty.year == 2024)
-        #expect(ty.rabByungCycle == 17)
+        #expect(ty.rabByungIndex == 16)
+        #expect(ty.sixtyCycle.getName() == "甲辰")
     }
 }
