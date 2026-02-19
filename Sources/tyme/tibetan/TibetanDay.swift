@@ -35,7 +35,7 @@ public final class TibetanDay: AbstractCulture {
 
     public var tibetanMonth: TibetanMonth { TibetanMonth.fromYm(year, monthWithLeap) }
 
-    public var tibetanYear: TibetanYear { TibetanYear.fromYear(year) }
+    public var tibetanYear: TibetanYear { try! TibetanYear.fromYear(year) }
 
     /// Get name
     /// - Returns: Day name

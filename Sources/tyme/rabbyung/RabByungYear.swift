@@ -22,9 +22,9 @@ public final class RabByungYear: AbstractTyme {
 
     // MARK: - Factory Methods
 
-    /// 由公历年推算藏历年
-    public static func fromYear(_ year: Int) -> RabByungYear {
-        try! RabByungYear(rabByungIndex: (year - 1024) / 60, sixtyCycle: SixtyCycle.fromIndex(year - 4))
+    /// 由公历年推算藏历年（年份对应的饶迥序号须在 0-150 范围内）
+    public static func fromYear(_ year: Int) throws -> RabByungYear {
+        try RabByungYear(rabByungIndex: (year - 1024) / 60, sixtyCycle: SixtyCycle.fromIndex(year - 4))
     }
 
     /// 由饶迥序号和干支直接构造
@@ -92,14 +92,15 @@ public final class RabByungYear: AbstractTyme {
         return y == currentYear ? m : 0
     }
 
-    /// 对应公历年
-    public var solarYear: SolarYear { try! SolarYear.fromYear(year) }
+    /// 对应公历年（年份超出 SolarYear 支持范围 1-9999 时返回 nil）
+    public var solarYear: SolarYear? { try? SolarYear.fromYear(year) }
 
     /// 月份数量（含闰月为13，否则12）
     public var monthCount: Int { leapMonth < 1 ? 12 : 13 }
 
+    /// 向前/后导航 n 个藏历年；超出支持范围时返回最近的边界年
     public override func next(_ n: Int) -> RabByungYear {
-        RabByungYear.fromYear(year + n)
+        (try? RabByungYear.fromYear(year + n)) ?? self
     }
 
     // MARK: - Deprecated API
@@ -123,7 +124,7 @@ public final class RabByungYear: AbstractTyme {
     public func getLeapMonth() -> Int { leapMonth }
 
     @available(*, deprecated, renamed: "solarYear")
-    public func getSolarYear() -> SolarYear { solarYear }
+    public func getSolarYear() -> SolarYear? { solarYear }
 
     @available(*, deprecated, renamed: "monthCount")
     public func getMonthCount() -> Int { monthCount }

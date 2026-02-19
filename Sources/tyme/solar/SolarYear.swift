@@ -21,12 +21,12 @@ public final class SolarYear: YearUnit, Tyme {
     /// 是否闰年
     public var isLeap: Bool { SolarUtil.isLeapYear(year) }
 
-    /// 饶迥年（藏历年）
-    public var rabByungYear: RabByungYear { RabByungYear.fromYear(year) }
+    /// 饶迥年（藏历年）；公历年超出饶迥支持范围时返回 nil
+    public var rabByungYear: RabByungYear? { try? RabByungYear.fromYear(year) }
 
     /// 藏历年（已废弃，请使用 rabByungYear）
     @available(*, deprecated, renamed: "rabByungYear")
-    public var tibetanYear: RabByungYear { rabByungYear }
+    public var tibetanYear: RabByungYear? { rabByungYear }
 
     public func getSolarMonth(_ month: Int) -> SolarMonth { try! SolarMonth(year: year, month: month) }
 
@@ -51,5 +51,5 @@ public final class SolarYear: YearUnit, Tyme {
     public func getIsLeap() -> Bool { isLeap }
 
     @available(*, deprecated, renamed: "tibetanYear")
-    public func getTibetanYear() -> TibetanYear { tibetanYear }
+    public func getTibetanYear() -> TibetanYear? { tibetanYear }
 }
