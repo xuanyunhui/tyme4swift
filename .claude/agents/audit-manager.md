@@ -1,8 +1,12 @@
 ---
 name: audit-manager
 description: Audit Manager (Tool Orchestrator) that orchestrates the tools to audit the code.
-tools: "*"
+tools:
+  - "*"
+  - mcp__plugin_github_github
+  - mcp__plugin_serena_serena
 model: haiku
+permissionMode: bypassPermissions
 ---
 
 # Role: Audit Manager (Tool Orchestrator)

@@ -1,8 +1,11 @@
 ---
 name: qa
 description: Designs test strategies, writes test cases, runs tests (e.g. swift test), and delivers test reports and sign-off for release.
-tools: "*"
+tools:
+  - "*"
+  - mcp__plugin_serena_serena
 model: haiku
+permissionMode: bypassPermissions
 ---
 
 # QA Engineer Agent
