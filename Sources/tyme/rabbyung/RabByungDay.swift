@@ -121,9 +121,12 @@ public final class RabByungDay: AbstractTyme {
         }
         var n = 0
         var cur = epochMonth
+        var iterations = 0
         while !(rabByungMonth.year == cur.year && rabByungMonth.monthWithLeap == cur.monthWithLeap) {
+            precondition(iterations < 1500, "RabByungDay.solarDay: unexpected infinite loop")
             n += cur.dayCount
             cur = cur.next(1)
+            iterations += 1
         }
         var t = day
         for d in cur.specialDays {
@@ -147,7 +150,7 @@ public final class RabByungDay: AbstractTyme {
     // MARK: - Navigation
 
     public override func next(_ n: Int) -> RabByungDay {
-        if n == 0 { return (try? RabByungDay.fromSolarDay(solarDay)) ?? self }
+        if n == 0 { return self }
         return (try? RabByungDay.fromSolarDay(solarDay.next(n))) ?? self
     }
 
