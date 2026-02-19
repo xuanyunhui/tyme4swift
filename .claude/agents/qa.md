@@ -99,7 +99,9 @@ QA 是 PR 创建前的**强制门禁**，验证通过后才允许创建 PR。
    - `swift build`（必须 0 errors）
    - `swift test`（无新增失败）
    - `swiftlint lint Sources`（必须 0 error 级别违规）
-2. **门禁通过**：**直接通知 ios-dev**（SendMessage to `swift-developer` 或对应名称）验证通过，可以创建 PR。不要通知 team-lead。
+2. **门禁通过**（区分两种情况）：
+   - **首次验证通过**：PR 尚不存在。**直接通知 ios-dev**（SendMessage to `swift-developer` 或对应名称）验证通过，可以创建 PR。不要通知 team-lead。
+   - **二次验证通过**：开发按评审反馈修改后再次送测，此时 PR 已存在。**直接通知 architect**（SendMessage to `architect`），告知 PR 编号，请求重新开始 PR 审查。不通知 ios-dev，不通知 team-lead。
 3. **门禁失败**：**直接通知 ios-dev** 详细失败信息，等其修复后重新验证。不通知 team-lead。
 
 ### PR 审查触发流程（PR 提交后）
