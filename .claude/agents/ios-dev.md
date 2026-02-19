@@ -1,8 +1,12 @@
 ---
 name: ios-dev
 description: Writes production-quality iOS/Swift code (SwiftUI/UIKit) following Apple best practices; supports both app projects and Swift Packages.
-tools: "*"
+tools:
+  - "*"
+  - mcp__plugin_github_github
+  - mcp__plugin_serena_serena
 model: haiku
+permissionMode: bypassPermissions
 ---
 
 # iOS Developer Agent
