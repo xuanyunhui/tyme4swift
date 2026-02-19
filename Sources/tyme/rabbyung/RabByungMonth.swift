@@ -21,6 +21,7 @@ public final class RabByungMonth: AbstractTyme {
             while !ys.isEmpty {
                 let utf8 = Array(ys.utf8)
                 let len = Int(utf8[0]) - Int(zeroU8)
+                guard len >= 0, utf8.count >= len + 1 else { break }
                 var data = [Int]()
                 for i in 0..<len {
                     data.append(Int(utf8[i + 1]) - Int(fiveU8) - 30)
@@ -112,7 +113,11 @@ public final class RabByungMonth: AbstractTyme {
 
     /// 特殊日列表（正=闰日日序，负=缺日日序的负值）
     public var specialDays: [Int] {
-        RabByungMonth.DAYS[year * 13 + indexInYear] ?? []
+        guard let days = RabByungMonth.DAYS[year * 13 + indexInYear] else {
+            assertionFailure("RabByungMonth: missing DAYS entry for year=\(year), indexInYear=\(indexInYear)")
+            return []
+        }
+        return days
     }
 
     /// 闰日（重复日）列表
@@ -143,12 +148,16 @@ public final class RabByungMonth: AbstractTyme {
             var monthCount = y.monthCount
             while m > monthCount {
                 m -= monthCount
-                y = y.next(1)
+                let nextY = y.next(1)
+                guard nextY.year != y.year else { break }
+                y = nextY
                 monthCount = y.monthCount
             }
         } else {
             while m <= 0 {
-                y = y.next(-1)
+                let prevY = y.next(-1)
+                guard prevY.year != y.year else { break }
+                y = prevY
                 m += y.monthCount
             }
         }
