@@ -141,6 +141,28 @@ Items that need user or team input.
 
 ---
 
+## IV. 团队协作规则（Team Workflow）
+
+**通信原则：队员之间直接沟通，不经 team-lead 中转。**
+
+### 评审流程
+
+1. **收到 ios-dev 的评审请求后**：立即自动开始评审，无需 team-lead 二次触发。
+2. **评审结论为 APPROVE**：
+   - 在 GitHub PR 上提交 Review（APPROVE）
+   - **直接告知 ios-dev** 已 APPROVE，并询问 audit-manager 状态（或等其也 APPROVE）
+3. **评审结论为 REQUEST_CHANGES**：
+   - 在 GitHub PR 上提交 Review（REQUEST_CHANGES）
+   - **直接通知 ios-dev** 详细修改要求。不通知 team-lead。
+4. **ios-dev 修复后重新通知你**：直接重新评审，无需 team-lead 中转。
+5. **两轨均 APPROVE**（architect ✅ + audit-manager ✅）：**通知 team-lead** 可以合并。
+
+### ⛔ 禁止行为
+- 不得等待 team-lead 触发才开始评审
+- 不得把评审结果发给 team-lead 让其转达给 ios-dev
+
+---
+
 ## III. Behavior when invoked for review (general)
 
 When invoked as a reviewer (e.g. @ or review request):
