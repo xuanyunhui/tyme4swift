@@ -22,9 +22,13 @@ public final class RabByungYear: AbstractTyme {
 
     // MARK: - Factory Methods
 
-    /// 由公历年推算藏历年（年份对应的饶迥序号须在 0-150 范围内）
+    /// 由公历年推算藏历年（有效范围约 1024-10083，对应饶迥序号 0-150）
     public static func fromYear(_ year: Int) throws -> RabByungYear {
-        try RabByungYear(rabByungIndex: (year - 1024) / 60, sixtyCycle: SixtyCycle.fromIndex(year - 4))
+        let rabByungIndex = (year - 1024) / 60
+        guard rabByungIndex >= 0, rabByungIndex <= 150 else {
+            throw TymeError.invalidYear(year)
+        }
+        return try RabByungYear(rabByungIndex: rabByungIndex, sixtyCycle: SixtyCycle.fromIndex(year - 4))
     }
 
     /// 由饶迥序号和干支直接构造
@@ -98,9 +102,8 @@ public final class RabByungYear: AbstractTyme {
     /// 月份数量（含闰月为13，否则12）
     public var monthCount: Int { leapMonth < 1 ? 12 : 13 }
 
-    /// 向前/后导航 n 个藏历年。
-    /// 设计决策：超出饶迥合法范围（rabByungIndex 0-150）时返回 self，而非 throw，
-    /// 保持与 AbstractTyme.next() 非抛出签名一致，调用方可通过 year 属性检测是否发生了截断。
+    /// 向前/后导航 n 个藏历年；超出饶迥合法范围（rabByungIndex 0-150）时返回 self（当前年），
+    /// 保持与 AbstractTyme.next() 非抛出签名一致。
     public override func next(_ n: Int) -> RabByungYear {
         (try? RabByungYear.fromYear(year + n)) ?? self
     }
