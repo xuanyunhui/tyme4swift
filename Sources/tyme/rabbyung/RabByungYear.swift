@@ -52,8 +52,13 @@ public final class RabByungYear: AbstractTyme {
     /// 公历年
     public var year: Int { 1024 + rabByungIndex * 60 + sixtyCycle.index }
 
-    /// 藏历五行；index 始终在 0-4 范围内，nil 情况实际不可达
-    public var element: RabByungElement? { try? RabByungElement(index: sixtyCycle.heavenStem.element.index) }
+    /// 藏历五行；index 始终在 0-4 范围内
+    public var element: RabByungElement {
+        guard let e = try? RabByungElement(index: sixtyCycle.heavenStem.element.index) else {
+            preconditionFailure("RabByungYear.element: invariant violation index=\(sixtyCycle.heavenStem.element.index)")
+        }
+        return e
+    }
 
     /// 生肖
     public var zodiac: Zodiac { sixtyCycle.earthBranch.zodiac }
@@ -78,7 +83,7 @@ public final class RabByungYear: AbstractTyme {
         if s.hasPrefix("一十") {
             s = String(s.dropFirst())
         }
-        return "第\(s)饶迥\(element?.getName() ?? "")\(zodiac.getName())年"
+        return "第\(s)饶迥\(element.getName())\(zodiac.getName())年"
     }
 
     /// 闰月，0表示无闰月
@@ -124,7 +129,7 @@ public final class RabByungYear: AbstractTyme {
     public func getYear() -> Int { year }
 
     @available(*, deprecated, renamed: "element")
-    public func getElement() -> RabByungElement? { element }
+    public func getElement() -> RabByungElement { element }
 
     @available(*, deprecated, renamed: "zodiac")
     public func getZodiac() -> Zodiac { zodiac }

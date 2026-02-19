@@ -5,6 +5,10 @@ import Foundation
 /// 算法对齐 tyme4j com.tyme.rabbyung.RabByungMonth
 public final class RabByungMonth: AbstractTyme {
 
+    private static let minYear = 1950
+    private static let maxYear = 2050
+    private static let minYearFirstMonth = 12  // 1950 年仅支持从十二月起
+
     public static let NAMES = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
     public static let ALIAS = ["神变月", "苦行月", "具香月", "萨嘎月", "作净月", "明净月", "具醉月", "具贤月", "天降月", "持众月", "庄严月", "满意月"]
 
@@ -56,11 +60,11 @@ public final class RabByungMonth: AbstractTyme {
             throw TymeError.invalidMonth(month)
         }
         let y = year.year
-        guard y >= 1950, y <= 2050 else {
+        guard y >= Self.minYear, y <= Self.maxYear else {
             throw TymeError.invalidYear(y)
         }
         let m = abs(month)
-        guard !(y == 1950 && m < 12) else {
+        guard !(y == Self.minYear && m < Self.minYearFirstMonth) else {
             throw TymeError.invalidMonth(month)
         }
         let leap = month < 0
@@ -171,9 +175,9 @@ public final class RabByungMonth: AbstractTyme {
             }
         }
         let targetYear = y.year
-        guard targetYear >= 1950, targetYear <= 2050,
+        guard targetYear >= Self.minYear, targetYear <= Self.maxYear,
               finalM >= 1, finalM <= 12,
-              !(targetYear == 1950 && finalM < 12) else {
+              !(targetYear == Self.minYear && finalM < Self.minYearFirstMonth) else {
             return self
         }
         // 闰月一致性由算法保证——若此处失败则为内部 bug

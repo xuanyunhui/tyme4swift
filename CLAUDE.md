@@ -14,6 +14,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **NO FORCE UNWRAP (`!`)**. Use `guard let` or `throw`.
 - Naming: Use Swift "Term of Art" (e.g., `computed property` instead of `getFoo()`).
 
+## Error Handling
+
+- **Throwing methods**: Use `throw TymeError.*` for all validation failures. Never use `fatalError` or `preconditionFailure` in throwing contexts — these were systematically replaced in Phase 2 (Issue #32).
+- **Non-throwing overrides** (e.g., `next(_ n: Int) -> Self` from `AbstractTyme`): Cannot `throw`. Use explicit `guard let ... else { return self }` for expected out-of-range inputs (boundary behavior). Use `preconditionFailure("diagnostic message")` only for **internal invariant violations** (i.e., conditions that indicate a bug, not user input error).
+- **Consistency within a method**: Do not mix `return self` and `preconditionFailure` for the same class of failure in one method. Decide: is this a boundary (→ `return self`) or a bug (→ `preconditionFailure`)?
+
 ## Audit Commands (Orchestration)
 
 - **`/audit <pr_id>`**: 全量审计（包含 Simplifier）。
