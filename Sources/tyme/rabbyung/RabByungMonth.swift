@@ -139,9 +139,7 @@ public final class RabByungMonth: AbstractTyme {
 
     /// 向前/后导航 n 个藏历月；超出支持范围（1950-2050）时返回 self
     public override func next(_ n: Int) -> RabByungMonth {
-        if n == 0 {
-            return (try? RabByungMonth.fromYm(year, monthWithLeap)) ?? self
-        }
+        if n == 0 { return self }
         var m = indexInYear + 1 + n
         var y = rabByungYear
         if n > 0 {

@@ -100,6 +100,21 @@ import Testing
         #expect(m.rabByungYear.getName() + m.getName() == "第十六饶迥铁虎年十二月")
     }
 
+    // MARK: - RabByungMonth：闰月构建路径
+
+    @Test func testRabByungMonthLeap() throws {
+        // 2043年闰月=5（已由 testLeapMonth 断言）；-5 表示闰五月
+        let m = try RabByungMonth.fromYm(2043, -5)
+        #expect(m.isLeap == true)
+        #expect(m.month == 5)
+        #expect(m.year == 2043)
+        #expect(m.getName() == "闰五月")
+        #expect(m.alias == "闰作净月")
+        #expect(m.monthWithLeap == -5)
+        // 非闰月年尝试构造闰月应抛出错误（2044年leapMonth==0）
+        #expect(throws: TymeError.self) { _ = try RabByungMonth.fromYm(2044, -1) }
+    }
+
     // MARK: - RabByungMonth：DAYS 数据表验证
 
     @Test func testRabByungMonthDays() throws {
