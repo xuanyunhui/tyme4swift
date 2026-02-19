@@ -176,9 +176,9 @@ public final class RabByungMonth: AbstractTyme {
               !(targetYear == 1950 && finalM < 12) else {
             return self
         }
-        // 闰月一致性检查（理论上由算法保证，若失败则为内部 bug）
+        // 闰月一致性由算法保证——若此处失败则为内部 bug
         guard !leap || finalM == leapMonth else {
-            return self
+            preconditionFailure("RabByungMonth.next: leap/leapMonth invariant violation finalM=\(finalM) leapMonth=\(leapMonth)")
         }
         // 此时所有前置条件已满足，fromYm 不应失败
         guard let result = try? RabByungMonth.fromYm(targetYear, leap ? -finalM : finalM) else {

@@ -9,6 +9,12 @@ public final class RabByungElement: AbstractCulture {
     /// Internal element (uses standard Element)
     public let element: Element
 
+    /// Internal unchecked init — caller guarantees element is a valid Element instance
+    private init(_element: Element) {
+        self.element = _element
+        super.init()
+    }
+
     /// Initialize with index
     /// - Parameter index: Element index (0-4)
     public init(index: Int) throws {
@@ -41,11 +47,8 @@ public final class RabByungElement: AbstractCulture {
 
     /// Get next element in cycle
     public func next(_ n: Int) -> RabByungElement {
-        let nextElement = element.next(n)
-        guard let result = try? RabByungElement(index: nextElement.index) else {
-            preconditionFailure("RabByungElement: invalid index \(nextElement.index)")
-        }
-        return result
+        // Element 是循环类（0-4），next() 总是返回有效索引，无需错误处理
+        RabByungElement(_element: element.next(n))
     }
 
     // MARK: - Five Elements Relationships (五行生克)
