@@ -144,7 +144,7 @@ public final class EightChar: AbstractCulture {
                         s = solarTime.second
                     }
                     guard var time = try? SolarTime.fromYmdHms(targetDay.year, targetDay.month, targetDay.day, hr, mi, s) else {
-                        continue
+                        preconditionFailure("EightChar: invalid SolarTime for \(targetDay.year)-\(targetDay.month)-\(targetDay.day) \(hr):\(mi):\(s)")
                     }
                     if d == 30 {
                         time = time.next(-3600)

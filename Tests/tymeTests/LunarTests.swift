@@ -344,4 +344,15 @@ import Testing
         let h = try LunarHour.fromYmdHms(2024, 9, 7, 10, 0, 0)
         #expect(h.minorRen.getName() == "留连")
     }
+
+    @Test func testLunarMonthValidateInvalidLeapMonth() throws {
+        // 2024 闰月为 无 (leapMonth=0)，请求 -3 应 throw
+        #expect(throws: TymeError.self) {
+            _ = try LunarMonth.fromYm(2024, -3)
+        }
+        // 2023 闰月为 2，请求 -5 应 throw
+        #expect(throws: TymeError.self) {
+            _ = try LunarMonth.fromYm(2023, -5)
+        }
+    }
 }
