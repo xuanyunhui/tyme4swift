@@ -84,7 +84,7 @@ public final class RabByungDay: AbstractTyme {
         let epochDay = try SolarDay.fromYmd(1951, 1, 8)
         var days = solarDay.subtract(epochDay)
         guard days >= 0 else {
-            throw TymeError.invalidDay(days)
+            throw TymeError.invalidYear(solarDay.year)
         }
         var m = try RabByungMonth.fromYm(1950, 12)
         var count = m.dayCount
