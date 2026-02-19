@@ -226,10 +226,16 @@ public final class SolarDay: DayUnit, Tyme {
             let dChar = String(segment[charIdx..<segment.index(charIdx, offsetBy: 1)])
             var count = 0
             if dChar != "x" {
-                heavenStemIndex = Int(dChar) ?? 0
+                guard let hsIdx = Int(dChar) else {
+                    preconditionFailure("SolarDay: invalid heavenStemIndex character '\(dChar)'")
+                }
+                heavenStemIndex = hsIdx
                 let cIdx = segment.index(charIdx, offsetBy: 1)
                 let cChar = String(segment[cIdx..<segment.index(cIdx, offsetBy: 1)])
-                count = dayCounts[Int(cChar) ?? 0]
+                guard let dcIdx = Int(cChar) else {
+                    preconditionFailure("SolarDay: invalid dayCounts index character '\(cChar)'")
+                }
+                count = dayCounts[dcIdx]
                 days += count
             }
             if dayIdx <= days {
