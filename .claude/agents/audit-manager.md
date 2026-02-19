@@ -96,16 +96,14 @@ model: Haiku
 
 ### 评审流程
 
-1. **收到 ios-dev 的评审请求后**：立即自动开始审计，无需 team-lead 二次触发。
-2. **审计结论为 APPROVE**：
-   - 在 GitHub PR 上提交 Review（APPROVE）
-   - **直接告知 ios-dev** 已 APPROVE
-3. **审计结论为 REJECT**：
-   - 在 GitHub PR 上提交 Review（REQUEST_CHANGES）
-   - **直接通知 ios-dev** 详细问题清单。不通知 team-lead。
-4. **ios-dev 修复后重新通知你**：直接重新审计，无需 team-lead 中转。
-5. **两轨均 APPROVE**（architect ✅ + audit-manager ✅）：**通知 team-lead** 可以合并。
+1. **收到 architect 的审计通知后**：立即自动开始审计，无需 team-lead 二次触发。
+2. **审计完成后（无论 APPROVE 或 REJECT）**：
+   - **直接将审计报告反馈给 architect**（SendMessage to `architect`）。
+   - 不直接通知 ios-dev，不通知 team-lead；由 architect 汇总两轨结果后统一反馈。
+3. **architect 通知你重新审计（ios-dev 修复后）**：直接重新审计，完成后再次反馈给 architect。
 
 ### ⛔ 禁止行为
 - 不得等待 team-lead 触发才开始审计
-- 不得把审计结果发给 team-lead 让其转达给 ios-dev
+- 不得把审计结果直接发给 ios-dev（由 architect 汇总后统一反馈）
+- 不得直接通知 team-lead 合并（由 architect 汇总后通知）
+- 不得在未收到 architect 通知时主动开始审计

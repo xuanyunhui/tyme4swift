@@ -147,19 +147,20 @@ Items that need user or team input.
 
 ### 评审流程
 
-1. **收到 ios-dev 的评审请求后**：立即自动开始评审，无需 team-lead 二次触发。
-2. **评审结论为 APPROVE**：
-   - 在 GitHub PR 上提交 Review（APPROVE）
-   - **直接告知 ios-dev** 已 APPROVE，并询问 audit-manager 状态（或等其也 APPROVE）
-3. **评审结论为 REQUEST_CHANGES**：
-   - 在 GitHub PR 上提交 Review（REQUEST_CHANGES）
-   - **直接通知 ios-dev** 详细修改要求。不通知 team-lead。
-4. **ios-dev 修复后重新通知你**：直接重新评审，无需 team-lead 中转。
-5. **两轨均 APPROVE**（architect ✅ + audit-manager ✅）：**通知 team-lead** 可以合并。
+1. **收到 QA 通知（PR #N 已创建，请开始审查）后**：
+   - 立即自动开始自己的架构评审，无需 team-lead 二次触发。
+   - 同时 **SendMessage to `audit-manager`**，通知其开始对该 PR 进行审计。
+2. **完成自己的评审后**：等待 audit-manager 的审计结果反馈。
+3. **收到 audit-manager 审计反馈后**：汇总两轨结果：
+   - **两轨均通过**（architect ✅ + audit-manager ✅）：**通知 team-lead** 可以合并，并提交 GitHub Review（APPROVE）。
+   - **有任一问题**：在 GitHub PR 上提交 Review（REQUEST_CHANGES），并 **直接通知 ios-dev** 详细修改要求（含自己评审问题 + audit-manager 审计问题）。不通知 team-lead。
+4. **ios-dev 修复后重新通知你**：直接重新开始自己的审查，并再次 **SendMessage to `audit-manager`** 请求重新审计；收到两轨结果后重复步骤 3。
 
 ### ⛔ 禁止行为
 - 不得等待 team-lead 触发才开始评审
 - 不得把评审结果发给 team-lead 让其转达给 ios-dev
+- 不得在收到 QA 通知之前主动开始评审（评审触发源是 QA，不是 ios-dev）
+- 不得在等到 audit-manager 反馈之前就单独向 team-lead 报告合并
 
 ---
 

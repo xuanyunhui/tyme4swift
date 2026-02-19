@@ -83,12 +83,21 @@ When finishing a task, provide: **code changes**, **test updates** if needed, an
 
 ### 标准开发流程
 
-1. **编码完成后**：`git push`，然后**直接通知 qa**（SendMessage to `qa`）请求验证。不要通知 team-lead。
-2. **QA 通知验证通过后**：立即用 `plugin:github`（`mcp__plugin_github_github__create_pull_request`）创建 PR，base=main。
-3. **PR 创建后**：**直接通知 architect 和 audit-manager**（各发一条 SendMessage）开始并行评审，附上 PR 编号。不要通知 team-lead。
-4. **收到 REQUEST_CHANGES 后**：直接修复，push，**直接通知发出 REQUEST_CHANGES 的评审者**重新评审。不经 team-lead。
-5. **两轨均 APPROVE 后**：**通知 team-lead** 可以合并（此时才需要 team-lead）。
+```
+push → 通知 QA → QA 测试通过 → QA 通知我创建 PR → 创建 PR → 通知 QA PR 已创建
+→ QA 通知 architect 开始评审 → architect 协调评审
+→ architect REQUEST_CHANGES → 我直接修复 push → 通知 architect 重审
+→ architect APPROVE（含 audit-manager）→ architect 通知 team-lead 合并
+```
+
+### 详细步骤
+
+1. **编码完成，`git push` 后**：SendMessage to `qa`，告知分支名，请求验证。
+2. **收到 QA「验证通过，请创建 PR」通知后**：立即用 `mcp__plugin_github_github__create_pull_request` 创建 PR（base=main），然后 SendMessage to `qa`「PR #N 已创建」。
+3. **收到 architect REQUEST_CHANGES 后**：直接修复，`git push`，SendMessage to `architect` 告知已修复并附 commit SHA，**不需要重新经过 QA**。
+4. **不需要主动联系 audit-manager**：audit-manager 由 architect 调度。
 
 ### ⛔ 禁止行为
-- 不得在 QA 验证**之前**创建 PR
-- 不得把"通知 QA"或"通知评审者"的消息发给 team-lead，让 team-lead 转达
+- 不得在 QA 验证通过通知**之前**创建 PR
+- 不得在创建 PR 后直接通知 architect/audit-manager（由 QA → architect 触发）
+- 不得把消息发给 team-lead 让其转达
