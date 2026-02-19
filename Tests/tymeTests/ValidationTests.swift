@@ -4,7 +4,7 @@ import Foundation
 
 // MARK: - Fixture types
 
-fileprivate struct SolarLunarCase: Decodable {
+struct SolarLunarCase: Decodable {
     let solar: String
     let lunarYear: String
     let lunarMonth: String
@@ -12,7 +12,7 @@ fileprivate struct SolarLunarCase: Decodable {
     let isLeapMonth: Bool
 }
 
-fileprivate struct SixtyCycleCase: Decodable {
+struct SixtyCycleCase: Decodable {
     let solar: String
     let sixtyCycleYear: String
     let sixtyCycleMonth: String
@@ -21,16 +21,18 @@ fileprivate struct SixtyCycleCase: Decodable {
 
 // MARK: - Fixture loading
 
-fileprivate func loadFixture<T: Decodable>(_ name: String, type: T.Type) throws -> [T] {
-    let url = Bundle.module.url(
-        forResource: name, withExtension: "json", subdirectory: "Fixtures")!
+func loadFixture<T: Decodable>(_ name: String, type: T.Type) throws -> [T] {
+    guard let url = Bundle.module.url(
+        forResource: name, withExtension: "json", subdirectory: "Fixtures") else {
+        throw TymeError.invalidDay(0)
+    }
     let data = try Data(contentsOf: url)
     return try JSONDecoder().decode([T].self, from: data)
 }
 
-fileprivate func parseSolar(_ s: String) throws -> (Int, Int, Int) {
+func parseSolar(_ s: String) throws -> (Int, Int, Int) {
     let parts = s.split(separator: "-").compactMap { Int($0) }
-    guard parts.count == 3 else { throw TymeError.invalidYear(0) }
+    guard parts.count == 3 else { throw TymeError.invalidDay(0) }
     return (parts[0], parts[1], parts[2])
 }
 
@@ -38,40 +40,40 @@ fileprivate func parseSolar(_ s: String) throws -> (Int, Int, Int) {
 
 @Suite("tyme4j 1:1 Validation — Solar↔Lunar")
 struct SolarLunarValidationTests {
-    fileprivate static let cases: [SolarLunarCase] = (try? loadFixture("solar_lunar", type: SolarLunarCase.self)) ?? []
+    static let cases: [SolarLunarCase] = try! loadFixture("solar_lunar", type: SolarLunarCase.self)
 
     @Test("SolarDay→LunarDay", arguments: cases)
-    fileprivate func testSolarToLunar(_ c: SolarLunarCase) throws {
+    func testSolarToLunar(_ c: SolarLunarCase) throws {
         let (y, m, d) = try parseSolar(c.solar)
         let solar = try SolarDay.fromYmd(y, m, d)
         let lunar = solar.lunarDay
 
         #expect(lunar.lunarMonth.lunarYear.name == c.lunarYear,
-                "lunarYear mismatch for \(c.solar)")
+                "Expected \(c.lunarYear) but got \(lunar.lunarMonth.lunarYear.name) for \(c.solar)")
         #expect(lunar.lunarMonth.name == c.lunarMonth,
-                "lunarMonth mismatch for \(c.solar)")
+                "Expected \(c.lunarMonth) but got \(lunar.lunarMonth.name) for \(c.solar)")
         #expect(lunar.name == c.lunarDay,
-                "lunarDay mismatch for \(c.solar)")
+                "Expected \(c.lunarDay) but got \(lunar.name) for \(c.solar)")
         #expect(lunar.lunarMonth.leap == c.isLeapMonth,
-                "isLeapMonth mismatch for \(c.solar)")
+                "Expected leap=\(c.isLeapMonth) but got \(lunar.lunarMonth.leap) for \(c.solar)")
     }
 }
 
 @Suite("tyme4j 1:1 Validation — SixtyCycle")
 struct SixtyCycleValidationTests {
-    fileprivate static let cases: [SixtyCycleCase] = (try? loadFixture("sixty_cycle", type: SixtyCycleCase.self)) ?? []
+    static let cases: [SixtyCycleCase] = try! loadFixture("sixty_cycle", type: SixtyCycleCase.self)
 
     @Test("SolarDay SixtyCycle pillars", arguments: cases)
-    fileprivate func testSixtyCycle(_ c: SixtyCycleCase) throws {
+    func testSixtyCycle(_ c: SixtyCycleCase) throws {
         let (y, m, d) = try parseSolar(c.solar)
         let solar = try SolarDay.fromYmd(y, m, d)
         let day = solar.sixtyCycleDay
 
         #expect(day.yearPillar.name == c.sixtyCycleYear,
-                "year pillar mismatch for \(c.solar)")
+                "Expected year pillar \(c.sixtyCycleYear) but got \(day.yearPillar.name) for \(c.solar)")
         #expect(day.monthPillar.name == c.sixtyCycleMonth,
-                "month pillar mismatch for \(c.solar)")
+                "Expected month pillar \(c.sixtyCycleMonth) but got \(day.monthPillar.name) for \(c.solar)")
         #expect(day.sixtyCycle.name == c.sixtyCycleDay,
-                "day pillar mismatch for \(c.solar)")
+                "Expected day pillar \(c.sixtyCycleDay) but got \(day.sixtyCycle.name) for \(c.solar)")
     }
 }
