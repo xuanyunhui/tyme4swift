@@ -147,12 +147,16 @@ import Testing
         // 向后超出上界（2050/12 之后），应返回 self
         let last = try RabByungMonth.fromYm(2050, 12)
         let beyond = last.next(100)
-        #expect(beyond.year >= 1950 && beyond.year <= 2050)
+        #expect(beyond.year == last.year)
+        #expect(beyond.month == last.month)
+        #expect(beyond.isLeap == last.isLeap)
 
         // 向前超出下界（1950/12 之前），应返回 self
         let first = try RabByungMonth.fromYm(1950, 12)
         let before = first.next(-100)
-        #expect(before.year >= 1950 && before.year <= 2050)
+        #expect(before.year == first.year)
+        #expect(before.month == first.month)
+        #expect(before.isLeap == first.isLeap)
     }
 
     // MARK: - RabByungMonth：next() 正常导航
@@ -170,7 +174,6 @@ import Testing
     @Test func testSolarYearOptional() throws {
         // 正常年份：有 solarYear
         let y = try RabByungYear.fromYear(2024)
-        #expect(y.solarYear != nil)
         #expect(y.solarYear?.getName() == "2024年")
 
         // rabByungIndex=150 时 year=10083，超出 SolarYear 范围（1-9999）
