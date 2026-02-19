@@ -45,11 +45,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Workflow Rules
 
 - **Checklist 管理**：PR 和 Issue 中的 checklist 项，确认验证完成后必须**立即**在 GitHub 上标记为完成（勾选）。每次 PR 合并或 Issue 关闭时必须同步更新 checklist，不得遗漏。
-- **PR 创建**：由 swift-developer 在 QA 门禁通过后**立即自动创建**，优先使用 `plugin:github`，无需 team-lead 确认。
-- **评审自动启动**：architect/audit-manager 收到 PR 评审任务后**立即自动开始**，无需 team-lead 二次触发。
-- **修复后自动重评**：swift-developer push 修复后**直接通知** architect/audit-manager 重启评审，队员间直接通信，不经 team-lead 中转。
-- **两轨通过即合并**：architect ✅ + audit-manager ✅ 后，team-lead **直接执行** rebase 合并，不再向用户确认。
 - **队员间直接通信**：任何队员之间可直接发消息协作，team-lead 不做中转。team-lead 只处理：合并 PR、更新 Issue/checklist、向用户汇报。
+- **完整 PR 评审流程**（队员通信链路）：
+  1. ios-dev push → 通知 QA 测试
+  2. QA 通过 → 通知 ios-dev 创建 PR
+  3. ios-dev 创建 PR → 通知 QA「PR #N 已创建」
+  4. QA → 通知 architect 开始 PR 审查
+  5. architect → 开始自己审查 + 通知 audit-manager 审计
+  6. audit-manager 完成 → 反馈结果给 architect
+  7. architect 汇总两轨结果：通过 → 通知 team-lead 合并；有问题 → 通知 ios-dev 修复
+- **两轨通过即合并**：architect ✅ + audit-manager ✅ 后，team-lead **直接执行** rebase 合并，不再向用户确认。
 
 ## Build & Test Commands
 
