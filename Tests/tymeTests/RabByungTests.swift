@@ -476,4 +476,24 @@ import Testing
         #expect(leap.isLeap == true)
         #expect(leap.day == 16)
     }
+
+    // MARK: - RabByungYear：element 验证（Issue #133）
+
+    @Test func testRabByungYearElement() throws {
+        // 1027 年是第一饶迥火兔年
+        let y1027 = try RabByungYear.fromYear(1027)
+        #expect(y1027.element.name == "火")
+
+        // 2024 年是木龙年（甲辰）
+        let y2024 = try RabByungYear.fromYear(2024)
+        #expect(y2024.element.name == "木")
+    }
+
+    // MARK: - RabByungDay：SolarDay 超出范围返回错误（Issue #133）
+
+    @Test func testRabByungDayFromSolarDayOutOfRange() throws {
+        // 2051-03-01 超出 RabByungDay 支持范围（最后一天是 2051-02-11）
+        let d = try SolarDay.fromYmd(2051, 3, 1)
+        #expect(d.rabByungDay == nil)
+    }
 }

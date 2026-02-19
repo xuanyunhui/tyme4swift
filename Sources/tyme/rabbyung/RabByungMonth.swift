@@ -118,8 +118,11 @@ public final class RabByungMonth: AbstractTyme {
 
     /// 特殊日列表（正=闰日日序，负=缺日日序的负值）
     public var specialDays: [Int] {
-        guard let days = RabByungMonth.DAYS[year * 13 + indexInYear] else {
-            preconditionFailure("RabByungMonth: missing DAYS entry for year=\(year), indexInYear=\(indexInYear)")
+        let key = year * 13 + indexInYear
+        guard let days = RabByungMonth.DAYS[key] else {
+            let monthName = RabByungMonth.NAMES[month - 1]
+            let desc = isLeap ? "闰\(monthName)" : monthName
+            preconditionFailure("RabByungMonth.specialDays: missing DAYS entry for \(year)年\(desc) (key=\(key))")
         }
         return days
     }
@@ -175,18 +178,19 @@ public final class RabByungMonth: AbstractTyme {
             }
         }
         let targetYear = y.year
+        // 边界检查：超出支持范围（minYear-maxYear）或月份无效，返回 self
         guard targetYear >= Self.minYear, targetYear <= Self.maxYear,
               finalM >= 1, finalM <= 12,
               !(targetYear == Self.minYear && finalM < Self.minYearFirstMonth) else {
             return self
         }
-        // 闰月一致性由算法保证——若此处失败则为内部 bug
+        // 内部不变量：闰月状态应与 leapMonth 一致（由 next() 算法保证）
         guard !leap || finalM == leapMonth else {
-            preconditionFailure("RabByungMonth.next: leap/leapMonth invariant violation finalM=\(finalM) leapMonth=\(leapMonth)")
+            preconditionFailure("RabByungMonth.next: invariant violation - leap=\(leap) but finalM=\(finalM) != leapMonth=\(leapMonth)")
         }
-        // 此时所有前置条件已满足，fromYm 不应失败
+        // 内部不变量：此时所有前置条件已满足，fromYm 不应抛出（如果抛出则表示代码 bug）
         guard let result = try? RabByungMonth.fromYm(targetYear, leap ? -finalM : finalM) else {
-            preconditionFailure("RabByungMonth.next: invariant violation y=\(targetYear) m=\(finalM) leap=\(leap)")
+            preconditionFailure("RabByungMonth.next: invariant violation - fromYm failed for y=\(targetYear) m=\(finalM) leap=\(leap)")
         }
         return result
     }
