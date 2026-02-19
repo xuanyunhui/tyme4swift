@@ -788,4 +788,24 @@ import Testing
         let jiuYun2 = Twenty.fromIndex(8)
         #expect(jiuYun2.sixty.getName() == "下元")
     }
+
+    // MARK: - NineStar：description 格式验证（Issue #114）
+
+    @Test func testNineStarDescriptionFormat() throws {
+        // Test description format: 星号 + 五行（e.g., "一白水", "二黑土"）
+        let star1 = NineStar.fromIndex(0)
+        #expect(star1.description == "一白水")
+
+        let star2 = NineStar.fromIndex(1)
+        #expect(star2.description == "二黑土")
+
+        let star3 = NineStar.fromIndex(2)
+        #expect(star3.description == "三碧木")
+
+        let star5 = NineStar.fromIndex(4)
+        #expect(star5.description == "五黄土")
+
+        let star9 = NineStar.fromIndex(8)
+        #expect(star9.description == "九紫火")
+    }
 }

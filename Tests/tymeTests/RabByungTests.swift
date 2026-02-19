@@ -127,6 +127,21 @@ import Testing
         #expect(m.dayCount == 30)
     }
 
+    // MARK: - RabByungMonth：specialDays 有效路径验证（Issue #134）
+
+    @Test func testRabByungMonthSpecialDaysValid() throws {
+        // 验证有效月份的 specialDays 能正常访问而不崩溃（诊断消息改进的有效路径测试）
+        // 1950/12 已知有 specialDays = [16, -21]
+        let m1950_12 = try RabByungMonth.fromYm(1950, 12)
+        let specialDays1950_12 = m1950_12.specialDays
+        #expect(specialDays1950_12 == [16, -21])
+
+        // 验证 leapDays 和 missDays 能正常从 specialDays 衍生
+        #expect(m1950_12.leapDays == [16])
+        #expect(m1950_12.missDays == [21])
+        #expect(m1950_12.dayCount == 30)
+    }
+
     // MARK: - RabByungMonth：验证错误
 
     @Test func testRabByungMonthValidation() {
