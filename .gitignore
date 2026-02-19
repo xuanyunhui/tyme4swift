@@ -27,6 +27,7 @@ refs
 
 # IDE and tool directories
 .serena/
-.claude/
 .idea
 .vscode
+.gitignore
+.claude/settings.local.json
