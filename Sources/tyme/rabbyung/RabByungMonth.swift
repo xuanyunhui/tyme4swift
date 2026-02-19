@@ -139,7 +139,7 @@ public final class RabByungMonth: AbstractTyme {
 
     /// 向前/后导航 n 个藏历月；超出支持范围（1950-2050）时返回 self
     public override func next(_ n: Int) -> RabByungMonth {
-        if n == 0 { return (try? RabByungMonth.fromYm(year, monthWithLeap)) ?? self }
+        if n == 0 { return self }
         var m = indexInYear + 1 + n
         var y = rabByungYear
         if n > 0 {
@@ -170,7 +170,21 @@ public final class RabByungMonth: AbstractTyme {
                 finalM -= 1
             }
         }
-        return (try? RabByungMonth.fromYm(y.year, leap ? -finalM : finalM)) ?? self
+        let targetYear = y.year
+        guard targetYear >= 1950, targetYear <= 2050,
+              finalM >= 1, finalM <= 12,
+              !(targetYear == 1950 && finalM < 12) else {
+            return self
+        }
+        // 闰月一致性检查（理论上由算法保证，若失败则为内部 bug）
+        guard !leap || finalM == leapMonth else {
+            return self
+        }
+        // 此时所有前置条件已满足，fromYm 不应失败
+        guard let result = try? RabByungMonth.fromYm(targetYear, leap ? -finalM : finalM) else {
+            preconditionFailure("RabByungMonth.next: invariant violation y=\(targetYear) m=\(finalM) leap=\(leap)")
+        }
+        return result
     }
 
     // MARK: - Deprecated API
