@@ -33,7 +33,8 @@ public final class TibetanDay: AbstractCulture {
 
     public var monthWithLeap: Int { isLeapMonth ? -month : month }
 
-    public var tibetanMonth: TibetanMonth { TibetanMonth.fromYm(year, monthWithLeap) }
+    /// 藏历月（仅支持1950-2050年范围，超出范围返回 nil）
+    public var rabByungMonth: RabByungMonth? { try? RabByungMonth.fromYm(year, monthWithLeap) }
 
     public var tibetanYear: TibetanYear? { try? TibetanYear.fromYear(year) }
 
@@ -92,8 +93,8 @@ public final class TibetanDay: AbstractCulture {
     @available(*, deprecated, renamed: "monthWithLeap")
     public func getMonthWithLeap() -> Int { monthWithLeap }
 
-    @available(*, deprecated, renamed: "tibetanMonth")
-    public func getTibetanMonth() -> TibetanMonth { tibetanMonth }
+    @available(*, deprecated, renamed: "rabByungMonth")
+    public func getTibetanMonth() -> RabByungMonth? { rabByungMonth }
 
     @available(*, deprecated, renamed: "tibetanYear")
     public func getTibetanYear() -> TibetanYear? { tibetanYear }
