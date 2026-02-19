@@ -24,7 +24,8 @@ let package = Package(
         ),
         .testTarget(
             name: "tymeTests",
-            dependencies: ["tyme"]
+            dependencies: ["tyme"],
+            resources: [.copy("Fixtures")]
         ),
         .executableTarget(
             name: "TymeBenchmarks",
