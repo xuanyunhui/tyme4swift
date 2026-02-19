@@ -21,8 +21,12 @@ public final class SolarYear: YearUnit, Tyme {
     /// 是否闰年
     public var isLeap: Bool { SolarUtil.isLeapYear(year) }
 
-    /// 藏历年
-    public var tibetanYear: TibetanYear { TibetanYear.fromYear(year) }
+    /// 饶迥年（藏历年）
+    public var rabByungYear: RabByungYear { RabByungYear.fromYear(year) }
+
+    /// 藏历年（已废弃，请使用 rabByungYear）
+    @available(*, deprecated, renamed: "rabByungYear")
+    public var tibetanYear: RabByungYear { rabByungYear }
 
     public func getSolarMonth(_ month: Int) -> SolarMonth { try! SolarMonth(year: year, month: month) }
 
