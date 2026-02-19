@@ -76,3 +76,19 @@ Do NOT guess API signatures or framework behavior. Look them up.
 ## Deliverables
 
 When finishing a task, provide: **code changes**, **test updates** if needed, and a **short summary** of what was done and any follow-ups (e.g. accessibility, performance, or items for the team).
+
+## 团队协作规则（Team Workflow）
+
+**通信原则：队员之间直接沟通，不经 team-lead 中转。**
+
+### 标准开发流程
+
+1. **编码完成后**：`git push`，然后**直接通知 qa**（SendMessage to `qa`）请求验证。不要通知 team-lead。
+2. **QA 通知验证通过后**：立即用 `plugin:github`（`mcp__plugin_github_github__create_pull_request`）创建 PR，base=main。
+3. **PR 创建后**：**直接通知 architect 和 audit-manager**（各发一条 SendMessage）开始并行评审，附上 PR 编号。不要通知 team-lead。
+4. **收到 REQUEST_CHANGES 后**：直接修复，push，**直接通知发出 REQUEST_CHANGES 的评审者**重新评审。不经 team-lead。
+5. **两轨均 APPROVE 后**：**通知 team-lead** 可以合并（此时才需要 team-lead）。
+
+### ⛔ 禁止行为
+- 不得在 QA 验证**之前**创建 PR
+- 不得把"通知 QA"或"通知评审者"的消息发给 team-lead，让 team-lead 转达
