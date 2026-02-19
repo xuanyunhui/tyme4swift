@@ -358,4 +358,16 @@ import Testing
             _ = try LunarMonth.fromYm(2023, -5)
         }
     }
+
+    // MARK: - Issue #115：LunarHour.eightChar 精确值回归测试
+
+    @Test func testLunarHourEightCharValues() throws {
+        // tyme4j: LunarHour(2023,11,14,23:00).eightChar year/month/day/hour pillars
+        let h = try LunarHour.fromYmdHms(2023, 11, 14, 23, 0, 0)
+        let ec = h.eightChar
+        #expect(ec.year.getName() == "癸卯")
+        #expect(ec.month.getName() == "甲子")
+        #expect(ec.day.getName() == "己未")
+        #expect(ec.hour.getName() == "甲子")
+    }
 }
