@@ -86,6 +86,70 @@ import Testing
         }
     }
 
+    // MARK: - RabByungMonth：tyme4j test0 对齐
+
+    @Test func testRabByungMonthFromYm() throws {
+        let m = try RabByungMonth.fromYm(1950, 12)
+        // tyme4j test0: RabByungMonth.fromYm(1950,12).toString() == "第十六饶迥铁虎年十二月"
+        #expect(m.getName() == "十二月")
+        #expect(m.alias == "满意月")
+        #expect(m.year == 1950)
+        #expect(m.month == 12)
+        #expect(m.isLeap == false)
+        #expect(m.rabByungYear.getName() == "第十六饶迥铁虎年")
+        #expect(m.rabByungYear.getName() + m.getName() == "第十六饶迥铁虎年十二月")
+    }
+
+    // MARK: - RabByungMonth：DAYS 数据表验证
+
+    @Test func testRabByungMonthDays() throws {
+        // 1950/12 是 DAYS 表第一个条目（y=1950, m=11）：编码 "2c>" → data=[16, -21]
+        // leapDays=[16]（第16日为闰日），missDays=[21]（第21日缺失），dayCount=30
+        let m = try RabByungMonth.fromYm(1950, 12)
+        #expect(m.specialDays == [16, -21])
+        #expect(m.leapDays == [16])
+        #expect(m.missDays == [21])
+        #expect(m.dayCount == 30)
+    }
+
+    // MARK: - RabByungMonth：验证错误
+
+    @Test func testRabByungMonthValidation() {
+        // month 0 无效
+        #expect(throws: TymeError.self) { _ = try RabByungMonth.fromYm(2000, 0) }
+        // month > 12 无效
+        #expect(throws: TymeError.self) { _ = try RabByungMonth.fromYm(2000, 13) }
+        // 年份超出 1950-2050 范围
+        #expect(throws: TymeError.self) { _ = try RabByungMonth.fromYm(1949, 1) }
+        #expect(throws: TymeError.self) { _ = try RabByungMonth.fromYm(2051, 1) }
+        // 1950 年只允许第12月
+        #expect(throws: TymeError.self) { _ = try RabByungMonth.fromYm(1950, 1) }
+    }
+
+    // MARK: - RabByungMonth：next() 边界（不崩溃、不死循环）
+
+    @Test func testRabByungMonthNextBoundary() throws {
+        // 向后超出上界（2050/12 之后），应返回 self
+        let last = try RabByungMonth.fromYm(2050, 12)
+        let beyond = last.next(100)
+        #expect(beyond.year >= 1950 && beyond.year <= 2050)
+
+        // 向前超出下界（1950/12 之前），应返回 self
+        let first = try RabByungMonth.fromYm(1950, 12)
+        let before = first.next(-100)
+        #expect(before.year >= 1950 && before.year <= 2050)
+    }
+
+    // MARK: - RabByungMonth：next() 正常导航
+
+    @Test func testRabByungMonthNext() throws {
+        let m = try RabByungMonth.fromYm(2024, 1)
+        #expect(m.next(1).getName() == "二月")
+        #expect(m.next(1).year == 2024)
+        #expect(m.next(12).year == 2025)
+        #expect(m.next(0).getName() == "正月")
+    }
+
     // MARK: - solarYear Optional（不在 SolarYear 范围内返回 nil）
 
     @Test func testSolarYearOptional() throws {
