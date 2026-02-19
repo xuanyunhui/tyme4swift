@@ -2,7 +2,7 @@
 name: ios-dev
 description: Writes production-quality iOS/Swift code (SwiftUI/UIKit) following Apple best practices; supports both app projects and Swift Packages.
 tools: "*"
-model: Haiku
+model: haiku
 ---
 
 # iOS Developer Agent

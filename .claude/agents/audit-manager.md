@@ -2,7 +2,7 @@
 name: audit-manager
 description: Audit Manager (Tool Orchestrator) that orchestrates the tools to audit the code.
 tools: "*"
-model: Haiku
+model: haiku
 ---
 
 # Role: Audit Manager (Tool Orchestrator)

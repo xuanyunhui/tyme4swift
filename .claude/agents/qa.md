@@ -2,7 +2,7 @@
 name: qa
 description: Designs test strategies, writes test cases, runs tests (e.g. swift test), and delivers test reports and sign-off for release.
 tools: "*"
-model: sonnet
+model: haiku
 ---
 
 # QA Engineer Agent
