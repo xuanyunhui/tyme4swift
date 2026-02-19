@@ -11,7 +11,12 @@ public final class NineColdDay: AbstractCultureDay {
         super.init(culture: nine, dayIndex: dayIndex)
     }
 
-    public var nine: Nine { culture as! Nine }
+    public var nine: Nine {
+        guard let result = culture as? Nine else {
+            preconditionFailure("NineColdDay: unexpected culture type")
+        }
+        return result
+    }
 
     @available(*, deprecated, renamed: "nine")
     public func getNine() -> Nine { nine }

@@ -15,14 +15,25 @@ public final class SolarTime: SecondUnit, Tyme {
     }
 
     public var julianDay: JulianDay {
-        try! JulianDay.fromYmdHms(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
+        guard let jd = try? JulianDay.fromYmdHms(year: year, month: month, day: day, hour: hour, minute: minute, second: second) else {
+            preconditionFailure("SolarTime: invalid Julian day calculation")
+        }
+        return jd
     }
 
-    public var solarDay: SolarDay { try! SolarDay(year: year, month: month, day: day) }
+    public var solarDay: SolarDay {
+        guard let d = try? SolarDay(year: year, month: month, day: day) else {
+            preconditionFailure("SolarTime: invalid solar day calculation")
+        }
+        return d
+    }
 
     public var lunarHour: LunarHour {
         let d = solarDay.lunarDay
-        return try! LunarHour.fromYmdHms(d.year, d.monthWithLeap, d.day, hour, minute, second)
+        guard let h = try? LunarHour.fromYmdHms(d.year, d.monthWithLeap, d.day, hour, minute, second) else {
+            preconditionFailure("SolarTime: invalid lunar hour calculation")
+        }
+        return h
     }
 
     public var term: SolarTerm {
@@ -37,7 +48,13 @@ public final class SolarTime: SecondUnit, Tyme {
         let jd = julianDay
         let target = JulianDay(jd.value + Double(n) / 86400.0)
         let ymd = target.toYmdHms()
-        return try! SolarTime(year: ymd.year, month: ymd.month, day: ymd.day, hour: ymd.hour, minute: ymd.minute, second: ymd.second)
+        guard let result = try? SolarTime(
+            year: ymd.year, month: ymd.month, day: ymd.day,
+            hour: ymd.hour, minute: ymd.minute, second: ymd.second
+        ) else {
+            preconditionFailure("SolarTime: invalid next calculation")
+        }
+        return result
     }
 
     public func subtract(_ target: SolarTime) -> Int {

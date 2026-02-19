@@ -7,7 +7,7 @@ public final class LunarHour: SecondUnit, Tyme {
     }
 
     public override init(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) throws {
-        try! LunarHour.validate(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
+        try LunarHour.validate(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
         try super.init(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
     }
 
@@ -15,7 +15,12 @@ public final class LunarHour: SecondUnit, Tyme {
         try LunarHour(year: year, month: month, day: day, hour: hour, minute: minute, second: second)
     }
 
-    public var lunarDay: LunarDay { try! LunarDay.fromYmd(year, month, day) }
+    public var lunarDay: LunarDay {
+        guard let d = try? LunarDay.fromYmd(year, month, day) else {
+            preconditionFailure("LunarHour: invalid day calculation")
+        }
+        return d
+    }
     public var indexInDay: Int { (hour + 1) / 2 }
 
     public func getName() -> String { EarthBranch.fromIndex(indexInDay).getName() + "时" }
@@ -27,12 +32,18 @@ public final class LunarHour: SecondUnit, Tyme {
         let stemIndex = d.heavenStem.index % 5 * 2 + earthBranchIndex
         let stem = HeavenStem.fromIndex(stemIndex).getName()
         let branch = EarthBranch.fromIndex(earthBranchIndex).getName()
-        return try! SixtyCycle.fromName(stem + branch)
+        guard let sc = try? SixtyCycle.fromName(stem + branch) else {
+            preconditionFailure("LunarHour: invalid sixty cycle calculation")
+        }
+        return sc
     }
 
     public var solarTime: SolarTime {
         let d = lunarDay.solarDay
-        return try! SolarTime.fromYmdHms(d.year, d.month, d.day, hour, minute, second)
+        guard let st = try? SolarTime.fromYmdHms(d.year, d.month, d.day, hour, minute, second) else {
+            preconditionFailure("LunarHour: invalid solar time calculation")
+        }
+        return st
     }
 
     /// 八字
@@ -48,7 +59,12 @@ public final class LunarHour: SecondUnit, Tyme {
     }
 
     public func next(_ n: Int) -> LunarHour {
-        if n == 0 { return try! LunarHour.fromYmdHms(year, month, day, hour, minute, second) }
+        if n == 0 {
+            guard let result = try? LunarHour.fromYmdHms(year, month, day, hour, minute, second) else {
+                preconditionFailure("LunarHour: invalid self recreation")
+            }
+            return result
+        }
         let h = hour + n * 2
         let diff = h < 0 ? -1 : 1
         var newHour = abs(h)
@@ -59,7 +75,10 @@ public final class LunarHour: SecondUnit, Tyme {
             days -= 1
         }
         let d = lunarDay.next(days)
-        return try! LunarHour.fromYmdHms(d.year, d.monthWithLeap, d.day, newHour, minute, second)
+        guard let result = try? LunarHour.fromYmdHms(d.year, d.monthWithLeap, d.day, newHour, minute, second) else {
+            preconditionFailure("LunarHour: invalid next calculation")
+        }
+        return result
     }
 
     public func isBefore(_ target: LunarHour) -> Bool {

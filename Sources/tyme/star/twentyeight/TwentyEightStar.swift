@@ -5,6 +5,7 @@ import Foundation
 /// Divided into 4 groups of 7, each associated with a direction and divine beast
 public final class TwentyEightStar: LoopTyme {
     /// Star names (二十八宿名称)
+    // swiftlint:disable:next line_length
     public static let NAMES = ["角", "亢", "氐", "房", "心", "尾", "箕", "斗", "牛", "女", "虚", "危", "室", "壁", "奎", "娄", "胃", "昴", "毕", "觜", "参", "井", "鬼", "柳", "星", "张", "翼", "轸"]
 
     /// Land (九野) mapping for each star

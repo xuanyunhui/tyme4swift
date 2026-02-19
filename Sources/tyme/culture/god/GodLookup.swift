@@ -76,3 +76,5 @@ static let DAY_GODS: [String] = [
         return gods
     }
 }
+
+// swiftlint:enable line_length

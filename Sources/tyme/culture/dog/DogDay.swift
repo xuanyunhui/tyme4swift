@@ -11,7 +11,12 @@ public final class DogDay: AbstractCultureDay {
         super.init(culture: dog, dayIndex: dayIndex)
     }
 
-    public var dog: Dog { culture as! Dog }
+    public var dog: Dog {
+        guard let result = culture as? Dog else {
+            preconditionFailure("DogDay: unexpected culture type")
+        }
+        return result
+    }
 
     @available(*, deprecated, renamed: "dog")
     public func getDog() -> Dog { dog }

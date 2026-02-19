@@ -19,15 +19,37 @@ public final class SolarHalfYear: YearUnit, Tyme {
         try SolarHalfYear(year: year, index: index)
     }
 
-    public var solarYear: SolarYear { try! SolarYear(year: year) }
-    public var months: [SolarMonth] { (1...6).map { try! SolarMonth(year: year, month: index * 6 + $0) } }
-    public var seasons: [SolarSeason] { (0..<2).map { try! SolarSeason(year: year, index: index * 2 + $0) } }
+    public var solarYear: SolarYear {
+        guard let y = try? SolarYear(year: year) else {
+            preconditionFailure("SolarHalfYear: invalid year")
+        }
+        return y
+    }
+    public var months: [SolarMonth] {
+        (1...6).map { m in
+            guard let month = try? SolarMonth(year: year, month: index * 6 + m) else {
+                preconditionFailure("SolarHalfYear: invalid month")
+            }
+            return month
+        }
+    }
+    public var seasons: [SolarSeason] {
+        (0..<2).map { i in
+            guard let s = try? SolarSeason(year: year, index: index * 2 + i) else {
+                preconditionFailure("SolarHalfYear: invalid season")
+            }
+            return s
+        }
+    }
 
     public func getName() -> String { SolarHalfYear.NAMES[index] }
 
     public func next(_ n: Int) -> SolarHalfYear {
         let i = index + n
-        return try! SolarHalfYear(year: (year * 2 + i) / 2, index: indexOf(i, 2))
+        guard let result = try? SolarHalfYear(year: (year * 2 + i) / 2, index: indexOf(i, 2)) else {
+            preconditionFailure("SolarHalfYear: invalid next calculation")
+        }
+        return result
     }
 
     @available(*, deprecated, renamed: "solarYear")

@@ -89,12 +89,20 @@ public final class NineStar: LoopTyme {
     public var celestialName: String { NineStar.CELESTIAL_NAMES[index] }
     public var yinYang: String { NineStar.YIN_YANG[index] }
     public var wuXing: String { NineStar.WU_XING[index] }
-    public var element: Element { try! Element.fromName(NineStar.WU_XING[index]) }
+    public var element: Element {
+        guard let e = try? Element.fromName(NineStar.WU_XING[index]) else {
+            preconditionFailure("NineStar: invalid element lookup")
+        }
+        return e
+    }
     public var direction: String { NineStar.DIRECTIONS[index] }
     public var directionInstance: Direction? {
         let dir = NineStar.DIRECTIONS[index]
         if dir == "中" { return nil }
-        return try! Direction.fromName(dir)
+        guard let d = try? Direction.fromName(dir) else {
+            preconditionFailure("NineStar: invalid direction lookup")
+        }
+        return d
     }
     public var bagua: String { NineStar.BAGUA[index] }
     public var color: String { NineStar.COLORS[index] }

@@ -18,7 +18,10 @@ public final class SixtyCycleDay: AbstractCulture {
         let offset = termIndex < 3 ? (termIndex == 0 ? -2 : -1) : (termIndex - 3) / 2
         self.solarDay = solarDay
         self.sixtyCycleMonth = SixtyCycleYear.fromYear(term.year).firstMonth.next(offset)
-        self.sixtyCycle = SixtyCycle.fromIndex(solarDay.subtract(try! SolarDay.fromYmd(2000, 1, 7)))
+        guard let baseDay = try? SolarDay.fromYmd(2000, 1, 7) else {
+            preconditionFailure("SixtyCycleDay: invalid base day calculation")
+        }
+        self.sixtyCycle = SixtyCycle.fromIndex(solarDay.subtract(baseDay))
         super.init()
     }
 
@@ -120,7 +123,10 @@ public final class SixtyCycleDay: AbstractCulture {
     public var hours: [SixtyCycleHour] {
         var l: [SixtyCycleHour] = []
         let d = solarDay.next(-1)
-        var h = SixtyCycleHour.fromSolarTime(try! SolarTime.fromYmdHms(d.year, d.month, d.day, 23, 0, 0))
+        guard let st = try? SolarTime.fromYmdHms(d.year, d.month, d.day, 23, 0, 0) else {
+            preconditionFailure("SixtyCycleDay: invalid solar time for hours")
+        }
+        var h = SixtyCycleHour.fromSolarTime(st)
         l.append(h)
         for _ in 0..<11 {
             h = h.next(7200)

@@ -8,7 +8,10 @@ public final class PhaseDay: AbstractCultureDay {
 
     /// 月相
     public var phase: Phase {
-        culture as! Phase
+        guard let result = culture as? Phase else {
+            preconditionFailure("PhaseDay: unexpected culture type")
+        }
+        return result
     }
 
     @available(*, deprecated, renamed: "phase")

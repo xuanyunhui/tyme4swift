@@ -12,7 +12,12 @@ public final class HideHeavenStemDay: AbstractCultureDay {
     }
 
     /// Get hidden heaven stem
-    public var hideHeavenStem: HideHeavenStem { culture as! HideHeavenStem }
+    public var hideHeavenStem: HideHeavenStem {
+        guard let result = culture as? HideHeavenStem else {
+            preconditionFailure("HideHeavenStemDay: unexpected culture type")
+        }
+        return result
+    }
 
     /// Get name
     /// - Returns: Heaven stem name + element name (e.g., "癸水")

@@ -36,6 +36,7 @@ public struct JulianDay: CustomStringConvertible {
     @available(*, deprecated, renamed: "value")
     public func getDay() -> Double { value }
 
+    // swiftlint:disable:next large_tuple
     public func toYmdHms() -> (year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int) {
         var z = Int(floor(value + 0.5))
         let f = (value + 0.5) - Double(z)
@@ -68,7 +69,10 @@ public struct JulianDay: CustomStringConvertible {
 
     public var solarTime: SolarTime {
         let ymd = toYmdHms()
-        return try! SolarTime.fromYmdHms(ymd.year, ymd.month, ymd.day, ymd.hour, ymd.minute, ymd.second)
+        guard let st = try? SolarTime.fromYmdHms(ymd.year, ymd.month, ymd.day, ymd.hour, ymd.minute, ymd.second) else {
+            preconditionFailure("JulianDay: invalid solar time conversion")
+        }
+        return st
     }
 
     public var solarDay: SolarDay { solarTime.getSolarDay() }

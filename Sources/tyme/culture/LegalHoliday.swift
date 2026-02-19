@@ -25,18 +25,26 @@ public final class LegalHoliday: AbstractTyme {
     public private(set) var target: SolarDay
 
     init(year: Int, month: Int, day: Int, data: String) {
-        let d = try! SolarDay.fromYmd(year, month, day)
+        guard let d = try? SolarDay.fromYmd(year, month, day) else {
+            preconditionFailure("LegalHoliday: invalid solar day")
+        }
         self.solarDay = d
         // data is 13 chars: YYYYMMDD(8) + work(1) + nameIdx(1) + sign(1) + offset(2) = 13
         let startIdx = data.startIndex
         let workChar = data[data.index(startIdx, offsetBy: 8)]
         self.isWork = workChar == "0"
         let nameIdxChar = data[data.index(startIdx, offsetBy: 9)]
-        let nameIdx = nameIdxChar.asciiValue! - Character("0").asciiValue!
+        guard let nameAscii = nameIdxChar.asciiValue,
+              let zeroAscii = Character("0").asciiValue else {
+            preconditionFailure("LegalHoliday: invalid name index character")
+        }
+        let nameIdx = nameAscii - zeroAscii
         self.festivalName = LegalHoliday.NAMES[Int(nameIdx)]
         let signChar = data[data.index(startIdx, offsetBy: 10)]
         let offsetStr = String(data[data.index(startIdx, offsetBy: 11)...])
-        let offset = Int(offsetStr)!
+        guard let offset = Int(offsetStr) else {
+            preconditionFailure("LegalHoliday: invalid offset string")
+        }
         self.target = signChar == "-" ? d.next(-offset) : d.next(offset)
         super.init()
     }
@@ -78,11 +86,9 @@ public final class LegalHoliday: AbstractTyme {
         }
 
         var index = -1
-        for i in 0..<data.count {
-            if data[i].hasPrefix(today) {
-                index = i
-                break
-            }
+        for i in 0..<data.count where data[i].hasPrefix(today) {
+            index = i
+            break
         }
 
         guard index >= 0 else { return self }
@@ -126,9 +132,11 @@ public final class LegalHoliday: AbstractTyme {
         }
 
         let entry = data[index]
-        let ey = Int(String(entry.prefix(4)))!
-        let em = Int(String(entry[entry.index(entry.startIndex, offsetBy: 4)..<entry.index(entry.startIndex, offsetBy: 6)]))!
-        let ed = Int(String(entry[entry.index(entry.startIndex, offsetBy: 6)..<entry.index(entry.startIndex, offsetBy: 8)]))!
+        guard let ey = Int(String(entry.prefix(4))),
+              let em = Int(String(entry[entry.index(entry.startIndex, offsetBy: 4)..<entry.index(entry.startIndex, offsetBy: 6)])),
+              let ed = Int(String(entry[entry.index(entry.startIndex, offsetBy: 6)..<entry.index(entry.startIndex, offsetBy: 8)])) else {
+            preconditionFailure("LegalHoliday: invalid entry format")
+        }
         return LegalHoliday(year: ey, month: em, day: ed, data: entry)
     }
 
@@ -136,3 +144,7 @@ public final class LegalHoliday: AbstractTyme {
         "\(solarDay) \(festivalName)(\(isWork ? "班" : "休"))"
     }
 }
+
+// swiftlint:enable line_length
+// swiftlint:enable cyclomatic_complexity
+// swiftlint:enable function_body_length

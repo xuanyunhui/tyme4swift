@@ -9,7 +9,10 @@ public final class KitchenGodSteed: AbstractCulture {
     private let firstDaySixtyCycle: SixtyCycle
 
     public init(lunarYear: Int) {
-        firstDaySixtyCycle = try! LunarDay.fromYmd(lunarYear, 1, 1).sixtyCycle
+        guard let ld = try? LunarDay.fromYmd(lunarYear, 1, 1) else {
+            preconditionFailure("KitchenGodSteed: invalid lunar day")
+        }
+        firstDaySixtyCycle = ld.sixtyCycle
     }
 
     public static func fromLunarYear(_ lunarYear: Int) -> KitchenGodSteed {

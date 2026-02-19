@@ -22,12 +22,19 @@ public final class SolarWeek: WeekUnit, Tyme {
         try SolarWeek(year: year, month: month, index: index, start: start)
     }
 
-    public var solarMonth: SolarMonth { try! SolarMonth(year: year, month: month) }
+    public var solarMonth: SolarMonth {
+        guard let m = try? SolarMonth(year: year, month: month) else {
+            preconditionFailure("SolarWeek: invalid month calculation")
+        }
+        return m
+    }
 
     public var indexInYear: Int {
         var i = 0
         let firstDay = self.firstDay
-        var w = try! SolarWeek(year: year, month: 1, index: 0, start: startIndex)
+        guard var w = try? SolarWeek(year: year, month: 1, index: 0, start: startIndex) else {
+            preconditionFailure("SolarWeek: invalid week calculation")
+        }
         while w.firstDay.getName() != firstDay.getName() {
             w = w.next(1)
             i += 1
@@ -57,11 +64,16 @@ public final class SolarWeek: WeekUnit, Tyme {
                 d += m.getWeekCount(startIndex)
             }
         }
-        return try! SolarWeek(year: m.year, month: m.month, index: d, start: startIndex)
+        guard let result = try? SolarWeek(year: m.year, month: m.month, index: d, start: startIndex) else {
+            preconditionFailure("SolarWeek: invalid next calculation")
+        }
+        return result
     }
 
     public var firstDay: SolarDay {
-        let first = try! SolarDay(year: year, month: month, day: 1)
+        guard let first = try? SolarDay(year: year, month: month, day: 1) else {
+            preconditionFailure("SolarWeek: invalid first day calculation")
+        }
         return first.next(index * 7 - indexOf(first.week.index - startIndex, 7))
     }
 

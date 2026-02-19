@@ -22,6 +22,7 @@ import Foundation
 /// let day = term.solarDay  // The day this term begins
 /// ```
 public final class SolarTerm: LoopTyme {
+    // swiftlint:disable:next line_length
     public static let NAMES = ["冬至", "小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至", "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪"]
 
     public private(set) var year: Int
@@ -47,7 +48,7 @@ public final class SolarTerm: LoopTyme {
         guard let idx = SolarTerm.NAMES.firstIndex(of: name) else {
             throw TymeError.invalidName(name)
         }
-        try! self.init(year: year, index: idx)
+        try self.init(year: year, index: idx)
     }
 
     private func initByYear(_ year: Int, _ offset: Int) {
@@ -59,17 +60,23 @@ public final class SolarTerm: LoopTyme {
     }
 
     public static func fromIndex(_ year: Int, _ index: Int) -> SolarTerm {
-        try! SolarTerm(year: year, index: index)
+        guard let result = try? SolarTerm(year: year, index: index) else {
+            preconditionFailure("SolarTerm: invalid index \(index)")
+        }
+        return result
     }
 
     public static func fromName(_ year: Int, _ name: String) throws -> SolarTerm {
-        try! SolarTerm(year: year, name: name)
+        try SolarTerm(year: year, name: name)
     }
 
     public override func next(_ n: Int) -> SolarTerm {
         let size = SolarTerm.NAMES.count
         let i = index + n
-        return try! SolarTerm(year: (year * size + i) / size, index: ((i % size) + size) % size)
+        guard let result = try? SolarTerm(year: (year * size + i) / size, index: ((i % size) + size) % size) else {
+            preconditionFailure("SolarTerm: invalid next calculation")
+        }
+        return result
     }
 
     /// Returns `true` if this is a minor term (节 Jié, odd-indexed).

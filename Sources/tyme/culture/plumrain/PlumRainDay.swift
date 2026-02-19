@@ -11,7 +11,12 @@ public final class PlumRainDay: AbstractCultureDay {
         super.init(culture: plumRain, dayIndex: dayIndex)
     }
 
-    public var plumRain: PlumRain { culture as! PlumRain }
+    public var plumRain: PlumRain {
+        guard let result = culture as? PlumRain else {
+            preconditionFailure("PlumRainDay: unexpected culture type")
+        }
+        return result
+    }
 
     @available(*, deprecated, renamed: "plumRain")
     public func getPlumRain() -> PlumRain { plumRain }

@@ -8,7 +8,9 @@ public final class LunarEightCharProvider: EightCharProvider {
     /// Get year pillar SixtyCycle based on lunar year
     public func getYearSixtyCycle(year: Int, month: Int, day: Int) -> SixtyCycle {
         // Get lunar day from solar day
-        let solarDay = try! SolarDay.fromYmd(year, month, day)
+        guard let solarDay = try? SolarDay.fromYmd(year, month, day) else {
+            preconditionFailure("LunarEightCharProvider: invalid solar day")
+        }
         let lunarDay = solarDay.lunarDay
         let lunarYear = lunarDay.lunarMonth.lunarYear.year
 
@@ -21,7 +23,9 @@ public final class LunarEightCharProvider: EightCharProvider {
     /// Get month pillar SixtyCycle based on lunar month
     public func getMonthSixtyCycle(year: Int, month: Int, day: Int) -> SixtyCycle {
         // Get lunar day from solar day
-        let solarDay = try! SolarDay.fromYmd(year, month, day)
+        guard let solarDay = try? SolarDay.fromYmd(year, month, day) else {
+            preconditionFailure("LunarEightCharProvider: invalid solar day")
+        }
         let lunarDay = solarDay.lunarDay
         let lunarMonth = lunarDay.lunarMonth
 
@@ -47,7 +51,9 @@ public final class LunarEightCharProvider: EightCharProvider {
 
     /// Get day pillar SixtyCycle
     public func getDaySixtyCycle(year: Int, month: Int, day: Int) -> SixtyCycle {
-        let solarDay = try! SolarDay.fromYmd(year, month, day)
+        guard let solarDay = try? SolarDay.fromYmd(year, month, day) else {
+            preconditionFailure("LunarEightCharProvider: invalid solar day")
+        }
         let jd = solarDay.julianDay
         let offset = Int(jd.value + 0.5) + 49
         var index = offset % 60

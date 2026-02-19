@@ -20,7 +20,10 @@ public final class Phase: LoopTyme {
 
     public init(lunarYear: Int, lunarMonth: Int, index: Int) {
         let size = Phase.NAMES.count
-        let m = try! LunarMonth.fromYm(lunarYear, lunarMonth).next(index / size)
+        guard let baseM = try? LunarMonth.fromYm(lunarYear, lunarMonth) else {
+            preconditionFailure("Phase: invalid lunar month")
+        }
+        let m = baseM.next(index / size)
         self.lunarYear = m.year
         self.lunarMonth = m.monthWithLeap
         super.init(names: Phase.NAMES, index: index)
@@ -50,7 +53,9 @@ public final class Phase: LoopTyme {
             i -= size
         }
         i /= size
-        let m = try! LunarMonth.fromYm(lunarYear, lunarMonth)
+        guard let m = try? LunarMonth.fromYm(lunarYear, lunarMonth) else {
+            preconditionFailure("Phase: invalid lunar month in next")
+        }
         let nextM = i != 0 ? m.next(i) : m
         return Phase.fromIndex(nextM.year, nextM.monthWithLeap, nextIndex(n))
     }
@@ -63,7 +68,10 @@ public final class Phase: LoopTyme {
         let n = Int(floor(Double(lunarYear - 2000) * 365.2422 / 29.53058886))
         var i = 0
         let jd = JulianDay.J2000 + ShouXingUtil.ONE_THIRD
-        let d = try! LunarDay.fromYmd(lunarYear, lunarMonth, 1).solarDay
+        guard let ld = try? LunarDay.fromYmd(lunarYear, lunarMonth, 1) else {
+            preconditionFailure("Phase: invalid lunar day in getStartSolarTime")
+        }
+        let d = ld.solarDay
         while true {
             let t = ShouXingUtil.msaLonT(Double(n + i) * ShouXingUtil.PI_2) * 36525
             if !JulianDay.fromJulianDay(jd + t - ShouXingUtil.dtT(t)).solarDay.isBefore(d) {

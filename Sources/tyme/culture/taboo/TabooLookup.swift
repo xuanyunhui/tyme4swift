@@ -120,3 +120,5 @@ static let HOUR_TABOO: [String] = [
         return taboos
     }
 }
+
+// swiftlint:enable line_length

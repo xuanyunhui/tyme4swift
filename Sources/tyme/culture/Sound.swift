@@ -71,5 +71,10 @@ public final class Sound: LoopTyme {
     public var wuXing: String { Sound.WU_XING[index] }
 
     /// The Element (五行) associated with this NaYin sound
-    public var element: Element { try! Element.fromName(Sound.WU_XING[index]) }
+    public var element: Element {
+        guard let e = try? Element.fromName(Sound.WU_XING[index]) else {
+            preconditionFailure("Sound: invalid element lookup")
+        }
+        return e
+    }
 }

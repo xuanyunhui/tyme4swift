@@ -44,9 +44,24 @@ public final class SolarDay: DayUnit, Tyme {
     public func getName() -> String { String(format: "%04d-%02d-%02d", year, month, day) }
 
     /// The Julian Day number for astronomical calculations.
-    public var julianDay: JulianDay { try! JulianDay.fromYmdHms(year: year, month: month, day: day) }
-    public var solarMonth: SolarMonth { try! SolarMonth(year: year, month: month) }
-    public var solarYear: SolarYear { try! SolarYear(year: year) }
+    public var julianDay: JulianDay {
+        guard let jd = try? JulianDay.fromYmdHms(year: year, month: month, day: day) else {
+            preconditionFailure("SolarDay: invalid Julian day calculation")
+        }
+        return jd
+    }
+    public var solarMonth: SolarMonth {
+        guard let m = try? SolarMonth(year: year, month: month) else {
+            preconditionFailure("SolarDay: invalid month calculation")
+        }
+        return m
+    }
+    public var solarYear: SolarYear {
+        guard let y = try? SolarYear(year: year) else {
+            preconditionFailure("SolarDay: invalid year calculation")
+        }
+        return y
+    }
     public var week: Week { julianDay.week }
     /// The solar term day (节气日 Jiéqì Rì) for this date.
     public var termDay: SolarTermDay {
@@ -70,7 +85,9 @@ public final class SolarDay: DayUnit, Tyme {
     public var sixtyCycleDay: SixtyCycleDay { SixtyCycleDay(solarDay: self) }
     /// The corresponding day in the Chinese lunar calendar (农历 Nónglì).
     public var lunarDay: LunarDay {
-        var m = try! LunarMonth.fromYm(year, month)
+        guard var m = try? LunarMonth.fromYm(year, month) else {
+            preconditionFailure("SolarDay: invalid lunar month calculation")
+        }
         var days = subtract(m.firstJulianDay.solarDay)
         while days < 0 {
             m = m.next(-1)
@@ -80,7 +97,10 @@ public final class SolarDay: DayUnit, Tyme {
             days -= m.dayCount
             m = m.next(1)
         }
-        return try! LunarDay.fromYmd(m.year, m.monthWithLeap, days + 1)
+        guard let result = try? LunarDay.fromYmd(m.year, m.monthWithLeap, days + 1) else {
+            preconditionFailure("SolarDay: invalid lunar day calculation")
+        }
+        return result
     }
 
     /// 对应的藏历日（仅支持1951年1月8日至2051年2月11日范围，超出返回nil）
@@ -92,7 +112,10 @@ public final class SolarDay: DayUnit, Tyme {
         let jd = julianDay
         let target = JulianDay(jd.value + Double(n))
         let ymd = target.toYmdHms()
-        return try! SolarDay(year: ymd.year, month: ymd.month, day: ymd.day)
+        guard let result = try? SolarDay(year: ymd.year, month: ymd.month, day: ymd.day) else {
+            preconditionFailure("SolarDay: invalid next calculation")
+        }
+        return result
     }
 
     public func isBefore(_ target: SolarDay) -> Bool {
@@ -114,7 +137,22 @@ public final class SolarDay: DayUnit, Tyme {
     /// 星座
     public var constellation: Constellation {
         let y = month * 100 + day
-        return Constellation.fromIndex(y > 1221 || y < 120 ? 9 : y < 219 ? 10 : y < 321 ? 11 : y < 420 ? 0 : y < 521 ? 1 : y < 622 ? 2 : y < 723 ? 3 : y < 823 ? 4 : y < 923 ? 5 : y < 1024 ? 6 : y < 1123 ? 7 : 8)
+        let idx: Int
+        switch y {
+        case _ where y > 1221 || y < 120: idx = 9
+        case ..<219: idx = 10
+        case ..<321: idx = 11
+        case ..<420: idx = 0
+        case ..<521: idx = 1
+        case ..<622: idx = 2
+        case ..<723: idx = 3
+        case ..<823: idx = 4
+        case ..<923: idx = 5
+        case ..<1024: idx = 6
+        case ..<1123: idx = 7
+        default: idx = 8
+        }
+        return Constellation.fromIndex(idx)
     }
 
     /// 三伏天，如果当天不是三伏天，返回nil
@@ -161,7 +199,10 @@ public final class SolarDay: DayUnit, Tyme {
         end = end.next(end.lunarDay.sixtyCycle.earthBranch.stepsTo(7))
         if isBefore(start) || isAfter(end) { return nil }
         let isEnd = year == end.year && month == end.month && day == end.day
-        return isEnd ? PlumRainDay(plumRain: PlumRain.fromIndex(1), dayIndex: 0) : PlumRainDay(plumRain: PlumRain.fromIndex(0), dayIndex: subtract(start))
+        if isEnd {
+            return PlumRainDay(plumRain: PlumRain.fromIndex(1), dayIndex: 0)
+        }
+        return PlumRainDay(plumRain: PlumRain.fromIndex(0), dayIndex: subtract(start))
     }
 
     /// 藏干日
@@ -181,11 +222,14 @@ public final class SolarDay: DayUnit, Tyme {
         var remaining = dayIdx
         while typeIndex < 3 {
             let i = typeIndex * 2
-            let dChar = String(segment[segment.index(segment.startIndex, offsetBy: i)..<segment.index(segment.startIndex, offsetBy: i + 1)])
+            let charIdx = segment.index(segment.startIndex, offsetBy: i)
+            let dChar = String(segment[charIdx..<segment.index(charIdx, offsetBy: 1)])
             var count = 0
             if dChar != "x" {
-                heavenStemIndex = Int(dChar)!
-                count = dayCounts[Int(String(segment[segment.index(segment.startIndex, offsetBy: i + 1)..<segment.index(segment.startIndex, offsetBy: i + 2)]))!]
+                heavenStemIndex = Int(dChar) ?? 0
+                let cIdx = segment.index(charIdx, offsetBy: 1)
+                let cChar = String(segment[cIdx..<segment.index(cIdx, offsetBy: 1)])
+                count = dayCounts[Int(cChar) ?? 0]
                 days += count
             }
             if dayIdx <= days {
@@ -203,7 +247,10 @@ public final class SolarDay: DayUnit, Tyme {
     /// 在当年中的索引（0-based）
     public var indexInYear: Int {
         // Safe: year is already validated; Jan 1 is always valid
-        subtract(try! SolarDay.fromYmd(year, 1, 1))
+        guard let jan1 = try? SolarDay.fromYmd(year, 1, 1) else {
+            preconditionFailure("SolarDay: invalid Jan 1 calculation")
+        }
+        return subtract(jan1)
     }
 
     /// 物候日
@@ -248,9 +295,15 @@ public final class SolarDay: DayUnit, Tyme {
     }
 
     public func getSolarWeek(_ start: Int) -> SolarWeek {
-        let firstWeek = try! SolarDay(year: year, month: month, day: 1).week.next(-start).index
+        guard let first = try? SolarDay(year: year, month: month, day: 1) else {
+            preconditionFailure("SolarDay: invalid first day calculation")
+        }
+        let firstWeek = first.week.next(-start).index
         let i = Int(ceil(Double(day + firstWeek) / 7.0)) - 1
-        return try! SolarWeek(year: year, month: month, index: i, start: start)
+        guard let result = try? SolarWeek(year: year, month: month, index: i, start: start) else {
+            preconditionFailure("SolarDay: invalid week calculation")
+        }
+        return result
     }
 
     @available(*, deprecated, renamed: "julianDay")
