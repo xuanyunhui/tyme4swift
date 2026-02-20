@@ -78,6 +78,26 @@ public class TruthTableGenerator {
         }
     }
 
+    static class ConstellationEntry {
+        String solar;
+        String constellation;
+
+        ConstellationEntry(String solar, String constellation) {
+            this.solar = solar;
+            this.constellation = constellation;
+        }
+    }
+
+    static class SixStarEntry {
+        String solar;
+        String sixStar;
+
+        SixStarEntry(String solar, String sixStar) {
+            this.solar = solar;
+            this.sixStar = sixStar;
+        }
+    }
+
     static class RabByungEntry {
         String solar;
         String rabByungYear;
@@ -265,6 +285,42 @@ public class TruthTableGenerator {
         List<RabByungEntry> rabByungEntries = generateRabByungEntries();
         System.out.println(" " + rabByungEntries.size() + " entries");
 
+        // Generate constellation.json (sample every 7 days, 1900-2100)
+        System.out.print("Generating constellation.json...");
+        List<ConstellationEntry> constellationEntries = new ArrayList<>();
+        current = LocalDate.of(1900, 1, 31);
+        while (!current.isAfter(end)) {
+            try {
+                SolarDay solar = SolarDay.fromYmd(current.getYear(), current.getMonthValue(), current.getDayOfMonth());
+                constellationEntries.add(new ConstellationEntry(
+                    current.toString(),
+                    solar.getConstellation().getName()
+                ));
+            } catch (Exception e) {
+                System.err.println("Error processing " + current + ": " + e.getMessage());
+            }
+            current = current.plusDays(7);
+        }
+        System.out.println(" " + constellationEntries.size() + " entries");
+
+        // Generate six_star.json (sample every 7 days, 1900-2100)
+        System.out.print("Generating six_star.json...");
+        List<SixStarEntry> sixStarEntries = new ArrayList<>();
+        current = LocalDate.of(1900, 1, 31);
+        while (!current.isAfter(end)) {
+            try {
+                SolarDay solar = SolarDay.fromYmd(current.getYear(), current.getMonthValue(), current.getDayOfMonth());
+                sixStarEntries.add(new SixStarEntry(
+                    current.toString(),
+                    solar.getLunarDay().getSixStar().getName()
+                ));
+            } catch (Exception e) {
+                System.err.println("Error processing " + current + ": " + e.getMessage());
+            }
+            current = current.plusDays(7);
+        }
+        System.out.println(" " + sixStarEntries.size() + " entries");
+
         // Write solar_lunar.json
         writeJson(outputDir + "solar_lunar.json", solarLunarEntries);
 
@@ -279,6 +335,12 @@ public class TruthTableGenerator {
 
         // Write rab_byung.json
         writeJson(outputDir + "rab_byung.json", rabByungEntries);
+
+        // Write constellation.json
+        writeJson(outputDir + "constellation.json", constellationEntries);
+
+        // Write six_star.json
+        writeJson(outputDir + "six_star.json", sixStarEntries);
 
         System.out.println("Done!");
     }
@@ -318,6 +380,18 @@ public class TruthTableGenerator {
                     writer.write(String.format(
                         "  {\"solar\":\"%s\",\"rabByungYear\":\"%s\",\"rabByungMonth\":\"%s\",\"rabByungDay\":\"%s\"}",
                         e.solar, e.rabByungYear, e.rabByungMonth, e.rabByungDay
+                    ));
+                } else if (entry instanceof ConstellationEntry) {
+                    ConstellationEntry e = (ConstellationEntry) entry;
+                    writer.write(String.format(
+                        "  {\"solar\":\"%s\",\"constellation\":\"%s\"}",
+                        e.solar, e.constellation
+                    ));
+                } else if (entry instanceof SixStarEntry) {
+                    SixStarEntry e = (SixStarEntry) entry;
+                    writer.write(String.format(
+                        "  {\"solar\":\"%s\",\"sixStar\":\"%s\"}",
+                        e.solar, e.sixStar
                     ));
                 }
 
