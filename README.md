@@ -6,7 +6,7 @@ Tyme4Swift 是一个非常强大的日历工具库，是 [Tyme4J](https://github
 
 ## 特性
 
-- 📅 **多种日历系统**: 公历(Solar)、农历(Lunar)、藏历(Tibetan)
+- 📅 **多种日历系统**: 公历(Solar)、农历(Lunar)、藏历(RabByung)
 - 🔄 **干支系统**: 天干、地支、六十干支
 - 🎋 **节气系统**: 24 个节气、立春、清明等
 - 🐉 **生肖系统**: 12 个中文生肖
@@ -56,40 +56,41 @@ pod 'tyme4swift'
 ### 基础示例
 
 ```swift
-import tyme4swift
+import tyme
 
 // 创建公历日期
-let solarDay = SolarDay.fromYmd(1986, 5, 29)!
+let solarDay = try! SolarDay.fromYmd(1986, 5, 29)
 
 // 输出: 1986年5月29日
 print(solarDay)
 
 // 获取对应的农历日期
-let lunarDay = solarDay.getLunarDay()
+let lunarDay = solarDay.lunarDay
 print(lunarDay)  // 输出: 农历丙寅年四月廿一
 
 // 获取对应的藏历日期
-let tibetanDay = solarDay.getTibetanDay()
-print(tibetanDay)  // 输出: 第十七饶迥火虎年四月廿一
+let rabByungDay = solarDay.rabByungDay
+print(rabByungDay!)  // 输出: 第十七饶迥火虎年四月廿一
 ```
 
 ### 干支系统
 
 ```swift
 // 获取天干地支
-let solarDay = SolarDay.fromYmd(2024, 1, 1)!
-let sixtyDay = solarDay.getSixtyCycleDay()
+let solarDay = try! SolarDay.fromYmd(2024, 1, 1)
+let sixtyDay = solarDay.sixtyCycleDay
 
-print(sixtyDay.getHeavenStem())  // 甲
-print(sixtyDay.getEarthBranch()) // 子
-print(sixtyDay)                  // 甲子
+print(sixtyDay.heavenStem)   // 甲
+print(sixtyDay.earthBranch)  // 子
+print(sixtyDay)              // 甲子
 ```
 
 ### 生肖系统
 
 ```swift
-let solarDay = SolarDay.fromYmd(2024, 1, 1)!
-let zodiac = solarDay.getLunarDay().getZodiac()
+let solarDay = try! SolarDay.fromYmd(2024, 1, 1)
+// 通过年柱地支获取生肖
+let zodiac = solarDay.sixtyCycleDay.yearPillar.earthBranch.zodiac
 
 print(zodiac)  // 龙
 ```
@@ -97,50 +98,38 @@ print(zodiac)  // 龙
 ### 节气系统
 
 ```swift
-let solarDay = SolarDay.fromYmd(2024, 3, 20)!
+let solarDay = try! SolarDay.fromYmd(2024, 3, 20)
 
 // 检查是否是节气
-if let solarTerm = solarDay.getSolarTerm() {
-  print(solarTerm)  // 春分
-}
-
-// 获取下一个节气
-if let nextTerm = solarDay.getNextSolarTerm() {
-  print(nextTerm)  // 清明
+if let term = solarDay.term {
+  print(term)  // 春分
 }
 ```
 
 ### 八字系统
 
 ```swift
-let solarDay = SolarDay.fromYmd(1986, 5, 29)!
-let solarTime = SolarTime(solarDay: solarDay, hour: 10, minute: 30, second: 0)
+let solarTime = try! SolarTime.fromYmdHms(1986, 5, 29, 10, 30, 0)
 
 // 获取八字
-let eightChar = solarTime.getEightChar()
+let eightChar = solarTime.lunarHour.eightChar
 
 print(eightChar)  // 丙寅 辛巳 甲子 甲午
-
-// 获取大运
-if let decadeFortune = eightChar.getDecadeFortune() {
-  print(decadeFortune.getHeavenStem())  // 天干
-  print(decadeFortune.getEarthBranch()) // 地支
-}
 ```
 
 ### 节日系统
 
 ```swift
-let solarDay = SolarDay.fromYmd(2024, 1, 1)!
+let solarDay = try! SolarDay.fromYmd(2024, 1, 1)
 
 // 检查法定假日
-if let holiday = solarDay.getLegalHoliday() {
+if let holiday = solarDay.legalHoliday {
   print(holiday)  // 元旦
 }
 
-// 获取农历对应的农历节日
-let lunarDay = solarDay.getLunarDay()
-if let festival = lunarDay.getLunarFestival() {
+// 获取农历节日
+let lunarDay = solarDay.lunarDay
+if let festival = lunarDay.festival {
   print(festival)  // 春节等
 }
 ```
@@ -148,44 +137,19 @@ if let festival = lunarDay.getLunarFestival() {
 ### 文化属性
 
 ```swift
-let solarDay = SolarDay.fromYmd(2024, 1, 1)!
+let solarDay = try! SolarDay.fromYmd(2024, 1, 1)
+let sixtyCycleDay = solarDay.sixtyCycleDay
 
-// 五行
-let element = solarDay.getLunarDay().getElement()
-print(element)  // 金
-
-// 方位
-let direction = solarDay.getLunarDay().getDirection()
-print(direction)  // 北
-
-// 吉凶
-let luck = solarDay.getLunarDay().getLuck()
-print(luck)  // 吉/凶
+// 纳音五行
+print(sixtyCycleDay.naYin.element)  // 金
 
 // 星座 (公历)
-let constellation = solarDay.getConstellation()
-print(constellation)  // 摩羯座等
-```
+print(solarDay.constellation)  // 摩羯座等
 
-### 诸神系统
-
-```swift
-let solarDay = SolarDay.fromYmd(2024, 1, 1)!
-
-// 年神
-if let yearGod = solarDay.getLunarDay().getYearGod() {
-  print(yearGod)  // 年神名称
-}
-
-// 财神
-if let wealthGod = solarDay.getLunarDay().getWealthGod() {
-  print(wealthGod)  // 财神名称
-}
-
-// 福神
-if let fortuneGod = solarDay.getLunarDay().getFortuneGod() {
-  print(fortuneGod)  // 福神名称
-}
+// 诸神宜忌
+let gods = sixtyCycleDay.gods
+let recommends = sixtyCycleDay.recommends
+let avoids = sixtyCycleDay.avoids
 ```
 
 ## 核心类
@@ -201,9 +165,9 @@ if let fortuneGod = solarDay.getLunarDay().getFortuneGod() {
 | `LunarDay` | 农历日期 |
 | `LunarMonth` | 农历月份 |
 | `LunarYear` | 农历年份 |
-| `TibetanDay` | 藏历日期 |
-| `TibetanMonth` | 藏历月份 |
-| `TibetanYear` | 藏历年份 |
+| `RabByungDay` | 藏历日期 |
+| `RabByungMonth` | 藏历月份 |
+| `RabByungYear` | 藏历年份 |
 
 ### 干支系统
 
@@ -227,7 +191,7 @@ if let fortuneGod = solarDay.getLunarDay().getFortuneGod() {
 | `Zone` | 宫位 |
 | `Beast` | 神兽 |
 | `Constellation` | 星座 (12个) |
-| `Constellation28Star` | 28宿 |
+| `TwentyEightStar` | 28宿 |
 
 ### 星象系统
 
@@ -265,11 +229,11 @@ if let fortuneGod = solarDay.getLunarDay().getFortuneGod() {
 
 ## 项目统计
 
-- **Swift 文件**: 118 个
-- **代码行数**: 6,700+ 行
-- **测试覆盖**: 30+ 单元测试
+- **Swift 文件**: 132 个
+- **代码行数**: 7,500+ 行
+- **测试覆盖**: 365 个测试 (12 个文件)
 - **编译时间**: < 1 秒
-- **对齐进度**: 107% (超越参考实现)
+- **对齐进度**: 100% (完整移植参考实现)
 
 ## 许可证
 
