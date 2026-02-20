@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "tyme"
-  spec.version      = "1.4.2"
+  spec.version      = "1.4.3"
   spec.summary      = "A powerful Chinese calendar library for iOS, macOS, tvOS, and watchOS"
   
   spec.description  = <<-DESC
