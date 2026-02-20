@@ -234,7 +234,7 @@ public class TruthTableGenerator {
     }
 
     // Generate SolarFestival entries (enumerated by fromIndex, year 1900-2100, i=0-9)
-    private static List<SolarFestivalEntry> generateSolarFestivalEntries() {
+    private static List<SolarFestivalEntry> generateSolarFestivalEntries(int[] errorCount) {
         List<SolarFestivalEntry> entries = new ArrayList<>();
 
         for (int year = 1900; year <= 2100; year++) {
@@ -244,8 +244,11 @@ public class TruthTableGenerator {
                     SolarDay day = festival.getDay();
                     String solarStr = String.format("%04d-%02d-%02d", day.getYear(), day.getMonth(), day.getDay());
                     entries.add(new SolarFestivalEntry(solarStr, festival.getName()));
+                } catch (IllegalArgumentException e) {
+                    // Skip if out of range (expected)
                 } catch (Exception e) {
-                    // Skip if out of range or error
+                    System.err.println("Error processing SolarFestival year=" + year + " i=" + i + ": " + e.getMessage());
+                    errorCount[0]++;
                 }
             }
         }
@@ -254,7 +257,7 @@ public class TruthTableGenerator {
     }
 
     // Generate LunarFestival entries (enumerated by fromIndex, year 1900-2100, i=0-12)
-    private static List<LunarFestivalEntry> generateLunarFestivalEntries() {
+    private static List<LunarFestivalEntry> generateLunarFestivalEntries(int[] errorCount) {
         List<LunarFestivalEntry> entries = new ArrayList<>();
 
         for (int year = 1900; year <= 2100; year++) {
@@ -264,8 +267,11 @@ public class TruthTableGenerator {
                     SolarDay day = festival.getDay().getSolarDay();
                     String solarStr = String.format("%04d-%02d-%02d", day.getYear(), day.getMonth(), day.getDay());
                     entries.add(new LunarFestivalEntry(solarStr, festival.getName()));
+                } catch (IllegalArgumentException e) {
+                    // Skip if out of range (expected)
                 } catch (Exception e) {
-                    // Skip if out of range or error
+                    System.err.println("Error processing LunarFestival year=" + year + " i=" + i + ": " + e.getMessage());
+                    errorCount[0]++;
                 }
             }
         }
@@ -274,7 +280,7 @@ public class TruthTableGenerator {
     }
 
     // Generate DogDay entries (scan daily from 1900-06-01 to 2100-09-30, record non-null results)
-    private static List<DogDayEntry> generateDogDayEntries() {
+    private static List<DogDayEntry> generateDogDayEntries(int[] errorCount) {
         List<DogDayEntry> entries = new ArrayList<>();
         LocalDate current = LocalDate.of(1900, 6, 1);
         LocalDate end = LocalDate.of(2100, 9, 30);
@@ -288,7 +294,8 @@ public class TruthTableGenerator {
                     entries.add(new DogDayEntry(solarStr, dogDay.toString()));
                 }
             } catch (Exception e) {
-                // Skip on error
+                System.err.println("Error processing dogDay " + current + ": " + e.getMessage());
+                errorCount[0]++;
             }
             current = current.plusDays(1);
         }
@@ -297,7 +304,7 @@ public class TruthTableGenerator {
     }
 
     // Generate NineDay entries (scan daily from 1900-11-01 to 2101-03-31, record non-null results)
-    private static List<NineDayEntry> generateNineDayEntries() {
+    private static List<NineDayEntry> generateNineDayEntries(int[] errorCount) {
         List<NineDayEntry> entries = new ArrayList<>();
         LocalDate current = LocalDate.of(1900, 11, 1);
         LocalDate end = LocalDate.of(2101, 3, 31);
@@ -311,7 +318,8 @@ public class TruthTableGenerator {
                     entries.add(new NineDayEntry(solarStr, nineDay.toString()));
                 }
             } catch (Exception e) {
-                // Skip on error
+                System.err.println("Error processing nineDay " + current + ": " + e.getMessage());
+                errorCount[0]++;
             }
             current = current.plusDays(1);
         }
@@ -327,6 +335,9 @@ public class TruthTableGenerator {
 
         // Create output directory if not exists
         new File(outputDir).mkdirs();
+
+        // Global error counter for unexpected errors
+        int[] errorCount = {0};
 
         System.out.println("Generating truth tables...");
 
@@ -449,22 +460,22 @@ public class TruthTableGenerator {
 
         // Generate solar_festival.json
         System.out.print("Generating solar_festival.json...");
-        List<SolarFestivalEntry> solarFestivalEntries = generateSolarFestivalEntries();
+        List<SolarFestivalEntry> solarFestivalEntries = generateSolarFestivalEntries(errorCount);
         System.out.println(" " + solarFestivalEntries.size() + " entries");
 
         // Generate lunar_festival.json
         System.out.print("Generating lunar_festival.json...");
-        List<LunarFestivalEntry> lunarFestivalEntries = generateLunarFestivalEntries();
+        List<LunarFestivalEntry> lunarFestivalEntries = generateLunarFestivalEntries(errorCount);
         System.out.println(" " + lunarFestivalEntries.size() + " entries");
 
         // Generate dog_day.json
         System.out.print("Generating dog_day.json...");
-        List<DogDayEntry> dogDayEntries = generateDogDayEntries();
+        List<DogDayEntry> dogDayEntries = generateDogDayEntries(errorCount);
         System.out.println(" " + dogDayEntries.size() + " entries");
 
         // Generate nine_day.json
         System.out.print("Generating nine_day.json...");
-        List<NineDayEntry> nineDayEntries = generateNineDayEntries();
+        List<NineDayEntry> nineDayEntries = generateNineDayEntries(errorCount);
         System.out.println(" " + nineDayEntries.size() + " entries");
 
         // Write solar_lunar.json
@@ -499,6 +510,13 @@ public class TruthTableGenerator {
 
         // Write nine_day.json
         writeJson(outputDir + "nine_day.json", nineDayEntries);
+
+        // Print error summary
+        if (errorCount[0] > 0) {
+            System.err.println("Warning: " + errorCount[0] + " unexpected errors during generation (see above).");
+        } else {
+            System.out.println("All entries generated without unexpected errors.");
+        }
 
         System.out.println("Done!");
     }
