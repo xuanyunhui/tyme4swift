@@ -39,7 +39,7 @@ jobs:
       - name: Verify Package.swift version
         run: |
           # Extract version from Package.swift
-          PACKAGE_VERSION=$(grep -oP '\.package\(name: "tyme4swift", url:.*from: "\K[^"]+' Package.swift || true)
+          PACKAGE_VERSION=$(grep -oP '\.package\(name: "tyme", url:.*from: "\K[^"]+' Package.swift || true)
           echo "📦 Package.swift found version references"
           grep -n "version\|from:" Package.swift || true
 
@@ -78,7 +78,7 @@ jobs:
           #!/bin/bash
           set -e
           
-          PACKAGE_NAME="tyme4swift"
+          PACKAGE_NAME="tyme"
           REPO_URL="https://github.com/xuanyunhui/tyme4swift.git"
           VERSION="${{ needs.verify-release.outputs.version }}"
           
@@ -109,7 +109,7 @@ jobs:
           echo "📢 SPM Registration Information"
           echo "================================"
           echo ""
-          echo "Package Name: tyme4swift"
+          echo "Package Name: tyme"
           echo "Git Repository: https://github.com/xuanyunhui/tyme4swift.git"
           echo "Version: ${{ needs.verify-release.outputs.version }}"
           echo ""
@@ -154,7 +154,7 @@ jobs:
             spec.version      = "${{ needs.verify-release.outputs.version }}"
             spec.summary      = "A powerful Chinese calendar library for iOS, macOS, tvOS, and watchOS"
             spec.description  = <<-DESC
-              tyme4swift is a complete Swift implementation of the Tyme library,
+              tyme is a complete Swift implementation of the Tyme library,
               supporting solar calendar, lunar calendar, Tibetan calendar, 
               24 solar terms, zodiac signs, heavenly stems & earthly branches,
               eight characters (八字), nine stars (九星), and more.
@@ -224,13 +224,13 @@ jobs:
       - name: Generate publication summary
         run: |
           cat > /tmp/publication-summary.md << 'SUMMARY'
-          # 🎉 tyme4swift v${{ needs.verify-release.outputs.version }} Publication Summary
+          # 🎉 tyme v${{ needs.verify-release.outputs.version }} Publication Summary
           
           ## ✅ Verification Passed
           
           - **Version**: ${{ needs.verify-release.outputs.version }}
           - **Release URL**: ${{ needs.verify-release.outputs.release_url }}
-          - **Package Name**: tyme4swift
+          - **Package Name**: tyme
           - **Repository**: https://github.com/xuanyunhui/tyme4swift
           - **License**: MIT
           
@@ -268,7 +268,7 @@ jobs:
           Add to your `Podfile`:
           
           ```ruby
-          pod 'tyme4swift', '~> ${{ needs.verify-release.outputs.version }}'
+          pod 'tyme', '~> ${{ needs.verify-release.outputs.version }}'
           ```
           
           Then run:
@@ -285,7 +285,7 @@ jobs:
           ## 🚀 Next Steps
           
           1. **Swift Package Index Registration**: Visit https://swiftpackageindex.com/add-package
-          2. **CocoaPods Pod Page**: https://cocoapods.org/pods/tyme4swift
+          2. **CocoaPods Pod Page**: https://cocoapods.org/pods/tyme
           3. **GitHub Releases**: ${{ needs.verify-release.outputs.release_url }}
           
           ## 📊 Platform Support
