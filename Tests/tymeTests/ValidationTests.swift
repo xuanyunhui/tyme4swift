@@ -40,7 +40,13 @@ func parseSolar(_ s: String) throws -> (Int, Int, Int) {
 
 @Suite("tyme4j 1:1 Validation — Solar↔Lunar")
 struct SolarLunarValidationTests {
-    static let cases: [SolarLunarCase] = try! loadFixture("solar_lunar", type: SolarLunarCase.self)
+    static let cases: [SolarLunarCase] = {
+        do {
+            return try loadFixture("solar_lunar", type: SolarLunarCase.self)
+        } catch {
+            fatalError("Failed to load solar_lunar.json fixture: \(error)")
+        }
+    }()
 
     @Test("SolarDay→LunarDay", arguments: cases)
     func testSolarToLunar(_ c: SolarLunarCase) throws {
@@ -61,7 +67,13 @@ struct SolarLunarValidationTests {
 
 @Suite("tyme4j 1:1 Validation — SixtyCycle")
 struct SixtyCycleValidationTests {
-    static let cases: [SixtyCycleCase] = try! loadFixture("sixty_cycle", type: SixtyCycleCase.self)
+    static let cases: [SixtyCycleCase] = {
+        do {
+            return try loadFixture("sixty_cycle", type: SixtyCycleCase.self)
+        } catch {
+            fatalError("Failed to load sixty_cycle.json fixture: \(error)")
+        }
+    }()
 
     @Test("SolarDay SixtyCycle pillars", arguments: cases)
     func testSixtyCycle(_ c: SixtyCycleCase) throws {
