@@ -49,8 +49,10 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           PROFDATA=$(find .build -name "default.profdata" | head -1)
-          BINARY=$(find .build/debug -name "*.xctest" -o -name "tyme.build" | head -1)
-          BINARY=$(find .build/debug -maxdepth 1 -name "*PackageTests" | head -1)
+          XCTEST=$(find .build -name "*.xctest" | head -1)
+          BINARY="$XCTEST/Contents/MacOS/$(basename "$XCTEST" .xctest)"
+          echo "PROFDATA=$PROFDATA"
+          echo "BINARY=$BINARY"
           llvm-cov export \
             -format=lcov \
             -instr-profile="$PROFDATA" \
