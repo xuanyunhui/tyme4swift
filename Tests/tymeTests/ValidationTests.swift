@@ -86,6 +86,14 @@ func loadFixture<T: Decodable>(_ name: String, type: T.Type) throws -> [T] {
     return try JSONDecoder().decode([T].self, from: data)
 }
 
+func requireFixture<T: Decodable>(_ name: String, type: T.Type) -> [T] {
+    do {
+        return try loadFixture(name, type: type)
+    } catch {
+        fatalError("Failed to load \(name).json fixture: \(error)")
+    }
+}
+
 func parseSolar(_ s: String) throws -> (Int, Int, Int) {
     let parts = s.split(separator: "-").compactMap { Int($0) }
     guard parts.count == 3 else { throw TymeError.invalidDay(0) }
@@ -96,13 +104,7 @@ func parseSolar(_ s: String) throws -> (Int, Int, Int) {
 
 @Suite("tyme4j 1:1 Validation — Solar↔Lunar")
 struct SolarLunarValidationTests {
-    static let cases: [SolarLunarCase] = {
-        do {
-            return try loadFixture("solar_lunar", type: SolarLunarCase.self)
-        } catch {
-            fatalError("Failed to load solar_lunar.json fixture: \(error)")
-        }
-    }()
+    static let cases = requireFixture("solar_lunar", type: SolarLunarCase.self)
 
     @Test("SolarDay→LunarDay", arguments: cases)
     func testSolarToLunar(_ c: SolarLunarCase) throws {
@@ -123,13 +125,7 @@ struct SolarLunarValidationTests {
 
 @Suite("tyme4j 1:1 Validation — SixtyCycle")
 struct SixtyCycleValidationTests {
-    static let cases: [SixtyCycleCase] = {
-        do {
-            return try loadFixture("sixty_cycle", type: SixtyCycleCase.self)
-        } catch {
-            fatalError("Failed to load sixty_cycle.json fixture: \(error)")
-        }
-    }()
+    static let cases = requireFixture("sixty_cycle", type: SixtyCycleCase.self)
 
     @Test("SolarDay SixtyCycle pillars", arguments: cases)
     func testSixtyCycle(_ c: SixtyCycleCase) throws {
@@ -156,13 +152,7 @@ struct SixtyCycleValidationTests {
 
 @Suite("tyme4j 1:1 Validation — EightChar")
 struct EightCharValidationTests {
-    static let cases: [EightCharCase] = {
-        do {
-            return try loadFixture("eight_char", type: EightCharCase.self)
-        } catch {
-            fatalError("Failed to load eight_char.json fixture: \(error)")
-        }
-    }()
+    static let cases = requireFixture("eight_char", type: EightCharCase.self)
 
     @Test("SolarTime→EightChar pillars", arguments: cases)
     func testEightChar(_ c: EightCharCase) throws {
@@ -201,13 +191,7 @@ struct EightCharValidationTests {
 
 @Suite("tyme4j 1:1 Validation — SolarTerm")
 struct SolarTermValidationTests {
-    static let cases: [SolarTermCase] = {
-        do {
-            return try loadFixture("solar_term", type: SolarTermCase.self)
-        } catch {
-            fatalError("Failed to load solar_term.json fixture: \(error)")
-        }
-    }()
+    static let cases = requireFixture("solar_term", type: SolarTermCase.self)
 
     @Test("SolarTerm name and date", arguments: cases)
     func testSolarTerm(_ c: SolarTermCase) {
@@ -224,13 +208,7 @@ struct SolarTermValidationTests {
 
 @Suite("tyme4j 1:1 Validation — RabByung")
 struct RabByungValidationTests {
-    static let cases: [RabByungCase] = {
-        do {
-            return try loadFixture("rab_byung", type: RabByungCase.self)
-        } catch {
-            fatalError("Failed to load rab_byung.json fixture: \(error)")
-        }
-    }()
+    static let cases = requireFixture("rab_byung", type: RabByungCase.self)
 
     @Test("SolarDay→RabByung conversion", arguments: cases)
     func testRabByung(_ c: RabByungCase) throws {
@@ -251,13 +229,7 @@ struct RabByungValidationTests {
 
 @Suite("tyme4j 1:1 Validation — Constellation")
 struct ConstellationValidationTests {
-    static let cases: [ConstellationCase] = {
-        do {
-            return try loadFixture("constellation", type: ConstellationCase.self)
-        } catch {
-            fatalError("Failed to load constellation.json fixture: \(error)")
-        }
-    }()
+    static let cases = requireFixture("constellation", type: ConstellationCase.self)
 
     @Test("SolarDay→Constellation", arguments: cases)
     func testConstellation(_ c: ConstellationCase) throws {
@@ -271,13 +243,7 @@ struct ConstellationValidationTests {
 
 @Suite("tyme4j 1:1 Validation — SixStar")
 struct SixStarValidationTests {
-    static let cases: [SixStarCase] = {
-        do {
-            return try loadFixture("six_star", type: SixStarCase.self)
-        } catch {
-            fatalError("Failed to load six_star.json fixture: \(error)")
-        }
-    }()
+    static let cases = requireFixture("six_star", type: SixStarCase.self)
 
     @Test("SolarDay→SixStar", arguments: cases)
     func testSixStar(_ c: SixStarCase) throws {
@@ -291,13 +257,7 @@ struct SixStarValidationTests {
 
 @Suite("tyme4j 1:1 Validation — SolarFestival")
 struct SolarFestivalValidationTests {
-    static let cases: [SolarFestivalCase] = {
-        do {
-            return try loadFixture("solar_festival", type: SolarFestivalCase.self)
-        } catch {
-            fatalError("Failed to load solar_festival.json fixture: \(error)")
-        }
-    }()
+    static let cases = requireFixture("solar_festival", type: SolarFestivalCase.self)
 
     @Test("SolarDay→SolarFestival", arguments: cases)
     func testSolarFestival(_ c: SolarFestivalCase) throws {
@@ -313,25 +273,11 @@ struct SolarFestivalValidationTests {
 
 @Suite("tyme4j 1:1 Validation — LunarFestival")
 struct LunarFestivalValidationTests {
-    static let cases: [LunarFestivalCase] = {
-        do {
-            return try loadFixture("lunar_festival", type: LunarFestivalCase.self)
-        } catch {
-            fatalError("Failed to load lunar_festival.json fixture: \(error)")
-        }
-    }()
+    static let cases = requireFixture("lunar_festival", type: LunarFestivalCase.self)
 
     // Build a map of solar dates to possible festival names from fixture
-    static let possibleFestivalsByDate: [String: [String]] = {
-        var map: [String: [String]] = [:]
-        for c in cases {
-            if map[c.solar] == nil {
-                map[c.solar] = []
-            }
-            map[c.solar]?.append(c.name)
-        }
-        return map
-    }()
+    static let possibleFestivalsByDate: [String: [String]] =
+        Dictionary(grouping: cases, by: \.solar).mapValues { $0.map(\.name) }
 
     @Test("LunarDay→LunarFestival", arguments: cases)
     func testLunarFestival(_ c: LunarFestivalCase) throws {
@@ -353,13 +299,7 @@ struct LunarFestivalValidationTests {
 
 @Suite("tyme4j 1:1 Validation — DogDay")
 struct DogDayValidationTests {
-    static let cases: [DogDayCase] = {
-        do {
-            return try loadFixture("dog_day", type: DogDayCase.self)
-        } catch {
-            fatalError("Failed to load dog_day.json fixture: \(error)")
-        }
-    }()
+    static let cases = requireFixture("dog_day", type: DogDayCase.self)
 
     @Test("SolarDay→DogDay", arguments: cases)
     func testDogDay(_ c: DogDayCase) throws {
@@ -375,13 +315,7 @@ struct DogDayValidationTests {
 
 @Suite("tyme4j 1:1 Validation — NineDay")
 struct NineDayValidationTests {
-    static let cases: [NineDayCase] = {
-        do {
-            return try loadFixture("nine_day", type: NineDayCase.self)
-        } catch {
-            fatalError("Failed to load nine_day.json fixture: \(error)")
-        }
-    }()
+    static let cases = requireFixture("nine_day", type: NineDayCase.self)
 
     @Test("SolarDay→NineColdDay", arguments: cases)
     func testNineDay(_ c: NineDayCase) throws {
