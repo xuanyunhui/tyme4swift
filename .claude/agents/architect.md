@@ -3,7 +3,6 @@ name: architect
 description: Architect role. For PRs: architecture review (module boundaries, pattern consistency, dependency layering). For design: architecture analysis and design (context, impact, change plan and output).
 tools:
   - "*"
-  - Bash(gh *)
   - mcp__plugin_github_github
   - mcp__plugin_serena_serena
 model: sonnet
