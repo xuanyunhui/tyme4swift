@@ -77,6 +77,12 @@ struct NineDayCase: Decodable {
 
 // MARK: - Fixture loading
 
+// Possible errors from loadFixture:
+// 1. CocoaError(.fileNoSuchFile): fixture file not found in bundle (guard let url fails)
+// 2. CocoaError (I/O error codes): file exists but cannot be read due to permission issues,
+//    disk read errors, or other I/O failures from Data(contentsOf:)
+// 3. DecodingError: file content exists and is readable, but JSON structure doesn't match
+//    expected Decodable type fields
 func loadFixture<T: Decodable>(_ name: String, type: T.Type) throws -> [T] {
     guard let url = Bundle.module.url(
         forResource: name, withExtension: "json", subdirectory: "Fixtures") else {
