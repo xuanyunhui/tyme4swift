@@ -17,6 +17,10 @@ struct SixtyCycleCase: Decodable {
     let sixtyCycleYear: String
     let sixtyCycleMonth: String
     let sixtyCycleDay: String
+    let duty: String
+    let twelveStar: String
+    let dayNineStar: String
+    let twentyEightStar: String
 }
 
 struct EightCharCase: Decodable {
@@ -109,6 +113,14 @@ struct SixtyCycleValidationTests {
                 "Expected month pillar \(c.sixtyCycleMonth) but got \(day.monthPillar.name) for \(c.solar)")
         #expect(day.sixtyCycle.name == c.sixtyCycleDay,
                 "Expected day pillar \(c.sixtyCycleDay) but got \(day.sixtyCycle.name) for \(c.solar)")
+        #expect(day.duty.name == c.duty,
+                "Expected duty \(c.duty) but got \(day.duty.name) for \(c.solar)")
+        #expect(day.twelveStar.name == c.twelveStar,
+                "Expected twelveStar \(c.twelveStar) but got \(day.twelveStar.name) for \(c.solar)")
+        #expect(day.nineStar.name == c.dayNineStar,
+                "Expected dayNineStar \(c.dayNineStar) but got \(day.nineStar.name) for \(c.solar)")
+        #expect(day.twentyEightStar.name == c.twentyEightStar,
+                "Expected twentyEightStar \(c.twentyEightStar) but got \(day.twentyEightStar.name) for \(c.solar)")
     }
 }
 
