@@ -112,6 +112,46 @@ public class TruthTableGenerator {
         }
     }
 
+    static class SolarFestivalEntry {
+        String solar;
+        String name;
+
+        SolarFestivalEntry(String solar, String name) {
+            this.solar = solar;
+            this.name = name;
+        }
+    }
+
+    static class LunarFestivalEntry {
+        String solar;
+        String name;
+
+        LunarFestivalEntry(String solar, String name) {
+            this.solar = solar;
+            this.name = name;
+        }
+    }
+
+    static class DogDayEntry {
+        String solar;
+        String dogDay;
+
+        DogDayEntry(String solar, String dogDay) {
+            this.solar = solar;
+            this.dogDay = dogDay;
+        }
+    }
+
+    static class NineDayEntry {
+        String solar;
+        String nineDay;
+
+        NineDayEntry(String solar, String nineDay) {
+            this.solar = solar;
+            this.nineDay = nineDay;
+        }
+    }
+
     // Generate EightChar entries (every 30 days, all 12 even hours)
     private static List<EightCharEntry> generateEightCharEntries() {
         List<EightCharEntry> entries = new ArrayList<>();
@@ -188,6 +228,92 @@ public class TruthTableGenerator {
                 System.err.println("Error processing " + current + ": " + e.getMessage());
             }
             current = current.plusDays(30);
+        }
+
+        return entries;
+    }
+
+    // Generate SolarFestival entries (enumerated by fromIndex, year 1900-2100, i=0-9)
+    private static List<SolarFestivalEntry> generateSolarFestivalEntries() {
+        List<SolarFestivalEntry> entries = new ArrayList<>();
+
+        for (int year = 1900; year <= 2100; year++) {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    com.tyme.festival.SolarFestival festival = com.tyme.festival.SolarFestival.fromIndex(year, i);
+                    SolarDay day = festival.getDay();
+                    String solarStr = String.format("%04d-%02d-%02d", day.getYear(), day.getMonth(), day.getDay());
+                    entries.add(new SolarFestivalEntry(solarStr, festival.getName()));
+                } catch (Exception e) {
+                    // Skip if out of range or error
+                }
+            }
+        }
+
+        return entries;
+    }
+
+    // Generate LunarFestival entries (enumerated by fromIndex, year 1900-2100, i=0-12)
+    private static List<LunarFestivalEntry> generateLunarFestivalEntries() {
+        List<LunarFestivalEntry> entries = new ArrayList<>();
+
+        for (int year = 1900; year <= 2100; year++) {
+            for (int i = 0; i < 13; i++) {
+                try {
+                    com.tyme.festival.LunarFestival festival = com.tyme.festival.LunarFestival.fromIndex(year, i);
+                    SolarDay day = festival.getDay().getSolarDay();
+                    String solarStr = String.format("%04d-%02d-%02d", day.getYear(), day.getMonth(), day.getDay());
+                    entries.add(new LunarFestivalEntry(solarStr, festival.getName()));
+                } catch (Exception e) {
+                    // Skip if out of range or error
+                }
+            }
+        }
+
+        return entries;
+    }
+
+    // Generate DogDay entries (scan daily from 1900-06-01 to 2100-09-30, record non-null results)
+    private static List<DogDayEntry> generateDogDayEntries() {
+        List<DogDayEntry> entries = new ArrayList<>();
+        LocalDate current = LocalDate.of(1900, 6, 1);
+        LocalDate end = LocalDate.of(2100, 9, 30);
+
+        while (!current.isAfter(end)) {
+            try {
+                SolarDay solar = SolarDay.fromYmd(current.getYear(), current.getMonthValue(), current.getDayOfMonth());
+                com.tyme.culture.dog.DogDay dogDay = solar.getDogDay();
+                if (dogDay != null) {
+                    String solarStr = current.toString();
+                    entries.add(new DogDayEntry(solarStr, dogDay.toString()));
+                }
+            } catch (Exception e) {
+                // Skip on error
+            }
+            current = current.plusDays(1);
+        }
+
+        return entries;
+    }
+
+    // Generate NineDay entries (scan daily from 1900-11-01 to 2101-03-31, record non-null results)
+    private static List<NineDayEntry> generateNineDayEntries() {
+        List<NineDayEntry> entries = new ArrayList<>();
+        LocalDate current = LocalDate.of(1900, 11, 1);
+        LocalDate end = LocalDate.of(2101, 3, 31);
+
+        while (!current.isAfter(end)) {
+            try {
+                SolarDay solar = SolarDay.fromYmd(current.getYear(), current.getMonthValue(), current.getDayOfMonth());
+                com.tyme.culture.nine.NineDay nineDay = solar.getNineDay();
+                if (nineDay != null) {
+                    String solarStr = current.toString();
+                    entries.add(new NineDayEntry(solarStr, nineDay.toString()));
+                }
+            } catch (Exception e) {
+                // Skip on error
+            }
+            current = current.plusDays(1);
         }
 
         return entries;
@@ -321,6 +447,26 @@ public class TruthTableGenerator {
         }
         System.out.println(" " + sixStarEntries.size() + " entries");
 
+        // Generate solar_festival.json
+        System.out.print("Generating solar_festival.json...");
+        List<SolarFestivalEntry> solarFestivalEntries = generateSolarFestivalEntries();
+        System.out.println(" " + solarFestivalEntries.size() + " entries");
+
+        // Generate lunar_festival.json
+        System.out.print("Generating lunar_festival.json...");
+        List<LunarFestivalEntry> lunarFestivalEntries = generateLunarFestivalEntries();
+        System.out.println(" " + lunarFestivalEntries.size() + " entries");
+
+        // Generate dog_day.json
+        System.out.print("Generating dog_day.json...");
+        List<DogDayEntry> dogDayEntries = generateDogDayEntries();
+        System.out.println(" " + dogDayEntries.size() + " entries");
+
+        // Generate nine_day.json
+        System.out.print("Generating nine_day.json...");
+        List<NineDayEntry> nineDayEntries = generateNineDayEntries();
+        System.out.println(" " + nineDayEntries.size() + " entries");
+
         // Write solar_lunar.json
         writeJson(outputDir + "solar_lunar.json", solarLunarEntries);
 
@@ -341,6 +487,18 @@ public class TruthTableGenerator {
 
         // Write six_star.json
         writeJson(outputDir + "six_star.json", sixStarEntries);
+
+        // Write solar_festival.json
+        writeJson(outputDir + "solar_festival.json", solarFestivalEntries);
+
+        // Write lunar_festival.json
+        writeJson(outputDir + "lunar_festival.json", lunarFestivalEntries);
+
+        // Write dog_day.json
+        writeJson(outputDir + "dog_day.json", dogDayEntries);
+
+        // Write nine_day.json
+        writeJson(outputDir + "nine_day.json", nineDayEntries);
 
         System.out.println("Done!");
     }
@@ -392,6 +550,30 @@ public class TruthTableGenerator {
                     writer.write(String.format(
                         "  {\"solar\":\"%s\",\"sixStar\":\"%s\"}",
                         e.solar, e.sixStar
+                    ));
+                } else if (entry instanceof SolarFestivalEntry) {
+                    SolarFestivalEntry e = (SolarFestivalEntry) entry;
+                    writer.write(String.format(
+                        "  {\"solar\":\"%s\",\"name\":\"%s\"}",
+                        e.solar, e.name
+                    ));
+                } else if (entry instanceof LunarFestivalEntry) {
+                    LunarFestivalEntry e = (LunarFestivalEntry) entry;
+                    writer.write(String.format(
+                        "  {\"solar\":\"%s\",\"name\":\"%s\"}",
+                        e.solar, e.name
+                    ));
+                } else if (entry instanceof DogDayEntry) {
+                    DogDayEntry e = (DogDayEntry) entry;
+                    writer.write(String.format(
+                        "  {\"solar\":\"%s\",\"dogDay\":\"%s\"}",
+                        e.solar, e.dogDay
+                    ));
+                } else if (entry instanceof NineDayEntry) {
+                    NineDayEntry e = (NineDayEntry) entry;
+                    writer.write(String.format(
+                        "  {\"solar\":\"%s\",\"nineDay\":\"%s\"}",
+                        e.solar, e.nineDay
                     ));
                 }
 

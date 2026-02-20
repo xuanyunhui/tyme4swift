@@ -55,6 +55,26 @@ struct RabByungCase: Decodable {
     let rabByungDay: String
 }
 
+struct SolarFestivalCase: Decodable {
+    let solar: String
+    let name: String
+}
+
+struct LunarFestivalCase: Decodable {
+    let solar: String
+    let name: String
+}
+
+struct DogDayCase: Decodable {
+    let solar: String
+    let dogDay: String
+}
+
+struct NineDayCase: Decodable {
+    let solar: String
+    let nineDay: String
+}
+
 // MARK: - Fixture loading
 
 func loadFixture<T: Decodable>(_ name: String, type: T.Type) throws -> [T] {
@@ -266,5 +286,94 @@ struct SixStarValidationTests {
 
         #expect(solar.lunarDay.sixStar.name == c.sixStar,
                 "Expected \(c.sixStar) but got \(solar.lunarDay.sixStar.name) for \(c.solar)")
+    }
+}
+
+@Suite("tyme4j 1:1 Validation — SolarFestival")
+struct SolarFestivalValidationTests {
+    static let cases: [SolarFestivalCase] = {
+        do {
+            return try loadFixture("solar_festival", type: SolarFestivalCase.self)
+        } catch {
+            fatalError("Failed to load solar_festival.json fixture: \(error)")
+        }
+    }()
+
+    @Test("SolarDay→SolarFestival", arguments: cases)
+    func testSolarFestival(_ c: SolarFestivalCase) throws {
+        let (y, m, d) = try parseSolar(c.solar)
+        let solar = try SolarDay.fromYmd(y, m, d)
+
+        #expect(solar.festival != nil, "Expected festival for \(c.solar) but got nil")
+        guard let festival = solar.festival else { return }
+        #expect(festival.name == c.name,
+                "Expected \(c.name) but got \(festival.name) for \(c.solar)")
+    }
+}
+
+@Suite("tyme4j 1:1 Validation — LunarFestival")
+struct LunarFestivalValidationTests {
+    static let cases: [LunarFestivalCase] = {
+        do {
+            return try loadFixture("lunar_festival", type: LunarFestivalCase.self)
+        } catch {
+            fatalError("Failed to load lunar_festival.json fixture: \(error)")
+        }
+    }()
+
+    @Test("LunarDay→LunarFestival", arguments: cases)
+    func testLunarFestival(_ c: LunarFestivalCase) throws {
+        let (y, m, d) = try parseSolar(c.solar)
+        let solar = try SolarDay.fromYmd(y, m, d)
+        let festival = solar.lunarDay.festival
+
+        #expect(festival != nil, "Expected festival for \(c.solar) but got nil")
+        guard let f = festival else { return }
+        #expect(f.name == c.name,
+                "Expected \(c.name) but got \(f.name) for \(c.solar)")
+    }
+}
+
+@Suite("tyme4j 1:1 Validation — DogDay")
+struct DogDayValidationTests {
+    static let cases: [DogDayCase] = {
+        do {
+            return try loadFixture("dog_day", type: DogDayCase.self)
+        } catch {
+            fatalError("Failed to load dog_day.json fixture: \(error)")
+        }
+    }()
+
+    @Test("SolarDay→DogDay", arguments: cases)
+    func testDogDay(_ c: DogDayCase) throws {
+        let (y, m, d) = try parseSolar(c.solar)
+        let solar = try SolarDay.fromYmd(y, m, d)
+
+        #expect(solar.dogDay != nil, "Expected dogDay for \(c.solar) but got nil")
+        guard let dogDay = solar.dogDay else { return }
+        #expect(dogDay.name == c.dogDay,
+                "Expected \(c.dogDay) but got \(dogDay.name) for \(c.solar)")
+    }
+}
+
+@Suite("tyme4j 1:1 Validation — NineDay")
+struct NineDayValidationTests {
+    static let cases: [NineDayCase] = {
+        do {
+            return try loadFixture("nine_day", type: NineDayCase.self)
+        } catch {
+            fatalError("Failed to load nine_day.json fixture: \(error)")
+        }
+    }()
+
+    @Test("SolarDay→NineColdDay", arguments: cases)
+    func testNineDay(_ c: NineDayCase) throws {
+        let (y, m, d) = try parseSolar(c.solar)
+        let solar = try SolarDay.fromYmd(y, m, d)
+
+        #expect(solar.nineColdDay != nil, "Expected nineColdDay for \(c.solar) but got nil")
+        guard let nineColdDay = solar.nineColdDay else { return }
+        #expect(nineColdDay.name == c.nineDay,
+                "Expected \(c.nineDay) but got \(nineColdDay.name) for \(c.solar)")
     }
 }
