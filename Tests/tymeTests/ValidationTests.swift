@@ -86,11 +86,14 @@ func loadFixture<T: Decodable>(_ name: String, type: T.Type) throws -> [T] {
     return try JSONDecoder().decode([T].self, from: data)
 }
 
+// Fixture files are version-controlled and must always exist.
+// Failure to load indicates an internal invariant violation (missing or corrupt fixture),
+// not a user-facing error — preconditionFailure is appropriate per CLAUDE.md.
 func requireFixture<T: Decodable>(_ name: String, type: T.Type) -> [T] {
     do {
         return try loadFixture(name, type: type)
     } catch {
-        fatalError("Failed to load \(name).json fixture: \(error)")
+        preconditionFailure("Failed to load \(name).json fixture: \(error)")
     }
 }
 
