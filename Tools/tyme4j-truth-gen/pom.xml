@@ -10,12 +10,13 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <tyme4j.version>1.4.3</tyme4j.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>cn.6tail</groupId>
             <artifactId>tyme4j</artifactId>
-            <version>1.4.3</version>
+            <version>${tyme4j.version}</version>
         </dependency>
     </dependencies>
     <build>
