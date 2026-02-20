@@ -80,7 +80,7 @@ struct NineDayCase: Decodable {
 func loadFixture<T: Decodable>(_ name: String, type: T.Type) throws -> [T] {
     guard let url = Bundle.module.url(
         forResource: name, withExtension: "json", subdirectory: "Fixtures") else {
-        throw TymeError.invalidDay(0)
+        throw CocoaError(.fileNoSuchFile)
     }
     let data = try Data(contentsOf: url)
     return try JSONDecoder().decode([T].self, from: data)
@@ -91,7 +91,11 @@ func loadFixture<T: Decodable>(_ name: String, type: T.Type) throws -> [T] {
 // not a runtime user error — preconditionFailure is appropriate per CLAUDE.md.
 func requireFixture<T: Decodable>(_ name: String, type: T.Type) -> [T] {
     do {
-        return try loadFixture(name, type: type)
+        let result = try loadFixture(name, type: type)
+        if result.isEmpty {
+            preconditionFailure("\(name).json fixture is empty — check generation script")
+        }
+        return result
     } catch {
         preconditionFailure("Failed to load \(name).json fixture: \(error)")
     }
