@@ -1,0 +1,85 @@
+name: Validate Truth Tables
+
+on:
+  workflow_dispatch:
+    inputs:
+      tyme4j_version:
+        description: 'tyme4j version to test (leave empty for latest on Maven Central)'
+        required: false
+        default: ''
+  schedule:
+    - cron: '0 2 * * 1'
+
+jobs:
+  validate:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Determine tyme4j version
+        id: version
+        run: |
+          if [ -z "${{ inputs.tyme4j_version }}" ]; then
+            VERSION=$(curl -s "https://search.maven.org/solrsearch/select?q=g:cn.6tail+a:tyme4j&rows=1&wt=json" | python3 -c "import sys,json; print(json.load(sys.stdin)['response']['docs'][0]['latestVersion'])")
+          else
+            VERSION="${{ inputs.tyme4j_version }}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Update pom.xml with target version
+        env:
+          TARGET_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          sed -i '' "s|<tyme4j.version>.*</tyme4j.version>|<tyme4j.version>${TARGET_VERSION}</tyme4j.version>|g" Tools/tyme4j-truth-gen/pom.xml
+
+      - name: Build tyme4j-truth-gen
+        run: |
+          cd Tools/tyme4j-truth-gen
+          mvn package -q assembly:single
+
+      - name: Regenerate fixtures
+        run: |
+          java -jar Tools/tyme4j-truth-gen/target/tyme4j-truth-gen-1.0.0-jar-with-dependencies.jar \
+               --output Tests/tymeTests/Fixtures/
+
+      - name: Check fixture changes
+        id: check_changes
+        run: |
+          if git diff --quiet Tests/tymeTests/Fixtures/; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: '6.2'
+
+      - name: Run validation tests
+        run: swift test --filter ValidationTests
+
+      - name: Create issue if fixtures changed
+        if: steps.check_changes.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          RUN_ID: ${{ github.run_id }}
+        with:
+          script: |
+            const { execSync } = require('child_process');
+            const diff = execSync('git diff --stat Tests/tymeTests/Fixtures/').toString();
+            const version = process.env.VERSION;
+            const runId = process.env.RUN_ID;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `chore: tyme4j ${version} alignment check — fixtures need update`,
+              body: `## tyme4j Version Alignment Check\n\nAutomated validation detected changes in truth table fixtures when testing against tyme4j ${version}.\n\n### Changes Detected\n\`\`\`\n${diff}\n\`\`\`\n\n### Action Required\n\n1. Review the fixture changes in the CI run\n2. If validated, update the fixtures and merge\n3. Update tyme4j dependency version in \`Tools/tyme4j-truth-gen/pom.xml\`\n\nRef: Workflow run https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`,
+              labels: ['validation', 'chore']
+            });
