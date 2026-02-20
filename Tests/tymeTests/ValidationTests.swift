@@ -94,6 +94,13 @@ func parseSolar(_ s: String) throws -> (Int, Int, Int) {
 
 // MARK: - 1:1 Validation Suite
 
+// Note on Issue #161: Swift Testing does not support lazy loading for @Suite static properties.
+// The @Test(arguments:) attribute requires argument values to be known at suite initialization time.
+// Using 'lazy var' would prevent @Test from accessing the values, as lazy properties cannot be used
+// as static properties in the same way. Therefore, fixtures are eagerly loaded via requireFixture()
+// to ensure they are available when tests execute. This is acceptable since fixture loading happens
+// once at suite initialization, not per-test invocation.
+
 @Suite("tyme4j 1:1 Validation — Solar↔Lunar")
 struct SolarLunarValidationTests {
     static let cases: [SolarLunarCase] = {
