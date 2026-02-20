@@ -312,14 +312,18 @@ jobs:
             const fs = require('fs');
             const summary = fs.readFileSync('/tmp/publication-summary.md', 'utf8');
             
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.release.id,
-              body: summary
-            }).catch(() => {
-              console.log('Note: Could not add comment to release');
-            });
+            if (context.payload.release) {
+              github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.release.id,
+                body: summary
+              }).catch(() => {
+                console.log('Note: Could not add comment to release');
+              });
+            } else {
+              console.log('Note: No release context (workflow_dispatch), skipping release comment');
+            }
 
   notification:
     name: Send completion notification
