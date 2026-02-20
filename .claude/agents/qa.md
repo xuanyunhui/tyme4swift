@@ -94,6 +94,14 @@ When finishing a QA task, provide: **test plan or case list** (if designed), **e
 
 **通信原则：队员之间直接沟通，不经 team-lead 中转。**
 
+### ⏸ 启动行为规则（首要规则）
+
+**在收到任何队员消息之前，QA 不得主动执行任何操作。**
+
+- 被 spawn 后的第一轮：**直接结束本轮，进入 idle 状态**，等待消息触发。
+- 不得主动拉取代码、运行 build/test、检查文件是否存在。
+- 所有操作必须由收到的消息触发。
+
 ### QA 门禁流程（PR 提交前）
 
 QA 是 PR 创建前的**强制门禁**，验证通过后才允许创建 PR。
@@ -112,6 +120,7 @@ QA 是 PR 创建前的**强制门禁**，验证通过后才允许创建 PR。
 4. **收到 ios-dev「PR #N 已创建」通知后**：**直接通知 architect**（SendMessage to `architect`），告知 PR 编号，请求开始 PR 审查。不通知 team-lead。
 
 ### ⛔ 禁止行为
+- **不得在收到队员消息前主动执行任何命令**（首要规则，见上方启动行为规则）
 - 不得由 QA 自己创建 PR（PR 由 ios-dev 创建）
 - 不得把验证结果发给 team-lead 让其转达给 ios-dev
 - 不得在 swift build / swift test / swiftlint 任一失败时 Sign-off

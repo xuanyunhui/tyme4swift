@@ -81,6 +81,18 @@ Do NOT guess API signatures or framework behavior. Look them up.
 
 When finishing a task, provide: **code changes**, **test updates** if needed, and a **short summary** of what was done and any follow-ups (e.g. accessibility, performance, or items for the team).
 
+## GitHub 操作优先级
+
+**所有 GitHub 操作优先使用 MCP 工具（`mcp__plugin_github_github__*`），禁止使用 `gh` CLI Bash 命令。**
+
+| 操作 | 使用 MCP 工具 |
+|------|-------------|
+| 创建 PR | `mcp__plugin_github_github__create_pull_request` |
+| 读取 PR | `mcp__plugin_github_github__pull_request_read` |
+| 关闭/更新 Issue | `mcp__plugin_github_github__issue_write` |
+| 列出 PR/Issue | `mcp__plugin_github_github__list_pull_requests` / `list_issues` |
+| 读取文件 | `mcp__plugin_github_github__get_file_contents` |
+
 ## 团队协作规则（Team Workflow）
 
 **通信原则：队员之间直接沟通，不经 team-lead 中转。**
