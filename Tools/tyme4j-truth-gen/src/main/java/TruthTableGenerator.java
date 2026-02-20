@@ -30,12 +30,21 @@ public class TruthTableGenerator {
         String sixtyCycleYear;
         String sixtyCycleMonth;
         String sixtyCycleDay;
+        String duty;
+        String twelveStar;
+        String dayNineStar;
+        String twentyEightStar;
 
-        SixtyCycleEntry(String solar, String sixtyCycleYear, String sixtyCycleMonth, String sixtyCycleDay) {
+        SixtyCycleEntry(String solar, String sixtyCycleYear, String sixtyCycleMonth, String sixtyCycleDay,
+                        String duty, String twelveStar, String dayNineStar, String twentyEightStar) {
             this.solar = solar;
             this.sixtyCycleYear = sixtyCycleYear;
             this.sixtyCycleMonth = sixtyCycleMonth;
             this.sixtyCycleDay = sixtyCycleDay;
+            this.duty = duty;
+            this.twelveStar = twelveStar;
+            this.dayNineStar = dayNineStar;
+            this.twentyEightStar = twentyEightStar;
         }
     }
 
@@ -214,15 +223,24 @@ public class TruthTableGenerator {
         while (!current.isAfter(end)) {
             try {
                 SolarDay solar = SolarDay.fromYmd(current.getYear(), current.getMonthValue(), current.getDayOfMonth());
-                String yearName = solar.getSixtyCycleDay().getYear().getName();
-                String monthName = solar.getSixtyCycleDay().getMonth().getName();
-                String dayName = solar.getSixtyCycleDay().getSixtyCycle().getName();
+                com.tyme.sixtycycle.SixtyCycleDay scd = solar.getSixtyCycleDay();
+                String yearName = scd.getYear().getName();
+                String monthName = scd.getMonth().getName();
+                String dayName = scd.getSixtyCycle().getName();
+                String dutyName = scd.getDuty().getName();
+                String twelveStarName = scd.getTwelveStar().getName();
+                String dayNineStarName = scd.getNineStar().getName() + scd.getNineStar().getColor();
+                String twentyEightStarName = scd.getTwentyEightStar().getName();
 
                 sixtyCycleEntries.add(new SixtyCycleEntry(
                     current.toString(),
                     yearName,
                     monthName,
-                    dayName
+                    dayName,
+                    dutyName,
+                    twelveStarName,
+                    dayNineStarName,
+                    twentyEightStarName
                 ));
             } catch (Exception e) {
                 System.err.println("Error processing " + current + ": " + e.getMessage());
@@ -279,8 +297,9 @@ public class TruthTableGenerator {
                 } else if (entry instanceof SixtyCycleEntry) {
                     SixtyCycleEntry e = (SixtyCycleEntry) entry;
                     writer.write(String.format(
-                        "  {\"solar\":\"%s\",\"sixtyCycleYear\":\"%s\",\"sixtyCycleMonth\":\"%s\",\"sixtyCycleDay\":\"%s\"}",
-                        e.solar, e.sixtyCycleYear, e.sixtyCycleMonth, e.sixtyCycleDay
+                        "  {\"solar\":\"%s\",\"sixtyCycleYear\":\"%s\",\"sixtyCycleMonth\":\"%s\",\"sixtyCycleDay\":\"%s\",\"duty\":\"%s\",\"twelveStar\":\"%s\",\"dayNineStar\":\"%s\",\"twentyEightStar\":\"%s\"}",
+                        e.solar, e.sixtyCycleYear, e.sixtyCycleMonth, e.sixtyCycleDay,
+                        e.duty, e.twelveStar, e.dayNineStar, e.twentyEightStar
                     ));
                 } else if (entry instanceof EightCharEntry) {
                     EightCharEntry e = (EightCharEntry) entry;
