@@ -91,9 +91,9 @@ jobs:
               repo: context.repo.repo,
               title: `chore: tyme4j ${version} alignment check — ${isTestFailed ? 'tests failed' : 'fixtures need update'}`,
               body: `## tyme4j Version Alignment Check\n\n${severity}\n\nAutomated validation detected issues when testing against tyme4j ${version}.\n\n### Status\n- ${testStatus}\n- Fixture changes detected: **yes**\n\n### Changes Detected\n\`\`\`\n${diff}\n\`\`\`\n\n### Action Required\n\n${isTestFailed
-  ? '1. **URGENT**: Review test failures in the CI run — this indicates real alignment issues\n2. Investigate root cause and fix implementation if needed\n3. Update fixtures and re-run validation\n4. Update tyme4j dependency version in `Tools/tyme4j-truth-gen/pom.xml` only after validation passes'
-  : '1. Review the fixture changes in the CI run\n2. If validated, update the fixtures and merge\n3. Update tyme4j dependency version in `Tools/tyme4j-truth-gen/pom.xml`'
-}\n\nRef: Workflow run https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`,
+                ? '1. **URGENT**: Review test failures in the CI run — this indicates real alignment issues\n2. Investigate root cause and fix implementation if needed\n3. Update fixtures and re-run validation\n4. Update tyme4j dependency version in Tools/tyme4j-truth-gen/pom.xml only after validation passes'
+                : '1. Review the fixture changes in the CI run\n2. If validated, update the fixtures and merge\n3. Update tyme4j dependency version in Tools/tyme4j-truth-gen/pom.xml'
+              }\n\nRef: Workflow run https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`,
               labels: isTestFailed ? ['validation', 'bug'] : ['validation', 'chore']
             });
 
