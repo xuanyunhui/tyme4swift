@@ -38,6 +38,16 @@ struct SolarTermCase: Decodable {
     let solarDate: String
 }
 
+struct ConstellationCase: Decodable {
+    let solar: String
+    let constellation: String
+}
+
+struct SixStarCase: Decodable {
+    let solar: String
+    let sixStar: String
+}
+
 struct RabByungCase: Decodable {
     let solar: String
     let rabByungYear: String
@@ -216,5 +226,45 @@ struct RabByungValidationTests {
                 "Expected month \(c.rabByungMonth) but got \(rabByung.rabByungMonth.name) for \(c.solar)")
         #expect(rabByung.name == c.rabByungDay,
                 "Expected day \(c.rabByungDay) but got \(rabByung.name) for \(c.solar)")
+    }
+}
+
+@Suite("tyme4j 1:1 Validation — Constellation")
+struct ConstellationValidationTests {
+    static let cases: [ConstellationCase] = {
+        do {
+            return try loadFixture("constellation", type: ConstellationCase.self)
+        } catch {
+            fatalError("Failed to load constellation.json fixture: \(error)")
+        }
+    }()
+
+    @Test("SolarDay→Constellation", arguments: cases)
+    func testConstellation(_ c: ConstellationCase) throws {
+        let (y, m, d) = try parseSolar(c.solar)
+        let solar = try SolarDay.fromYmd(y, m, d)
+
+        #expect(solar.constellation.name == c.constellation,
+                "Expected \(c.constellation) but got \(solar.constellation.name) for \(c.solar)")
+    }
+}
+
+@Suite("tyme4j 1:1 Validation — SixStar")
+struct SixStarValidationTests {
+    static let cases: [SixStarCase] = {
+        do {
+            return try loadFixture("six_star", type: SixStarCase.self)
+        } catch {
+            fatalError("Failed to load six_star.json fixture: \(error)")
+        }
+    }()
+
+    @Test("SolarDay→SixStar", arguments: cases)
+    func testSixStar(_ c: SixStarCase) throws {
+        let (y, m, d) = try parseSolar(c.solar)
+        let solar = try SolarDay.fromYmd(y, m, d)
+
+        #expect(solar.lunarDay.sixStar.name == c.sixStar,
+                "Expected \(c.sixStar) but got \(solar.lunarDay.sixStar.name) for \(c.solar)")
     }
 }
