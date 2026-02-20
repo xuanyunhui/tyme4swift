@@ -44,13 +44,17 @@ jobs:
       - name: Run tests with coverage
         run: swift test --enable-code-coverage
 
-      - name: Generate coverage report
+      - name: Export coverage report
+        if: matrix.os == 'macos-latest'
         run: |
-          CODECOV_JSON=$(swift test --show-codecov-path)
-          if [ -f "$CODECOV_JSON" ]; then
-            echo "Code coverage report: $CODECOV_JSON"
-            COVERAGE=$(jq -r '.data[0].totals.lines.percent' "$CODECOV_JSON")
-            echo "Line coverage: ${COVERAGE}%"
-          else
-            echo "Coverage report not found"
-          fi
+          CODECOV_JSON=$(swift test --show-codecov-path 2>/dev/null)
+          echo "CODECOV_JSON=$CODECOV_JSON" >> $GITHUB_ENV
+
+      - name: Upload coverage to Codecov
+        if: matrix.os == 'macos-latest'
+        uses: codecov/codecov-action@v4
+        with:
+          files: ${{ env.CODECOV_JSON }}
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

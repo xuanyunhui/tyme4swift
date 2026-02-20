@@ -1,4 +1,4 @@
-# Tyme4Swift [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/xuanyunhui/tyme4swift/blob/main/LICENSE) [![CI](https://github.com/xuanyunhui/tyme4swift/actions/workflows/ci.yml/badge.svg)](https://github.com/xuanyunhui/tyme4swift/actions/workflows/ci.yml)
+# Tyme4Swift [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/xuanyunhui/tyme4swift/blob/main/LICENSE) [![CI](https://github.com/xuanyunhui/tyme4swift/actions/workflows/ci.yml/badge.svg)](https://github.com/xuanyunhui/tyme4swift/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/xuanyunhui/tyme4swift/graph/badge.svg)](https://codecov.io/gh/xuanyunhui/tyme4swift)
 
 Tyme4Swift 是一个非常强大的日历工具库，是 [Tyme4J](https://github.com/6tail/tyme4j) 的 Swift 版本实现。拥有优雅的 Swift API 设计和完整的扩展性，支持公历、农历、藏历、星座、干支、生肖、节气、法定假日等。
 
