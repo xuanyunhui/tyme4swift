@@ -63,7 +63,7 @@ The following apply in all contexts; PR review and design planning each have the
 
 **⛔ Do NOT run `gh pr review --approve` or `gh pr review --request-changes`.** The same GitHub account owns the repo; GitHub rejects self-approval and self-request-changes. Team-lead handles the actual GitHub merge.
 
-**✅ DO post your review to GitHub as a comment** using the MCP tool (preferred):
+**✅ DO post your review to GitHub as a comment** using the MCP tool (**mandatory**, no fallback):
 ```
 mcp__plugin_github_github__pull_request_review_write:
   method: create
@@ -75,11 +75,10 @@ mcp__plugin_github_github__pull_request_review_write:
     # Architect review
     ...
 ```
-Or fallback to `gh pr review <PR_NUMBER> --comment --body "..."` if MCP is unavailable.
+
+**⛔ 严禁使用 `gh` CLI 进行任何 GitHub 操作**（包括 `gh pr review`、`gh pr comment`、`gh issue` 等）。必须使用 MCP 工具（`mcp__plugin_github_github__*`）。读取 PR 用 `pull_request_read`，读取文件用 `get_file_contents`，创建 Issue 用 `issue_write`，评论用 `add_issue_comment`。
 
 This makes the review visible in the PR timeline. Then communicate your verdict via team messages.
-
-**GitHub 操作优先级：** 优先使用 MCP 工具（`mcp__plugin_github_github__*`），避免 `gh` CLI Bash 命令。例如：读取 PR 用 `pull_request_read`，读取文件用 `get_file_contents`，列出 Issue 用 `list_issues`。
 
 **Output format (use both as GitHub comment AND in team message to team-lead or swift-developer):**
 
