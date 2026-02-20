@@ -66,8 +66,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 swift build          # Build the package
-swift test           # Run all tests (125 tests across 11 files)
+swift test           # Run all tests (365 tests across 12 files; ~25K parameterized validation cases)
 swift test --filter SolarTests/testSolarDay   # Run a single test
+swift test --filter ValidationTests           # Run tyme4j 1:1 validation suite only (~25K cases)
 swift run -c release TymeBenchmarks           # Run performance benchmarks
 ```
 
@@ -77,6 +78,7 @@ SwiftLint configured (`.swiftlint.yml`). Run `swiftlint lint Sources` before com
 
 - **PR CI** (`.github/workflows/ci.yml`): Runs `swift build` + `swift test` with code coverage on push to main and pull requests (Swift 6.2, Ubuntu + macOS)
 - **Publish** (`.github/workflows/publish.yml`): Release publishing workflow (Swift 6.2)
+- **Validate Truth Tables** (`.github/workflows/validate-truth-tables.yml`): Weekly (Mon 02:00 UTC) + manual — checks tyme4j version alignment; creates GitHub Issue if fixtures drift
 
 ## Architecture
 
@@ -133,7 +135,7 @@ Culture (protocol) → getName()
 
 ### Tests
 
-125 tests (Swift Testing) across 11 module-based files in `Tests/tymeTests/`:
+365 tests (Swift Testing) across 12 module-based files in `Tests/tymeTests/`:
 
 | File | Tests | Coverage |
 |------|-------|----------|
@@ -148,6 +150,7 @@ Culture (protocol) → getName()
 | `RegressionTests.swift` | 9 | Regression protection |
 | `EquatableHashableTests.swift` | 2 | Protocol conformance |
 | `CodableTests.swift` | 10 | Codable round-trip |
+| `ValidationTests.swift` | 6 | tyme4j 1:1 parameterized validation (~25,943 cases via `@Test(arguments:)`) |
 
 ## Alignment Status
 
