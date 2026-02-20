@@ -61,25 +61,42 @@ jobs:
           swift-version: '6.2'
 
       - name: Run validation tests
+        id: run_tests
+        continue-on-error: true
         run: swift test --filter ValidationTests
 
-      - name: Create issue if fixtures changed
-        if: steps.check_changes.outputs.changed == 'true'
+      - name: Create issue if fixtures changed or tests failed
+        if: always() && steps.check_changes.outputs.changed == 'true'
         uses: actions/github-script@v7
         env:
           VERSION: ${{ steps.version.outputs.version }}
           RUN_ID: ${{ github.run_id }}
+          TEST_RESULT: ${{ steps.run_tests.outcome }}
         with:
           script: |
             const { execSync } = require('child_process');
             const diff = execSync('git diff --stat Tests/tymeTests/Fixtures/').toString();
             const version = process.env.VERSION;
             const runId = process.env.RUN_ID;
+            const testResult = process.env.TEST_RESULT;
+            const isTestFailed = testResult === 'failure';
+
+            const severity = isTestFailed ? '🔴 **CRITICAL**' : '🟡 **WARNING**';
+            const testStatus = isTestFailed
+              ? 'Validation tests **FAILED** — indicating potential alignment issues beyond fixture changes'
+              : 'Validation tests passed';
 
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `chore: tyme4j ${version} alignment check — fixtures need update`,
-              body: `## tyme4j Version Alignment Check\n\nAutomated validation detected changes in truth table fixtures when testing against tyme4j ${version}.\n\n### Changes Detected\n\`\`\`\n${diff}\n\`\`\`\n\n### Action Required\n\n1. Review the fixture changes in the CI run\n2. If validated, update the fixtures and merge\n3. Update tyme4j dependency version in \`Tools/tyme4j-truth-gen/pom.xml\`\n\nRef: Workflow run https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`,
-              labels: ['validation', 'chore']
+              title: `chore: tyme4j ${version} alignment check — ${isTestFailed ? 'tests failed' : 'fixtures need update'}`,
+              body: `## tyme4j Version Alignment Check\n\n${severity}\n\nAutomated validation detected issues when testing against tyme4j ${version}.\n\n### Status\n- ${testStatus}\n- Fixture changes detected: **yes**\n\n### Changes Detected\n\`\`\`\n${diff}\n\`\`\`\n\n### Action Required\n\n${isTestFailed
+  ? '1. **URGENT**: Review test failures in the CI run — this indicates real alignment issues\n2. Investigate root cause and fix implementation if needed\n3. Update fixtures and re-run validation\n4. Update tyme4j dependency version in `Tools/tyme4j-truth-gen/pom.xml` only after validation passes'
+  : '1. Review the fixture changes in the CI run\n2. If validated, update the fixtures and merge\n3. Update tyme4j dependency version in `Tools/tyme4j-truth-gen/pom.xml`'
+}\n\nRef: Workflow run https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`,
+              labels: isTestFailed ? ['validation', 'bug'] : ['validation', 'chore']
             });
+
+      - name: Fail if tests failed
+        if: steps.run_tests.outcome == 'failure'
+        run: exit 1
